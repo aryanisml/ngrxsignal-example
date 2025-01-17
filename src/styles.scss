@@ -1,1 +1,138 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles */
+:root {
+    font-family: var(--font-family);
+    color: var(--text-color);
+}
+
+body {
+    margin: 0;
+    padding: 1rem;
+    background-color: var(--surface-ground);
+}
+
+/* Card styles */
+.card {
+    background: var(--surface-card);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    box-shadow: var(--card-shadow);
+}
+
+/* Form field styles */
+.field {
+    margin-bottom: 1.5rem;
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    input {
+        width: 100%;
+    }
+
+    small {
+        display: block;
+        margin-top: 0.25rem;
+    }
+}
+
+/* Heading styles */
+h5 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--surface-900);
+}
+
+/* Table styles */
+.p-datatable {
+    margin-top: 2rem;
+    
+    .p-datatable-header {
+        background: var(--surface-section);
+        padding: 1rem;
+    }
+    
+    .p-datatable-thead > tr > th {
+        background: var(--surface-section);
+        padding: 1rem;
+        font-weight: 600;
+    }
+
+    .p-datatable-tbody > tr > td {
+        padding: 1rem;
+    }
+
+    &.p-datatable-gridlines {
+        .p-datatable-thead > tr > th,
+        .p-datatable-tbody > tr > td {
+            border-width: 1px;
+        }
+    }
+}
+
+/* Select button styles */
+.p-selectbutton {
+    .p-button {
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Progress spinner overlay */
+.flex.justify-content-center {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Toast position */
+.p-toast {
+    z-index: 1001;
+}
+
+/* Checkbox spacing */
+.p-checkbox {
+    margin-right: 0.5rem;
+}
+
+/* Grid spacing */
+.grid {
+    margin: -0.5rem; /* Negative margin to offset padding */
+    
+    > .col-12 {
+        padding: 0.5rem;
+    }
+}
+
+/* Submit button spacing */
+.flex.justify-content-end {
+    padding: 1rem 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .card {
+        padding: 1rem;
+    }
+    
+    .field {
+        margin-bottom: 1rem;
+    }
+    
+    .p-datatable {
+        .p-datatable-thead > tr > th,
+        .p-datatable-tbody > tr > td {
+            padding: 0.5rem;
+        }
+    }
+}
