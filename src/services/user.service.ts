@@ -2,12 +2,13 @@ import { HttpClient } from "@angular/common/http";
 import { UserFormData } from "../store/user.model";
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
+import { environment } from "../environments/environments";
 
 @Injectable({
     providedIn: 'root'
   })
 export class UserService {
-    #url = 'http://localhost:3000/api'; // Node.js backend URL
+    #url = environment.apiUrl; // Node.js backend URL
     constructor(private http: HttpClient){}
 
     saveUser(user: UserFormData): Observable<UserFormData> {

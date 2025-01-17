@@ -194,6 +194,8 @@ export class UserFormComponent implements OnInit {
 
     ngOnInit() {
         this.userStore.loadUsers();
+        console.log(performance.now())
+        
     }
 
     async onSubmit() {
