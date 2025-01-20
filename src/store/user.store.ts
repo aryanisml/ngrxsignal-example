@@ -26,8 +26,9 @@ export const UserStore = signalStore(
     withMethods((store, userService = inject(UserService))=>({
         async saveUser(user: UserFormData) {
             patchState(store, { loading: true });
+            console.log('saveUser', user)
             try {
-                const savedUser = await userService.saveUser(user);
+                const savedUser = await userService.saveUser(user).toPromise();
                 patchState(store, (state:any) => ({
                     users: [...state.users, savedUser],
                     loading: false
@@ -46,6 +47,7 @@ export const UserStore = signalStore(
             patchState(store, { loading: true });
             try {
                 const users = await userService.getUsers().toPromise();
+                console.log('users list', users);
                 patchState(store, { 
                     users,
                     loading: false 
