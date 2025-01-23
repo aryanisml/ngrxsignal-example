@@ -96,23 +96,28 @@
       color: #666;
     }
   
-    .grid-cell {
-      height: 60px;
-      border-bottom: 1px solid #eee;
-      position: relative;
-      padding: 4px;
-    }
+ 
+.grid-cell {
+  height: var(--grid-height);
+  border-bottom: 1px solid var(--surface-border);
+  padding: 0.25rem;
+  position: relative;
+}
   
     .event {
       position: absolute;
-      left: 8px;
-      right: 8px;
-      padding: 8px;
-      border-radius: 4px;
-      font-size: 13px;
+      top: 2px;
+      left: 2px;
+      right: 2px;
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
+      font-size: 0.875rem;
       display: flex;
-      align-items: center;
-      gap: 6px;
+      align-items: flex-start;
+      gap: 0.5rem;
+      cursor: pointer;
+      z-index: 1;
+      min-height: calc(var(--grid-height) - 4px);
   
       &.critical {
         background: #ff4444;

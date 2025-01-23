@@ -76,7 +76,7 @@ interface Event {
             <div class="text-color-secondary">{{date | date:'MMM d'}}</div>
           </div>
 
-          <div *ngFor="let time of timeSlots; let i = index" 
+          <!-- <div *ngFor="let time of timeSlots; let i = index" 
                class="grid-cell"
                [class.surface-ground]="i % 2 === 0"
                (click)="openNewEventDialog(date, time)">
@@ -93,7 +93,25 @@ interface Event {
                 </span>
               </div>
             </ng-container>
-          </div>
+          </div> -->
+          <div *ngFor="let time of timeSlots; let i = index" 
+     class="grid-cell"
+     [class.surface-ground]="i % 2 === 0"
+     (click)="openNewEventDialog(date, time)">
+  <ng-container *ngFor="let event of getEventsForTimeSlot(date, time)">
+    <div [class]="'event ' + event.type"
+         [style.height]="getEventHeight(event)"
+         [style.width]="getEventWidth(event)"
+         [style.zIndex]="event.span ? 2 : 1"
+         (click)="openEditEventDialog(event, $event)">
+      <span class="event-icon">{{getEventIcon(event.type)}}</span>
+      <span class="event-title">{{event.title}}</span>
+      <span *ngIf="isMultiDayEvent(event)" class="event-duration">
+        {{formatEventDuration(event)}}
+      </span>
+    </div>
+  </ng-container>
+</div>
         </div>
       </div>
     </div>
@@ -300,7 +318,7 @@ export class SchedulerComponent implements OnInit {
         id: 1,
         title: 'Check Track',
         start: new Date(2024, 1, 3, 8),
-        end: new Date(2024, 1, 6, 10),
+        end: new Date(2024, 1, 6, 9),
         type: 'check-track',
         span: 4
       },
@@ -321,46 +339,47 @@ export class SchedulerComponent implements OnInit {
       }
     ];
   }
-
-  // getEventsForTimeSlot(date: Date, time: string): Event[] {
-  //   const hour = parseInt(time.split(':')[0]);
-  //   const currentDateTime = new Date(date);
-  //   currentDateTime.setHours(hour, 0, 0, 0);
-
-  //   return this.events.filter(event => {
-  //     // For check-track events, show for entire duration
-  //     if (event.type === 'check-track') {
-  //       const eventStart = new Date(event.start);
-  //       const eventEnd = new Date(event.end);
-  //       return currentDateTime >= eventStart && currentDateTime < eventEnd;
-  //     }
-      
-  //     // For other events, only show at start time
-  //     const eventStartDate = event.start.getDate();
-  //     const eventStartHour = event.start.getHours();
-  //     return eventStartDate === date.getDate() && eventStartHour === hour;
-  //   });
-  // }
   getEventsForTimeSlot(date: Date, time: string): Event[] {
+    // const hour = parseInt(time.split(':')[0]);
+    // const currentDateTime = new Date(date);
+    // currentDateTime.setHours(hour, 0, 0, 0); // Start of the time slot
+  
+    // const nextHour = new Date(currentDateTime);
+    // nextHour.setHours(hour + 1, 0, 0, 0); // End of the time slot
+    
+    // console.log(this.events);
+
+    // return this.events.filter(event => {
+    //   const eventStartTime = new Date(event.start);
+    //   return eventStartTime >= currentDateTime && eventStartTime < nextHour;
+    // });
     const hour = parseInt(time.split(':')[0]);
-    const currentDateTime = new Date(date);
-    currentDateTime.setHours(hour, 0, 0, 0); // Start of the time slot
-  
-    const nextHour = new Date(currentDateTime);
-    nextHour.setHours(hour + 1, 0, 0, 0); // End of the time slot
-  
+    const slotStart = new Date(date);
+    slotStart.setHours(hour, 0, 0, 0);
+    
     return this.events.filter(event => {
-      const eventStartTime = new Date(event.start);
-      return eventStartTime >= currentDateTime && eventStartTime < nextHour;
+      const eventStart = new Date(event.start);
+      eventStart.setSeconds(0, 0);
+      
+      // Only show event at its start time
+      return eventStart.getTime() === slotStart.getTime();
     });
   }
   getEventWidth(event: Event): string {
-    if (event.span) {
-      return `calc(${event.span * 100}% - 4px)`;
+    if (!event.span) {
+      const hours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
+      return hours > 1 ? `calc(${hours * 100}% - 4px)` : 'calc(100% - 4px)';
     }
-    return 'calc(100% - 4px)';
+    return `calc(${event.span * 100}% - 4px)`;
   }
-
+  getEventHeight(event: Event): string {
+    if (event.span) {
+      return '56px'; // Single cell height
+    }
+    
+    const hours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
+    return `${hours * 60 - 4}px`; // 60px per hour minus padding
+  }
   getEventIcon(type: string): string {
     switch(type) {
       case 'critical': return '⚠️';
