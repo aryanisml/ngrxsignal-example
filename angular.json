@@ -30,10 +30,12 @@
               "src/assets"
             ],
             "styles": [
-             
+             "node_modules/dhtmlx-scheduler/codebase/dhtmlxscheduler.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/dhtmlx-scheduler/codebase/dhtmlxscheduler.js"
+            ]
           },
           "configurations": {
             "production": {

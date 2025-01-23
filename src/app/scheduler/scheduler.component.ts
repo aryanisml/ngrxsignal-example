@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
+import { RouterLink } from '@angular/router';
 
 interface Event {
   id: number;
@@ -27,7 +28,8 @@ interface Event {
     InputTextModule, 
     CalendarModule,
     FormsModule,
-    DropdownModule
+    DropdownModule,
+    RouterLink
   ],
   template: `
     <div class="scheduler surface-card border-round shadow-1">
@@ -36,6 +38,12 @@ interface Event {
           <h2 class="text-2xl font-bold m-0">Reservations</h2>
           <div class="flex align-items-center gap-4">
             <div class="flex gap-2">
+              
+            <button pButton 
+                     [routerLink]="['/dhtmlxscheduler']"
+                      label="DHTMLX Scheduler"
+                      class="p-button-outlined">
+              </button>
               <button pButton 
                       *ngFor="let action of actions" 
                       [label]="action.label"
@@ -291,6 +299,10 @@ export class SchedulerComponent implements OnInit {
     { label: 'Add Track', value: 'add-track' }
   ];
 
+  navigate(){
+
+  }
+
   ngOnInit() {
     this.generateTimeSlots();
     this.generateWeekDates();
@@ -340,19 +352,7 @@ export class SchedulerComponent implements OnInit {
     ];
   }
   getEventsForTimeSlot(date: Date, time: string): Event[] {
-    // const hour = parseInt(time.split(':')[0]);
-    // const currentDateTime = new Date(date);
-    // currentDateTime.setHours(hour, 0, 0, 0); // Start of the time slot
   
-    // const nextHour = new Date(currentDateTime);
-    // nextHour.setHours(hour + 1, 0, 0, 0); // End of the time slot
-    
-    // console.log(this.events);
-
-    // return this.events.filter(event => {
-    //   const eventStartTime = new Date(event.start);
-    //   return eventStartTime >= currentDateTime && eventStartTime < nextHour;
-    // });
     const hour = parseInt(time.split(':')[0]);
     const slotStart = new Date(date);
     slotStart.setHours(hour, 0, 0, 0);
@@ -380,6 +380,15 @@ export class SchedulerComponent implements OnInit {
     const hours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
     return `${hours * 60 - 4}px`; // 60px per hour minus padding
   }
+  calculateEventOffset(event: Event): number {
+    const existingEvents = this.events.filter(e => 
+      e.start.getTime() < event.start.getTime() &&
+      e.end.getTime() > event.start.getTime()
+    );
+    return existingEvents.length * 30;
+  }
+
+
   getEventIcon(type: string): string {
     switch(type) {
       case 'critical': return '⚠️';
