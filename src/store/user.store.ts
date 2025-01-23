@@ -46,6 +46,7 @@ export const UserStore = signalStore(
         async loadUsers() {
             patchState(store, { loading: true });
             try {
+                console.log('after save.....');
                 const users = await userService.getUsers().toPromise();
                 console.log('users list', users);
                 patchState(store, { 
