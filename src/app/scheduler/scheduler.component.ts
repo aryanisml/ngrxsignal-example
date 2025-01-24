@@ -80,11 +80,11 @@ interface Event {
     </thead>
     <tbody>
       <tr *ngFor="let time of timeSlots; let i = index">
-        <td class="time-cell border-right-1 surface-border">{{time}}</td>
+        <td class="time-cell border-right-1 surface-border ">{{time}}</td>
         <td *ngFor="let date of weekDates" 
             class="grid-cell relative"
             [class.surface-ground]="i % 2 === 0"
-            [style.height.px]="getEventsForTimeSlot(date, time).length * 32 + 30"
+            [style.height.px]="getEventsForTimeSlot(date, time).length * 32 + 30 < 60 ? 60 : getEventsForTimeSlot(date, time).length * 32 + 30"
             (click)="openNewEventDialog(date, time)">
           <ng-container *ngFor="let event of getEventsForTimeSlot(date, time); let eventIndex = index">
             <div [class]="'event ' + event.type"
@@ -177,89 +177,65 @@ interface Event {
     </p-dialog>
   `,
   styles: [`
-    :host {
-      display: block;
-      --grid-height: 60px;
-    }
+ .grid-cell {
+  min-height: 60px;
+  border: 1px solid #e5e7eb;
+  padding: 0.25rem;
+  position: relative;
+}
 
-    .scheduler-grid {
-      display: grid;
-      grid-template-columns: 80px repeat(7, 1fr);
-    }
+.time-cell {
+  border: 1px solid black ;
+  border-radius:10px;
+  background: #f9fafb;
+  font-weight: 500;
+  color: black;
+  min-width:30px;
+  text-align:center;
 
-    .time-column {
-      min-width: 80px;
-    }
+}
 
-    .time-cell {
-      height: var(--grid-height);
-      padding: 0.5rem;
-      border-bottom: 1px solid var(--surface-border);
-      display: flex;
-      align-items: center;
-    }
+.header-cell {
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
 
-    .grid-cell {
-      height: var(--grid-height);
-      border-bottom: 1px solid var(--surface-border);
-      padding: 0.25rem;
-      position: relative;
-    }
+.event {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  height: 36px;
+  z-index: 1;
+}
 
-    .header-cell {
-      height: var(--grid-height);
-      padding: 0.5rem;
-      border-bottom: 1px solid var(--surface-border);
-    }
+.event.critical {
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+}
 
-    .event {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      right: 2px;
-      padding: 0.5rem;
-      border-radius: var(--border-radius);
-      font-size: 0.875rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-    }
+.event.check-track {
+  background: #fff;
+  border: 1px dashed #22c55e;
+}
 
-    .event.critical {
-      background: var(--red-50);
-      border: 1px solid var(--red-500);
-    }
+.event.add-track {
+  background: #fff;
+  border: 1px solid #3b82f6;
+}
 
-    .event.check-track {
-      background: var(--surface-ground);
-      border: 1px dashed var(--green-500);
-    }
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
 
-    .event.add-track {
-      background: var(--surface-ground);
-      border: 1px solid var(--primary-color);
-    }
-
-    .event-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      height: 20px;
-    }
-
-    .event-title {
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .event-duration {
-      font-size: 0.75rem;
-      color: var(--text-color-secondary);
-    }
   `]
 })
 export class SchedulerComponent implements OnInit {
@@ -359,6 +335,8 @@ export class SchedulerComponent implements OnInit {
   return `${top}px`;
 
   }
+
+  
   getEventsForTimeSlot(date: Date, time: string): Event[] {
     const hour = parseInt(time.split(':')[0]);
     const slotStart = new Date(date);
@@ -386,6 +364,13 @@ export class SchedulerComponent implements OnInit {
   }
   
   getEventHeight(event: Event): string {
+    document.querySelectorAll('tr').forEach(tr => {
+      const td = tr.querySelector('td'); // Assuming you want to match the first td in each tr
+      if (td) {
+        tr.style.height = `${td.offsetHeight}px`;
+      }
+    });
+
     if (event.span) {
       return `${30}px`;
     }
@@ -393,41 +378,7 @@ export class SchedulerComponent implements OnInit {
    // return `${Math.max(56, hours * 60)}px`;
    return `${30}px`;
   }
-  
-  // Add method to calculate event height based on duration
-  // getEventHeight(event: Event): string {
-  //   const durationHours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
-  //   return `${Math.min(durationHours * 60, 56)}px`;
-  // }
-  // // getEventsForTimeSlot(date: Date, time: string): Event[] {
-  
-  // //   const hour = parseInt(time.split(':')[0]);
-  // //   const slotStart = new Date(date);
-  // //   slotStart.setHours(hour, 0, 0, 0);
-    
-  // //   return this.events.filter(event => {
-  // //     const eventStart = new Date(event.start);
-  // //     eventStart.setSeconds(0, 0);
-      
-  // //     // Only show event at its start time
-  // //     return eventStart.getTime() === slotStart.getTime();
-  // //   });
-  // // }
-  // getEventWidth(event: Event): string {
-  //   if (!event.span) {
-  //     const hours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
-  //     return hours > 1 ? `calc(${hours * 100}% - 4px)` : 'calc(100% - 4px)';
-  //   }
-  //   return `calc(${event.span * 100}% - 4px)`;
-  // }
-  // getEventHeight(event: Event): string {
-  //   if (event.span) {
-  //     return '56px'; // Single cell height
-  //   }
-    
-  //   const hours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
-  //   return `${hours * 60 - 4}px`; // 60px per hour minus padding
-  // }
+
   calculateEventOffset(event: Event): number {
     const existingEvents = this.events.filter(e => 
       e.start.getTime() < event.start.getTime() &&
