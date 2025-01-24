@@ -84,30 +84,13 @@ interface Event {
             <div class="text-color-secondary">{{date | date:'MMM d'}}</div>
           </div>
 
-          <!-- <div *ngFor="let time of timeSlots; let i = index" 
-               class="grid-cell"
-               [class.surface-ground]="i % 2 === 0"
-               (click)="openNewEventDialog(date, time)">
-            <ng-container *ngFor="let event of getEventsForTimeSlot(date, time)">
-              <div [class]="'event ' + event.type"
-                   [style.width]="getEventWidth(event)"
-                   [style.zIndex]="event.span ? 2 : 1"
-                   (click)="openEditEventDialog(event, $event)">
-                <span class="event-icon">{{getEventIcon(event.type)}}</span>
-                <span class="event-title">{{event.title}}</span>
-                <span *ngIf="isMultiDayEvent(event)" 
-                      class="event-duration">
-                  {{formatEventDuration(event)}}
-                </span>
-              </div>
-            </ng-container>
-          </div> -->
           <div *ngFor="let time of timeSlots; let i = index" 
-     class="grid-cell"
-     [class.surface-ground]="i % 2 === 0"
-     (click)="openNewEventDialog(date, time)">
-  <ng-container *ngFor="let event of getEventsForTimeSlot(date, time)">
+      class="grid-cell"
+      [class.surface-ground]="i % 2 === 0"
+      (click)="openNewEventDialog(date, time)">
+  <ng-container *ngFor="let event of getEventsForTimeSlot(date, time); let eventIndex = index">
     <div [class]="'event ' + event.type"
+         [style.top]="getEventTop(event, getEventsForTimeSlot(date, time))"
          [style.height]="getEventHeight(event)"
          [style.width]="getEventWidth(event)"
          [style.zIndex]="event.span ? 2 : 1"
@@ -351,8 +334,26 @@ export class SchedulerComponent implements OnInit {
       }
     ];
   }
-  getEventsForTimeSlot(date: Date, time: string): Event[] {
+  // getEventsForTimeSlot(date: Date, time: string): Event[] {
+  //   const hour = parseInt(time.split(':')[0]);
+  //   const slotStart = new Date(date);
+  //   slotStart.setHours(hour, 0, 0, 0);
+  //   const slotEnd = new Date(slotStart);
+  //   slotEnd.setHours(hour + 1, 0, 0, 0);
+    
+  //   return this.events.filter(event => {
+  //     const eventStart = new Date(event.start);
+  //     const eventEnd = new Date(event.end);
+  //     return eventStart < slotEnd && eventEnd > slotStart;
+  //   });
+  // }
   
+  // Add method to calculate vertical position
+  getEventTop(event: Event, existingEvents: Event[]): string {
+    const index = existingEvents.findIndex(e => e.id === event.id);
+    return `${index * 30}px`;
+  }
+  getEventsForTimeSlot(date: Date, time: string): Event[] {
     const hour = parseInt(time.split(':')[0]);
     const slotStart = new Date(date);
     slotStart.setHours(hour, 0, 0, 0);
@@ -361,25 +362,65 @@ export class SchedulerComponent implements OnInit {
       const eventStart = new Date(event.start);
       eventStart.setSeconds(0, 0);
       
-      // Only show event at its start time
-      return eventStart.getTime() === slotStart.getTime();
+      // Check if the event starts at this exact time slot
+      return (
+        eventStart.getFullYear() === slotStart.getFullYear() &&
+        eventStart.getMonth() === slotStart.getMonth() &&
+        eventStart.getDate() === slotStart.getDate() &&
+        eventStart.getHours() === slotStart.getHours()
+      );
     });
   }
+  
   getEventWidth(event: Event): string {
-    if (!event.span) {
-      const hours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
-      return hours > 1 ? `calc(${hours * 100}% - 4px)` : 'calc(100% - 4px)';
+    if (event.span) {
+      return `calc(${event.span * 100}% - 4px)`;
     }
-    return `calc(${event.span * 100}% - 4px)`;
+    return 'calc(100% - 4px)';
   }
+  
   getEventHeight(event: Event): string {
     if (event.span) {
-      return '56px'; // Single cell height
+      return `${56}px`;
     }
-    
     const hours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
-    return `${hours * 60 - 4}px`; // 60px per hour minus padding
+    return `${Math.max(56, hours * 60)}px`;
   }
+  
+  // Add method to calculate event height based on duration
+  // getEventHeight(event: Event): string {
+  //   const durationHours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
+  //   return `${Math.min(durationHours * 60, 56)}px`;
+  // }
+  // // getEventsForTimeSlot(date: Date, time: string): Event[] {
+  
+  // //   const hour = parseInt(time.split(':')[0]);
+  // //   const slotStart = new Date(date);
+  // //   slotStart.setHours(hour, 0, 0, 0);
+    
+  // //   return this.events.filter(event => {
+  // //     const eventStart = new Date(event.start);
+  // //     eventStart.setSeconds(0, 0);
+      
+  // //     // Only show event at its start time
+  // //     return eventStart.getTime() === slotStart.getTime();
+  // //   });
+  // // }
+  // getEventWidth(event: Event): string {
+  //   if (!event.span) {
+  //     const hours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
+  //     return hours > 1 ? `calc(${hours * 100}% - 4px)` : 'calc(100% - 4px)';
+  //   }
+  //   return `calc(${event.span * 100}% - 4px)`;
+  // }
+  // getEventHeight(event: Event): string {
+  //   if (event.span) {
+  //     return '56px'; // Single cell height
+  //   }
+    
+  //   const hours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
+  //   return `${hours * 60 - 4}px`; // 60px per hour minus padding
+  // }
   calculateEventOffset(event: Event): number {
     const existingEvents = this.events.filter(e => 
       e.start.getTime() < event.start.getTime() &&

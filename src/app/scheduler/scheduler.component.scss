@@ -98,26 +98,33 @@
   
  
 .grid-cell {
-  height: var(--grid-height);
+  height: auto;
+  min-height: calc(var(--grid-height) * 2);
   border-bottom: 1px solid var(--surface-border);
   padding: 0.25rem;
   position: relative;
+
 }
-  
+.time-cell {
+  height: calc(var(--grid-height) * 2);
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+}
     .event {
       position: absolute;
-      top: 2px;
       left: 2px;
       right: 2px;
       padding: 0.5rem;
       border-radius: var(--border-radius);
       font-size: 0.875rem;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 0.5rem;
       cursor: pointer;
-      z-index: 1;
-      min-height: calc(var(--grid-height) - 4px);
+      overflow: hidden;
+      transition: all 0.2s ease;
   
       &.critical {
         background: #ff4444;

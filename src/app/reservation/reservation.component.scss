@@ -1,0 +1,61 @@
+.reservation-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .timeline-grid {
+    overflow-x: auto;
+  }
+
+  .timeline-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .time-header, .time-cell {
+    width: 100px;
+    padding: 8px;
+    border-right: 1px solid #e0e0e0;
+  }
+
+  td {
+    border: 1px solid #e0e0e0;
+    position: relative;
+    padding: 0;
+  }
+
+  .events-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .event-item {
+    position: absolute;
+    padding: 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    z-index: 1;
+    transition: all 0.3s ease;
+  }
+
+  .critical {
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+  }
+
+  .check {
+    background-color: #dcfce7;
+    border: 1px solid #22c55e;
+    color: #166534;
+  }
+
+  .reserved {
+    background-color: #dbeafe;
+    border: 1px solid #3b82f6;
+    color: #1e40af;
+  }

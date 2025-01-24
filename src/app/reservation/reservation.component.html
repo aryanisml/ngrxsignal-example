@@ -1,0 +1,41 @@
+ <div class="reservation-container p-4">
+      <div class="header-actions flex justify-content-between align-items-center mb-4">
+        <h2 class="text-xl">Reservations</h2>
+        <div class="action-buttons">
+          <button pButton class="p-button-rounded p-button-danger mr-2" icon="pi pi-exclamation-triangle" label="Critical"></button>
+          <button pButton class="p-button-rounded p-button-secondary mr-2" icon="pi pi-check" label="Check Track"></button>
+          <button pButton class="p-button-rounded p-button-success mr-2" icon="pi pi-plus" label="Add Track"></button>
+          <button pButton class="p-button-rounded p-button-info" icon="pi pi-bookmark" label="Reserved"></button>
+        </div>
+      </div>
+
+      <div class="timeline-grid">
+        <p-table [value]="timeSlots" styleClass="timeline-table">
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="time-header">Time</th>
+              <th *ngFor="let date of dates">{{ date | date:'EEE, MMM d' }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-slot>
+            <tr [ngStyle]="getRowStyle(slot)">
+              <td class="time-cell">{{ slot.time }}</td>
+              <ng-container *ngFor="let date of dates; let colIndex = index">
+                <td *ngIf="shouldRenderCell(slot.time, date, colIndex)"
+                    [attr.colspan]="getMaxColspan(slot.time, date)">
+                  <div class="events-container" [ngStyle]="getEventsContainerStyle(slot.time, date)">
+                    <ng-container *ngFor="let event of getEventsForTimeSlot(slot.time, date); let i = index">
+                      <div [ngClass]="['event-item', event.status]"
+                           [ngStyle]="getEventStyle(event, i, getEventsForTimeSlot(slot.time, date).length)">
+                        <i class="pi mr-2" [ngClass]="getEventIcon(event.status)"></i>
+                        {{ event.title }}
+                      </div>
+                    </ng-container>
+                  </div>
+                </td>
+              </ng-container>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>

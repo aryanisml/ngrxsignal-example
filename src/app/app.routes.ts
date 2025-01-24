@@ -11,6 +11,11 @@ export const routes: Routes = [
         loadComponent: () => import('./dhtml-scheduler/dhtml-scheduler.component')
           .then(m => m.DhtmlSchedulerComponent)
       },
+      {
+        path: 'res',
+        loadComponent: () => import('./reservation/reservation.component')
+          .then(m => m.ReservationTimelineComponent)
+      },
       { path: '', redirectTo: '/scheduler', pathMatch: 'full' }
     // Same for other routes
   ];
