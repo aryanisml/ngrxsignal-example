@@ -173,3 +173,30 @@
       }
     }
   }
+
+  .scheduler-table {
+    overflow-x: auto;
+  }
+  
+  .grid-cell {
+    min-height: var(--grid-height);
+    border: 1px solid #e5e7eb; /* light gray border */
+    padding: 0.25rem;
+    transition: height 0.3s ease;
+  }
+  
+  .time-cell {
+    min-width: 80px;
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .header-cell {
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  table {
+    border-collapse: collapse;
+    border: 1px solid #e5e7eb;
+  }

@@ -67,44 +67,45 @@ interface Event {
         </div>
       </div>
 
-      <div class="scheduler-grid">
-        <!-- Time column -->
-        <div class="time-column border-right-1 surface-border">
-          <div class="header-cell surface-ground"></div>
-          <div *ngFor="let time of timeSlots" class="time-cell">
-            {{time}}
-          </div>
-        </div>
-
-        <!-- Day columns -->
-        <div *ngFor="let date of weekDates" 
-             class="day-column border-right-1 surface-border">
-          <div class="header-cell surface-ground">
-            <div class="font-medium">{{date | date:'EEE'}}</div>
-            <div class="text-color-secondary">{{date | date:'MMM d'}}</div>
-          </div>
-
-          <div *ngFor="let time of timeSlots; let i = index" 
-      class="grid-cell"
-      [class.surface-ground]="i % 2 === 0"
-      (click)="openNewEventDialog(date, time)">
-  <ng-container *ngFor="let event of getEventsForTimeSlot(date, time); let eventIndex = index">
-    <div [class]="'event ' + event.type"
-         [style.top]="getEventTop(event, getEventsForTimeSlot(date, time))"
-         [style.height]="getEventHeight(event)"
-         [style.width]="getEventWidth(event)"
-         [style.zIndex]="event.span ? 2 : 1"
-         (click)="openEditEventDialog(event, $event)">
-      <span class="event-icon">{{getEventIcon(event.type)}}</span>
-      <span class="event-title">{{event.title}}</span>
-      <span *ngIf="isMultiDayEvent(event)" class="event-duration">
-        {{formatEventDuration(event)}}
-      </span>
-    </div>
-  </ng-container>
+      <div class="scheduler-table">
+  <table class="w-full border-collapse">
+    <thead>
+      <tr>
+        <th class="header-cell surface-ground"></th>
+        <th *ngFor="let date of weekDates" class="header-cell surface-ground">
+          <div class="font-medium">{{date | date:'EEE'}}</div>
+          <div class="text-color-secondary">{{date | date:'MMM d'}}</div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let time of timeSlots; let i = index">
+        <td class="time-cell border-right-1 surface-border">{{time}}</td>
+        <td *ngFor="let date of weekDates" 
+            class="grid-cell relative"
+            [class.surface-ground]="i % 2 === 0"
+            [style.height.px]="getEventsForTimeSlot(date, time).length * 32 + 30"
+            (click)="openNewEventDialog(date, time)">
+          <ng-container *ngFor="let event of getEventsForTimeSlot(date, time); let eventIndex = index">
+            <div [class]="'event ' + event.type"
+                 [style.top]="eventIndex * 32 + 'px'"
+                 [style.height]="30 + 'px'"
+                 [style.width]="getEventWidth(event)"
+                 [style.zIndex]="event.span ? 2 : 1"
+                 (click)="openEditEventDialog(event, $event)">
+              <span class="event-icon">{{getEventIcon(event.type)}}</span>
+              <span class="event-title">{{event.title}}</span>
+              <span *ngIf="isMultiDayEvent(event)" class="event-duration">
+                {{formatEventDuration(event)}}
+              </span>
+            </div>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-        </div>
-      </div>
+
     </div>
 
     <!-- Event Dialog -->
@@ -350,8 +351,13 @@ export class SchedulerComponent implements OnInit {
   
   // Add method to calculate vertical position
   getEventTop(event: Event, existingEvents: Event[]): string {
+    // const index = existingEvents.findIndex(e => e.id === event.id);
+    // return `${index * 30}px`;
+
     const index = existingEvents.findIndex(e => e.id === event.id);
-    return `${index * 30}px`;
+  const top = index * 35; // Increased spacing between events
+  return `${top}px`;
+
   }
   getEventsForTimeSlot(date: Date, time: string): Event[] {
     const hour = parseInt(time.split(':')[0]);
@@ -381,10 +387,11 @@ export class SchedulerComponent implements OnInit {
   
   getEventHeight(event: Event): string {
     if (event.span) {
-      return `${56}px`;
+      return `${30}px`;
     }
     const hours = (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
-    return `${Math.max(56, hours * 60)}px`;
+   // return `${Math.max(56, hours * 60)}px`;
+   return `${30}px`;
   }
   
   // Add method to calculate event height based on duration
