@@ -11,6 +11,12 @@ export const routes: Routes = [
       loadComponent: () => import('./list/list.component')
         .then(m => m.ListComponent)
     },
+
+    {
+      path: 'split',
+      loadComponent: () => import('./split/split.component')
+        .then(m => m.SplitComponent)
+    },
     {
         path: 'dhtmlxscheduler',
         loadComponent: () => import('./dhtml-scheduler/dhtml-scheduler.component')
