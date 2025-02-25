@@ -8,6 +8,7 @@ import { OverlayPanel } from 'primeng/overlaypanel';
 import { CheckboxModule } from 'primeng/checkbox';
 import { PanelModule } from 'primeng/panel';
 import { InputTextModule } from 'primeng/inputtext';
+import { RouterLink } from '@angular/router';
 interface DataGroup {
   id: string;
   title: string;
@@ -28,7 +29,8 @@ interface DataGroup {
     OverlayPanelModule,
     CheckboxModule,
     PanelModule,
-    InputTextModule
+    InputTextModule,
+    RouterLink
   ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'

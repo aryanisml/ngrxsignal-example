@@ -1,3 +1,12 @@
+
+    <button pButton 
+    label="Back to List View" 
+    icon="pi pi-list"
+    class="p-button-secondary"
+    [routerLink]="['/list']">
+    </button>
+
+
 <div class="dashboard-container">
     <!-- Calendar/List View (always visible) -->
     <div class="calendar-panel" [ngClass]="{'expanded': !showUnitPanel && !showReservationPanel}">

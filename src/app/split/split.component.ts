@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { trigger, transition, style, animate } from '@angular/animations';
-
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-split',
   standalone: true,
@@ -12,7 +12,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
     CommonModule,
     FormsModule,
     ButtonModule,
-    InputTextModule
+    InputTextModule,
+    RouterLink
   ],
   templateUrl: './split.component.html',
   styleUrl: './split.component.scss',
@@ -131,4 +132,6 @@ export class SplitComponent implements OnInit {
     this.showUnitPanel = false;
     this.showReservationPanel = false;
   }
+  
+
 }
