@@ -1,0 +1,395 @@
+<div class="main-container">
+  <!-- Main table section -->
+  <div
+    class="table-container"
+    [ngClass]="{ 'with-details': detailsPanelVisible }"
+  >
+
+    <div class="custom-table">
+      <!-- Table header -->
+      <div class="table-header">
+        <div class="header-row">
+          <div *ngFor="let col of getVisibleColumns()" class="header-cell">
+            {{ col.header }}
+          </div>
+          <div class="header-cell actions-column">
+            <button
+              type="button"
+              pButton
+              icon="pi pi-ellipsis-v"
+              (click)="showColumnToggler($event)"
+              class="p-button-text p-button-rounded"
+            ></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table body with groups -->
+      <div class="table-body">
+        <ng-container *ngFor="let group of groupedData">
+          <!-- Group header -->
+          <div class="group-header" (click)="toggleGroup(group)">
+            <div class="group-header-content">
+              <div class="group-expand-icon">
+                <i
+                  class="pi"
+                  [ngClass]="
+                    group.expanded ? 'pi-chevron-down' : 'pi-chevron-right'
+                  "
+                ></i>
+              </div>
+              <div class="group-title">
+                <span class="location-id">{{ group.id }}</span>
+                <span class="location-name">{{
+                  group.title.substring(group.id.length + 1)
+                }}</span>
+              </div>
+              <div class="group-subtitle">
+                {{ group.subtitle }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Group rows -->
+          <ng-container *ngIf="group.expanded">
+            <ng-container *ngFor="let rowData of group.items">
+              <div class="table-row" 
+                   [ngClass]="getRowStatusClass(rowData)" 
+                   [class.selected-row]="selectedRow?.reservation === rowData.reservation"
+                   (click)="onRowSelect(rowData)">
+                <div *ngFor="let col of getVisibleColumns()" class="table-cell">
+                  <!-- Special rendering for reservation status column -->
+                  <ng-container *ngIf="col.field === 'status'; else defaultColumn">
+                    <div class="status-pill" [ngClass]="'status-' + rowData[col.field].toLowerCase()">
+                      {{ rowData[col.field] }}
+                    </div>
+                  </ng-container>
+                  
+                  <ng-template #defaultColumn>
+                    {{ rowData[col.field] }}
+                  </ng-template>
+                </div>
+                <div class="table-cell actions-column">
+                  <button type="button" pButton icon="pi pi-ellipsis-h" class="p-button-text p-button-rounded"
+                          (click)="$event.stopPropagation()"></button>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <p-overlayPanel #op>
+      <ng-template pTemplate>
+        <div class="column-menu-container">
+          <!-- Visible columns with eye icons -->
+          <div *ngFor="let col of cols" class="column-menu-item">
+            <div class="column-label">
+              <i class="pi pi-table"></i>
+              <span>{{ col.header }}</span>
+            </div>
+            <div class="column-toggle">
+              <button
+                type="button"
+                pButton
+                [icon]="
+                  visibleCols[col.field] ? 'pi pi-eye' : 'pi pi-eye-slash'
+                "
+                class="p-button-text p-button-rounded p-button-sm"
+                (click)="toggleColumnVisibility(col.field)"
+              ></button>
+            </div>
+          </div>
+
+          <!-- Hidden in table section -->
+          <div *ngIf="hiddenColumns.length > 0" class="hidden-section">
+            <div class="hidden-header">
+              <i class="pi pi-ban"></i>
+              <span>Hidden in table</span>
+            </div>
+
+            <!-- List hidden columns -->
+            <div *ngFor="let field of hiddenColumns" class="hidden-column-item">
+              <div class="column-label">
+                <i class="pi pi-table"></i>
+                <span>{{ getHeaderForField(field) }}</span>
+              </div>
+              <div class="column-toggle">
+                <button
+                  type="button"
+                  pButton
+                  icon="pi pi-eye-slash"
+                  class="p-button-text p-button-rounded p-button-sm"
+                  (click)="toggleColumnVisibility(field)"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-overlayPanel>
+  </div>
+
+  <!-- Details panel section -->
+  <div *ngIf="detailsPanelVisible" class="details-panel">
+    <div class="details-header">
+      <div class="customer-avatar">J</div>
+      <div class="customer-info">
+        <h3>{{ selectedRow?.customerName }}</h3>
+        <p class="subtitle"># {{ selectedRow?.reservation }}</p>
+      </div>
+      <button
+        pButton
+        icon="pi pi-times"
+        class="p-button-rounded p-button-text"
+        (click)="closeDetailsPanel()"
+      ></button>
+    </div>
+
+    <div class="accordion-container">
+      <div class="accordion-item">
+        <div
+          class="accordion-header"
+          (click)="toggleAccordion('tripInformation')"
+        >
+          <div class="accordion-title">
+            <i
+              class="pi"
+              [ngClass]="
+                expandedAccordions['tripInformation']
+                  ? 'pi-chevron-down'
+                  : 'pi-chevron-right'
+              "
+            ></i>
+            <span>Trip Information</span>
+          </div>
+          <div class="accordion-actions">
+            <button
+              pButton
+              label="Active"
+              class="p-button-rounded p-button-sm status-button-active"
+            ></button>
+          </div>
+        </div>
+        <div
+          class="accordion-content"
+          *ngIf="expandedAccordions['tripInformation']"
+        >
+          <div class="notes-section">
+            <h5>Notes</h5>
+            <p class="trip-notes">
+              Customer requested early pickup if possible. Vehicle must be
+              cleaned thoroughly before rental.
+            </p>
+            <div class="notes-meta">
+              <span>4 notes app. by John</span>
+            </div>
+          </div>
+
+          <div class="trip-details-grid">
+            <!-- Update your grid-row for Trip Type to prevent duplication -->
+            <div class="grid-row">
+              <div class="grid-item">
+                <label>Trip Type</label>
+                <div class="value-with-edit">
+                  <!-- Removed the duplicate text, only showing the input when editing -->
+                  <div
+                    *ngIf="editingField !== 'tripType'"
+                    class="value-container"
+                  >
+                    <div class="value-with-icon">
+                      <span>{{ selectedRow?.tripType }}</span>
+                      <button
+                        type="button"
+                        pButton
+                        icon="pi pi-pencil"
+                        class="p-button-text p-button-rounded p-button-sm edit-button-always"
+                        (click)="
+                          startEditing('tripType', selectedRow?.tripType)
+                        "
+                      ></button>
+                    </div>
+                  </div>
+
+                  <!-- Show input field with confirm/cancel when editing -->
+                  <div
+                    *ngIf="editingField === 'tripType'"
+                    class="edit-container"
+                  >
+                    <input
+                      type="text"
+                      pInputText
+                      [(ngModel)]="editingValue"
+                      class="edit-input"
+                    />
+                    <div class="edit-actions">
+                      <button
+                        type="button"
+                        pButton
+                        icon="pi pi-check"
+                        class="p-button-text p-button-rounded p-button-success"
+                        (click)="saveEditing()"
+                      ></button>
+                      <button
+                        type="button"
+                        pButton
+                        icon="pi pi-times"
+                        class="p-button-text p-button-rounded p-button-danger"
+                        (click)="cancelEditing()"
+                      ></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-item">
+                <label>Purpose</label>
+                <div class="value">Personal</div>
+              </div>
+            </div>
+
+            <div class="grid-row">
+              <div class="grid-item">
+                <label>Vehicle Type</label>
+                <div class="value">{{ selectedRow?.vehicleType }}</div>
+              </div>
+              <div class="grid-item">
+                <label>Length & Height</label>
+                <div class="value">{{ selectedRow?.length }} ft x 12.5'</div>
+              </div>
+            </div>
+
+            <div class="grid-row">
+              <div class="grid-item">
+                <label>Duration</label>
+                <div class="value">3 Days</div>
+              </div>
+              <div class="grid-item">
+                <label>Distance</label>
+                <div class="value">264 miles</div>
+              </div>
+            </div>
+
+            <div class="grid-row">
+              <div class="grid-item">
+                <label>Road Service</label>
+                <div class="value">Call Carrier</div>
+              </div>
+              <div class="grid-item">
+                <label>Insurance</label>
+                <div class="value">On File</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="locations-section">
+            <div class="location-item">
+              <div class="location-time">
+                <div class="date">Thu, 02/20/2025</div>
+                <div class="time">3:00 pm</div>
+              </div>
+              <div class="location-details">
+                <h5>Pickup Location</h5>
+                <div class="address">
+                  <p>Main St</p>
+                  <p>203 Riverfront Dr, Peroke Plaza, Reading, PA 19602</p>
+                  <p>(415) 555-7103</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="location-item">
+              <div class="location-time">
+                <div class="date">Thu, 02/23/2025</div>
+                <div class="time">3:00 pm</div>
+              </div>
+              <div class="location-details">
+                <h5>Dropoff Location</h5>
+                <div class="address">
+                  <p>Main St</p>
+                  <p>850 Palm Springs Ave, Richmond, VA 23224</p>
+                  <p>(804) 555-3838</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header" (click)="toggleAccordion('unitInformation')">
+          <div class="accordion-title">
+            <i class="pi" [ngClass]="expandedAccordions['unitInformation'] ? 'pi-chevron-down' : 'pi-chevron-right'"></i>
+            <span>Unit Information</span>
+          </div>
+          <div class="accordion-actions">
+            <button pButton label="Needs Truck" class="p-button-rounded p-button-sm status-button-warning"></button>
+          </div>
+        </div>
+        
+        <div class="accordion-content" *ngIf="expandedAccordions['unitInformation']">
+          <!-- Location tabs -->
+          <div class="location-tabs">
+            <button class="tab-button active">This location (8)</button>
+            <button class="tab-button">Near Location (6)</button>
+          </div>
+          
+          <!-- Unit cards grid -->
+          <div class="unit-cards-grid">
+            <div *ngFor="let unit of unitData" class="unit-card">
+              <div class="unit-status" [ngClass]="unit.status.toLowerCase().replace('-', '')">
+                {{ unit.status }}
+              </div>
+              <div class="unit-details">
+                <div class="unit-id">Unit # {{ unit.unitId }}</div>
+                <div class="unit-type">{{ unit.unitType }}</div>
+                <div class="unit-image">
+                  <img src="assets/flatbed-truck.png" alt="Truck">
+                </div>
+                <div class="unit-info-grid">
+                  <div class="unit-info-column">
+                    <div class="unit-info-label">Rental Status</div>
+                    <div class="unit-info-value">{{ unit.rentalStatus }}</div>
+                  </div>
+                  <div class="unit-info-column">
+                    <div class="unit-info-label">PM Date</div>
+                    <div class="unit-info-value">{{ unit.pmDate }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="unit-actions">
+                <button pButton icon="pi pi-eye" class="p-button-rounded p-button-text"></button>
+                <button pButton icon="pi pi-plus" class="p-button-rounded p-button-text"></button>
+              </div>
+              
+              <!-- Special status labels -->
+              <div *ngIf="unit.status === 'In use'" class="unit-special-status">
+                <span class="recommended-label">Recommended</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button
+          pButton
+          label="EDIT"
+          icon="pi pi-pencil"
+          class="p-button-outlined"
+        ></button>
+        <button
+          pButton
+          label="PRINT"
+          icon="pi pi-print"
+          class="p-button-outlined"
+        ></button>
+        <button
+          pButton
+          label="EMAIL"
+          icon="pi pi-envelope"
+          class="p-button-outlined"
+        ></button>
+        <button pButton label="CHECK OUT" class="p-button-primary"></button>
+      </div>
+    </div>
+  </div>
+</div>

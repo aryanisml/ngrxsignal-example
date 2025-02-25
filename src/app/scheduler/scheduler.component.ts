@@ -60,7 +60,8 @@ interface Event {
               <button pButton 
                       label="List View" 
                       icon="pi pi-list"
-                      class="p-button-secondary">
+                      class="p-button-secondary"
+                      [routerLink]="['/list']">
               </button>
             </div>
           </div>
@@ -80,7 +81,7 @@ interface Event {
     </thead>
     <tbody>
       <tr *ngFor="let time of timeSlots; let i = index">
-        <td class="time-cell border-right-1 surface-border ">{{time}}</td>
+        <td class="time-cell ">{{time}}</td>
         <td *ngFor="let date of weekDates" 
             class="grid-cell relative"
             [class.surface-ground]="i % 2 === 0"
@@ -185,13 +186,20 @@ interface Event {
 }
 
 .time-cell {
-  border: 1px solid black ;
-  border-radius:10px;
-  background: #f9fafb;
+  min-width: 30px;
+  height: 60px !important;
   font-weight: 500;
-  color: black;
-  min-width:30px;
-  text-align:center;
+  color: #4b5563;
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  margin: 4px;
+  font-size: 0.875rem;
+  text-align: center;
+    border-color: black;
+    justify-content: center;
 
 }
 
@@ -470,4 +478,6 @@ export class SchedulerComponent implements OnInit {
     if (!event.span || event.span <= 1) return '';
     return `${event.span} days`;
   }
+
+  
 }

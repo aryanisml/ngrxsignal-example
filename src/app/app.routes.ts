@@ -7,6 +7,11 @@ export const routes: Routes = [
         .then(m => m.SchedulerComponent)
     },
     {
+      path: 'list',
+      loadComponent: () => import('./list/list.component')
+        .then(m => m.ListComponent)
+    },
+    {
         path: 'dhtmlxscheduler',
         loadComponent: () => import('./dhtml-scheduler/dhtml-scheduler.component')
           .then(m => m.DhtmlSchedulerComponent)
