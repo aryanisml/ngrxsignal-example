@@ -260,7 +260,7 @@ getRowStatusClass(rowData: any): string {
   
   // Get visible columns as array
   getVisibleColumns() {
-    return this.cols.filter(col => this.visibleCols[col.field]);
+    return [...this.cols.filter(col => this.visibleCols[col.field])];
   }
   
   // Show column toggler

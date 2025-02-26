@@ -96,8 +96,8 @@ class="p-button-secondary"
     <p-overlayPanel #op>
       <ng-template pTemplate>
         <div class="column-menu-container">
-          <!-- Visible columns with eye icons -->
-          <div *ngFor="let col of cols" class="column-menu-item">
+          <!-- Only show visible columns in the top section -->
+          <div *ngFor="let col of getVisibleColumns()" class="column-menu-item">
             <div class="column-label">
               <i class="pi pi-table"></i>
               <span>{{ col.header }}</span>
@@ -106,22 +106,19 @@ class="p-button-secondary"
               <button
                 type="button"
                 pButton
-                [icon]="
-                  visibleCols[col.field] ? 'pi pi-eye' : 'pi pi-eye-slash'
-                "
+                icon="pi pi-eye"
                 class="p-button-text p-button-rounded p-button-sm"
                 (click)="toggleColumnVisibility(col.field)"
               ></button>
             </div>
           </div>
-
+          
           <!-- Hidden in table section -->
           <div *ngIf="hiddenColumns.length > 0" class="hidden-section">
             <div class="hidden-header">
               <i class="pi pi-ban"></i>
               <span>Hidden in table</span>
             </div>
-
             <!-- List hidden columns -->
             <div *ngFor="let field of hiddenColumns" class="hidden-column-item">
               <div class="column-label">
