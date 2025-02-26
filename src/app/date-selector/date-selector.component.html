@@ -37,6 +37,7 @@
         [inline]="true"
         [numberOfMonths]="1"
         [selectionMode]="'multiple'"
+        (onSelect)="onDateSelect($event)"
         styleClass="embedded-calendar">
       </p-calendar>
     </div>

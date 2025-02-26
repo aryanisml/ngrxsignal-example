@@ -68,6 +68,20 @@ export class DateSelectorComponent implements OnInit {
     }
   }
   
+  onDateSelect(event: any) {
+    if (this.selectedOption.value === 'next5days') {
+      const startDate = new Date(event);
+      this.dateRange = [];
+      
+      // Add selected date plus next 4 days
+      for(let i = 0; i < 5; i++) {
+        const nextDay = new Date(startDate);
+        nextDay.setDate(startDate.getDate() + i);
+        this.dateRange.push(nextDay);
+      }
+    }
+  }
+  
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
     // Don't trigger when clicking inside the component
