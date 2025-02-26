@@ -84,7 +84,17 @@ export class SplitComponent implements OnInit {
         { id: 7, customer: 'Mike Wang', reservation: '#78H554', status: 'Confirmed' },
         { id: 8, customer: 'Albert Flores', reservation: '#87H6435', status: 'Confirmed' }
       ]
+    },
+    {
+      time: '09:00 AM',
+      items: [
+        { id: 5, customer: 'John Stone', reservation: '#87655209', status: 'Booked' },
+        { id: 6, customer: 'Bob Blake', reservation: '#98H543', status: 'Postponed' },
+        { id: 7, customer: 'Mike Wang', reservation: '#78H554', status: 'Confirmed' },
+        { id: 8, customer: 'Albert Flores', reservation: '#87H6435', status: 'Confirmed' }
+      ]
     }
+  
   ];
   
   // Available units
@@ -98,7 +108,28 @@ export class SplitComponent implements OnInit {
       pmDate: '02/27/25',
       image: 'assets/flatbed-truck.png',
       status: 'Available'
+    },
+    {
+      id: '98\' Flatbed Truck - 2023',
+      location: 'Penske Reading, PA 19601',
+      distance: '2.4 miles away',
+      unitId: 'Larger',
+      rentalStatus: 'Ready Line',
+      pmDate: '02/27/25',
+      image: 'assets/flatbed-truck.png',
+      status: 'Available'
+    },
+    {
+      id: '58\' Flatbed Truck - 2023',
+      location: 'Penske Reading, PA 19601',
+      distance: '2.4 miles away',
+      unitId: 'Larger',
+      rentalStatus: 'Ready Line',
+      pmDate: '02/27/25',
+      image: 'assets/flatbed-truck.png',
+      status: 'Available'
     }
+   
   ];
 
   constructor() {
