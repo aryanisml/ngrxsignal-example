@@ -101,7 +101,7 @@ export class SplitComponent implements OnInit {
   units = [
     {
       id: '18\' Flatbed Truck - 2023',
-      location: 'lorem  TestData, PA 19601',
+      location: 'lorem  TestData,sample 19898',
       distance: '2.4 miles away',
       unitId: 'Larger',
       rentalStatus: 'Ready Line',
@@ -111,7 +111,7 @@ export class SplitComponent implements OnInit {
     },
     {
       id: '98\' Flatbed Truck - 2023',
-      location: 'lorem  TestData, PA 19601',
+      location: 'lorem  TestData,sample 19898',
       distance: '2.4 miles away',
       unitId: 'Larger',
       rentalStatus: 'Ready Line',
@@ -121,7 +121,7 @@ export class SplitComponent implements OnInit {
     },
     {
       id: '58\' Flatbed Truck - 2023',
-      location: 'lorem  TestData, PA 19601',
+      location: 'lorem  TestData,sample 19898',
       distance: '2.4 miles away',
       unitId: 'Larger',
       rentalStatus: 'Ready Line',
