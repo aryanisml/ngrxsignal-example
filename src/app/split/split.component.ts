@@ -70,28 +70,28 @@ export class SplitComponent implements OnInit {
     {
       time: '08:00 AM',
       items: [
-        { id: 1, customer: 'Mike Wang', reservation: '#78432G', status: 'Confirmed' },
-        { id: 2, customer: 'Robert Park', reservation: '#32H890', status: 'Postponed' },
-        { id: 3, customer: 'Albert Flores', reservation: '#78432G', status: 'Confirmed' },
-        { id: 4, customer: 'Bob Blake', reservation: '#98H543', status: 'Urgent' }
+        { id: 1, customer: 'Lorem', reservation: '#78432G', status: 'Confirmed' },
+        { id: 2, customer: 'Lorem Two', reservation: '#32H890', status: 'Postponed' },
+        { id: 3, customer: 'Lorem Three', reservation: '#78432G', status: 'Confirmed' },
+        { id: 4, customer: 'Lorem Four', reservation: '#98H543', status: 'Urgent' }
       ]
     },
     {
       time: '09:00 AM',
       items: [
-        { id: 5, customer: 'John Stone', reservation: '#87655209', status: 'Booked' },
-        { id: 6, customer: 'Bob Blake', reservation: '#98H543', status: 'Postponed' },
-        { id: 7, customer: 'Mike Wang', reservation: '#78H554', status: 'Confirmed' },
-        { id: 8, customer: 'Albert Flores', reservation: '#87H6435', status: 'Confirmed' }
+        { id: 5, customer: 'Lorem', reservation: '#87655209', status: 'Booked' },
+        { id: 6, customer: 'Lorem Six', reservation: '#98H543', status: 'Postponed' },
+        { id: 7, customer: 'Lorem Seven', reservation: '#78H554', status: 'Confirmed' },
+        { id: 8, customer: 'Lorem Eight', reservation: '#87H6435', status: 'Confirmed' }
       ]
     },
     {
       time: '09:00 AM',
       items: [
-        { id: 5, customer: 'John Stone', reservation: '#87655209', status: 'Booked' },
-        { id: 6, customer: 'Bob Blake', reservation: '#98H543', status: 'Postponed' },
-        { id: 7, customer: 'Mike Wang', reservation: '#78H554', status: 'Confirmed' },
-        { id: 8, customer: 'Albert Flores', reservation: '#87H6435', status: 'Confirmed' }
+        { id: 5, customer: 'Lorem', reservation: '#87655209', status: 'Booked' },
+        { id: 6, customer: 'Lorem Nine', reservation: '#98H543', status: 'Postponed' },
+        { id: 7, customer: 'Lorem Three', reservation: '#78H554', status: 'Confirmed' },
+        { id: 8, customer: 'Lorem Two', reservation: '#87H6435', status: 'Confirmed' }
       ]
     }
   
