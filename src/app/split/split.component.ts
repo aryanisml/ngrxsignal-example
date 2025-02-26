@@ -156,7 +156,7 @@ export class SplitComponent implements OnInit {
   initializeDefaultData() {
     // Set a default selected reservation for demonstration
     this.selectedReservation = {
-      customer: 'John Stone',
+      customer: 'Lorem Nine',
       phone: '(215) 445 5712',
       reservation: '#87655209',
       type: 'Box Truck',
