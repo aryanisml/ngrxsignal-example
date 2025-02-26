@@ -147,10 +147,10 @@ cols: any[] = [
 processGroupedData() {
   // Define multiple groups
   const groups: {[key: string]: DataGroup} = {
-    'perokeReading': {
+    'NewDataTestData': {
       id: '0666-10',
-      title: '0666-10 Peroke Reading',
-      subtitle: 'LIS - Pennsylvania - Reading Unit Administration',
+      title: '0666-10 NewData TestData',
+      subtitle: 'LIS - Pennsylvania - TestData Unit Administration',
       items: [],
       expanded: true // Start expanded by default
     },
@@ -175,7 +175,7 @@ processGroupedData() {
   this.yourData.forEach((item, index) => {
     // Assign to different groups based on index (just for demonstration)
     if (index < 2) {
-      groups['perokeReading'].items.push(item);
+      groups['NewDataTestData'].items.push(item);
     } else if (index < 4) {
       groups['richmondCenter'].items.push(item);
     } else {

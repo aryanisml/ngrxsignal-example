@@ -101,7 +101,7 @@ export class SplitComponent implements OnInit {
   units = [
     {
       id: '18\' Flatbed Truck - 2023',
-      location: 'Penske Reading, PA 19601',
+      location: 'lorem  TestData, PA 19601',
       distance: '2.4 miles away',
       unitId: 'Larger',
       rentalStatus: 'Ready Line',
@@ -111,7 +111,7 @@ export class SplitComponent implements OnInit {
     },
     {
       id: '98\' Flatbed Truck - 2023',
-      location: 'Penske Reading, PA 19601',
+      location: 'lorem  TestData, PA 19601',
       distance: '2.4 miles away',
       unitId: 'Larger',
       rentalStatus: 'Ready Line',
@@ -121,7 +121,7 @@ export class SplitComponent implements OnInit {
     },
     {
       id: '58\' Flatbed Truck - 2023',
-      location: 'Penske Reading, PA 19601',
+      location: 'lorem  TestData, PA 19601',
       distance: '2.4 miles away',
       unitId: 'Larger',
       rentalStatus: 'Ready Line',
@@ -169,7 +169,7 @@ export class SplitComponent implements OnInit {
       distance: '264 miles',
       pickup: {
         location: '0666-10',
-        address: '25 Riverfront, Penske Plaza, Reading, PA 19602',
+        address: '25 Riverfront, lorem  Plaza, TestData, PA 19602',
         phone: '(610) 320-7103',
         date: 'Thu, 02/20/2025',
         time: '3:00 pm'
