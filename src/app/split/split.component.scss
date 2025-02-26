@@ -1,15 +1,29 @@
-// Main dashboard container
+/* ===== MAIN CONTAINER ===== */
 .dashboard-container {
     display: flex;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     background-color: #f0f2f5;
     overflow: hidden;
-    margin-top: 8px;
+    position: relative;
   }
   
-  // Panel base styles
-  .calendar-panel, .unit-finder-panel, .reservation-details-panel {
+  /* ===== BACKDROP FOR MOBILE ===== */
+  .mobile-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 90;
+  }
+  
+  /* ===== BASE PANEL STYLES ===== */
+  .calendar-panel, 
+  .unit-finder-panel, 
+  .reservation-details-panel {
     display: flex;
     flex-direction: column;
     background-color: white;
@@ -17,27 +31,27 @@
     margin: 0.5rem;
     border-radius: 4px;
     overflow: hidden;
+    transition: all 0.3s ease;
   }
   
-  // Panel widths based on the 5-3-4 grid system
+  /* ===== DESKTOP PANEL WIDTHS (5-3-4 GRID) ===== */
   .calendar-panel {
-    width: 41.67%; // 5/12
-    transition: width 0.3s ease;
-    
-    &.expanded {
-      width: 100%;
-    }
+    width: 41.67%; /* 5/12 */
+  }
+  
+  .calendar-panel.expanded {
+    width: 100%;
   }
   
   .unit-finder-panel {
-    width: 25%; // 3/12
+    width: 25%; /* 3/12 */
   }
   
   .reservation-details-panel {
-    width: 33.33%; // 4/12
+    width: 33.33%; /* 4/12 */
   }
   
-  // Panel header
+  /* ===== PANEL HEADER ===== */
   .panel-header {
     display: flex;
     align-items: center;
@@ -45,40 +59,55 @@
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #e9ecef;
     position: relative;
-    
-    .header-title {
-      font-size: 1rem;
-      font-weight: 500;
-      color: #212529;
-    }
-    
-    .header-left, .header-right {
-      display: flex;
-      align-items: center;
-    }
-    
-    .header-nav {
-      display: flex;
-      margin-left: 0.5rem;
-      
-      button {
-        margin-right: 0.25rem;
-      }
-    }
-    
-    .p-button-highlighted {
-      background-color: #e6f0ff;
-      color: #2d3e77;
-    }
-    
-    .close-button {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-    }
   }
   
-  // Location bar
+  .header-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #212529;
+  }
+  
+  .header-left, 
+  .header-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .header-nav {
+    display: flex;
+    margin-left: 0.5rem;
+  }
+  
+  .header-nav button {
+    margin-right: 0.25rem;
+  }
+  
+  .p-button-highlighted {
+    background-color: #e6f0ff;
+    color: #2d3e77;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  /* ===== MOBILE NAVIGATION BUTTONS ===== */
+  .mobile-back-button {
+    display: none;
+    margin-right: 0.5rem;
+  }
+  
+  .mobile-close-button {
+    display: none;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 10;
+  }
+  
+  /* ===== LOCATION BAR ===== */
   .location-bar {
     display: flex;
     align-items: center;
@@ -86,398 +115,409 @@
     padding: 0.5rem 1rem;
     background-color: #f8f9fa;
     border-bottom: 1px solid #e9ecef;
-    
-    .location-info {
-      display: flex;
-      align-items: center;
-      font-size: 0.875rem;
-      color: #495057;
-      
-      i {
-        margin-right: 0.5rem;
-        color: #2d3e77;
-      }
-    }
+    flex-wrap: wrap;
   }
   
-  // Calendar content
+  .location-info {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #495057;
+  }
+  
+  .location-info i {
+    margin-right: 0.5rem;
+    color: #2d3e77;
+  }
+  
+  /* ===== CALENDAR CONTENT ===== */
   .calendar-content {
     flex: 1;
     overflow-y: auto;
     padding: 0 1rem;
-    -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
   
-  // Time slots
+  /* ===== TIME SLOTS ===== */
   .time-slot {
     display: flex;
     margin: 1rem 0;
-    
-    .time-label {
-      width: 80px;
-      font-size: 0.75rem;
-      color: #6c757d;
-      text-align: right;
-      padding-right: 1rem;
-      padding-top: 0.5rem;
-    }
-    
-    .appointment-list {
-      flex: 1;
-    }
   }
   
-  // Appointment items
+  .time-label {
+    width: 80px;
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-align: right;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+  }
+  
+  .appointment-list {
+    flex: 1;
+  }
+  
+  /* ===== APPOINTMENT ITEMS ===== */
   .appointment-item {
     display: flex;
     align-items: center;
     background-color: #f8f9fa;
     border-radius: 4px;
-    padding: 0.75rem 0.5rem; // Increased padding for better touch targets
+    padding: 0.75rem;
     margin-bottom: 0.5rem;
     cursor: pointer;
-    
-    &:hover {
-      background-color: #f1f3f5;
-    }
-    
-    &.selected {
-      background-color: #e6f0ff;
-      border-left: 3px solid #2d3e77;
-    }
-    
-    .appointment-status {
-      width: 4px;
-      height: 100%;
-      margin-right: 0.5rem;
-      
-      &.status-confirmed {
-        background-color: #4caf50;
-      }
-      
-      &.status-booked {
-        background-color: #2196f3;
-      }
-      
-      &.status-postponed {
-        background-color: #9c27b0;
-      }
-      
-      &.status-urgent {
-        background-color: #ff9800;
-      }
-    }
-    
-    .appointment-details {
-      flex: 1;
-      
-      .customer-name {
-        font-size: 0.875rem;
-        color: #212529;
-      }
-      
-      .reservation-number {
-        font-size: 0.75rem;
-        color: #6c757d;
-      }
-    }
-    
-    .appointment-actions {
-      display: flex;
-      align-items: center;
-    }
   }
   
-  // Status pills
+  .appointment-item:hover {
+    background-color: #f1f3f5;
+  }
+  
+  .appointment-item.selected {
+    background-color: #e6f0ff;
+    border-left: 3px solid #2d3e77;
+  }
+  
+  .appointment-status {
+    width: 4px;
+    height: 24px; /* Fixed height for consistent look */
+    margin-right: 0.5rem;
+  }
+  
+  .appointment-status.status-confirmed {
+    background-color: #4caf50;
+  }
+  
+  .appointment-status.status-booked {
+    background-color: #2196f3;
+  }
+  
+  .appointment-status.status-postponed {
+    background-color: #9c27b0;
+  }
+  
+  .appointment-status.status-urgent {
+    background-color: #ff9800;
+  }
+  
+  .appointment-details {
+    flex: 1;
+  }
+  
+  .customer-name {
+    font-size: 0.875rem;
+    color: #212529;
+  }
+  
+  .reservation-number {
+    font-size: 0.75rem;
+    color: #6c757d;
+  }
+  
+  .appointment-actions {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* ===== STATUS PILLS ===== */
   .status-pill {
-    padding: 0.15rem 0.5rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 1rem;
-    font-size: 0.675rem;
+    font-size: 0.75rem;
     font-weight: 500;
     white-space: nowrap;
-    
-    &.status-confirmed {
-      background-color: #e8f5e9;
-      color: #4caf50;
-    }
-    
-    &.status-booked {
-      background-color: #e3f2fd;
-      color: #2196f3;
-    }
-    
-    &.status-postponed {
-      background-color: #f3e5f5;
-      color: #9c27b0;
-    }
-    
-    &.status-urgent {
-      background-color: #fff3e0;
-      color: #ff9800;
-    }
   }
   
-  // Selected time marker
+  .status-pill.status-confirmed {
+    background-color: #e8f5e9;
+    color: #4caf50;
+  }
+  
+  .status-pill.status-booked {
+    background-color: #e3f2fd;
+    color: #2196f3;
+  }
+  
+  .status-pill.status-postponed {
+    background-color: #f3e5f5;
+    color: #9c27b0;
+  }
+  
+  .status-pill.status-urgent {
+    background-color: #fff3e0;
+    color: #ff9800;
+  }
+  
+  /* ===== SELECTED TIME MARKER ===== */
   .selected-time-marker {
     display: flex;
     margin: 1rem 0;
     background-color: rgba(0, 0, 0, 0.05);
     padding: 0.5rem 0;
-    
-    .selected-appointment {
-      flex: 1;
-    }
-    
-    .appointment-card {
-      background-color: #e6f0ff;
-      border-radius: 4px;
-      padding: 0.5rem;
-      border-left: 3px solid #2d3e77;
-      
-      .appointment-card-header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.25rem;
-      }
-      
-      .appointment-card-content {
-        .customer-name {
-          font-size: 0.875rem;
-          color: #212529;
-        }
-      }
-    }
   }
   
-  // Panel footer
+  .selected-appointment {
+    flex: 1;
+  }
+  
+  .appointment-card {
+    background-color: #e6f0ff;
+    border-radius: 4px;
+    padding: 0.5rem;
+    border-left: 3px solid #2d3e77;
+  }
+  
+  .appointment-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+  }
+  
+  .appointment-card-content .customer-name {
+    font-size: 0.875rem;
+    color: #212529;
+  }
+  
+  /* ===== PANEL FOOTER ===== */
   .panel-footer {
     padding: 1rem;
     border-top: 1px solid #e9ecef;
     text-align: center;
     margin-top: auto;
-    
-    .p-button-primary {
-      background-color: #2d3e77;
-      border-color: #2d3e77;
-      min-height: 2.5rem; // Taller button for easier touch
-    }
   }
   
-  // Unit finder panel
-  .unit-finder-panel {
-    .search-box {
-      margin-top: 0.5rem;
-      width: 100%;
-      
-      input {
-        width: 100%;
-        font-size: 0.875rem;
-        height: 2.5rem; // Taller input for easier touch
-      }
-    }
-    
-    .units-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1rem;
-      -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
-    }
+  .p-button-primary {
+    background-color: #2d3e77;
+    border-color: #2d3e77;
+    min-height: 2.5rem; /* Taller button for easier touch */
   }
   
-  // Unit card
+  .mobile-switch-panel-btn {
+    display: none;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+  
+  /* ===== MOBILE PANEL FOOTER ===== */
+  .mobile-panel-footer {
+    display: none;
+    padding: 1rem;
+    border-top: 1px solid #e9ecef;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  /* ===== UNIT FINDER PANEL ===== */
+  .unit-finder-panel .search-box {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+  
+  .unit-finder-panel .search-box input {
+    width: 100%;
+    font-size: 0.875rem;
+    height: 2.5rem; /* Taller input for easier touch */
+  }
+  
+  .units-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  }
+  
+  /* ===== UNIT CARD ===== */
   .unit-card {
     border: 1px solid #e6e6e6;
     border-radius: 4px;
     overflow: hidden;
     margin-bottom: 1rem;
     background-color: white;
-    
-    &.selected {
-      border-color: #2d3e77;
-      box-shadow: 0 0 0 1px #2d3e77;
-    }
-    
-    .unit-status {
-      padding: 0.25rem 0;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-align: center;
-      
-      &.available {
-        background-color: #e8f5e9;
-        color: #4caf50;
-      }
-    }
-    
-    .unit-details {
-      padding: 0.75rem;
-      
-      .unit-distance {
-        font-size: 0.75rem;
-        color: #6c757d;
-        margin-bottom: 0.25rem;
-      }
-      
-      .unit-id {
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: #2d3e77;
-        margin-bottom: 0.25rem;
-      }
-      
-      .unit-location {
-        font-size: 0.8rem;
-        color: #495057;
-        margin-bottom: 0.5rem;
-      }
-      
-      .unit-image {
-        text-align: center;
-        margin: 0.5rem 0;
-        
-        img {
-          max-width: 100%;
-          height: auto;
-          max-height: 100px;
-        }
-      }
-      
-      .unit-info-grid {
-        display: flex;
-        margin-top: 0.5rem;
-      }
-      
-      .unit-info-column {
-        flex: 1;
-        
-        .unit-info-label {
-          font-size: 0.675rem;
-          color: #6c757d;
-        }
-        
-        .unit-info-value {
-          font-size: 0.75rem;
-          color: #2d3e77;
-        }
-      }
-    }
   }
   
-  // Reservation details panel
-  .reservation-details-panel {
-    .customer-info {
-      display: flex;
-      align-items: center;
-    }
-    
-    .customer-avatar {
-      width: 48px;
-      height: 48px;
-      background-color: #2d3e77;
-      color: white;
-      font-size: 1.25rem;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      margin-right: 1rem;
-    }
-    
-    h3 {
-      margin: 0;
-      font-size: 1.125rem;
-      color: #212529;
-    }
-    
-    .phone-number {
-      margin: 0.25rem 0;
-      font-size: 0.875rem;
-      color: #6c757d;
-      
-      i {
-        margin-right: 0.25rem;
-      }
-    }
-    
-    .reservation-number {
-      margin: 0;
-      font-size: 0.875rem;
-      color: #6c757d;
-    }
+  .unit-card.selected {
+    border-color: #2d3e77;
+    box-shadow: 0 0 0 1px #2d3e77;
   }
   
-  // Panel tabs
+  .unit-status {
+    padding: 0.25rem 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+  }
+  
+  .unit-status.available {
+    background-color: #e8f5e9;
+    color: #4caf50;
+  }
+  
+  .unit-details {
+    padding: 0.75rem;
+  }
+  
+  .unit-distance {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+  }
+  
+  .unit-id {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #2d3e77;
+    margin-bottom: 0.25rem;
+  }
+  
+  .unit-location {
+    font-size: 0.8rem;
+    color: #495057;
+    margin-bottom: 0.5rem;
+  }
+  
+  .unit-image {
+    text-align: center;
+    margin: 0.5rem 0;
+  }
+  
+  .unit-image img {
+    max-width: 100%;
+    height: auto;
+    max-height: 100px;
+  }
+  
+  .unit-info-grid {
+    display: flex;
+    margin-top: 0.5rem;
+  }
+  
+  .unit-info-column {
+    flex: 1;
+  }
+  
+  .unit-info-label {
+    font-size: 0.675rem;
+    color: #6c757d;
+  }
+  
+  .unit-info-value {
+    font-size: 0.75rem;
+    color: #2d3e77;
+  }
+  
+  /* ===== RESERVATION DETAILS PANEL ===== */
+  .customer-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .customer-avatar {
+    width: 48px;
+    height: 48px;
+    background-color: #2d3e77;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+  
+  h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #212529;
+  }
+  
+  .phone-number {
+    margin: 0.25rem 0;
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+  
+  .phone-number i {
+    margin-right: 0.25rem;
+  }
+  
+  .reservation-number {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+  
+  /* ===== PANEL TABS ===== */
   .panel-tabs {
     display: flex;
     border-bottom: 1px solid #e9ecef;
-    
-    .tab-button {
-      padding: 0.75rem 1.5rem;
-      background: none;
-      border: none;
-      font-size: 0.875rem;
-      color: #6c757d;
-      cursor: pointer;
-      position: relative;
-      min-height: 3rem; // Taller tabs for easier touch
-      
-      &.active {
-        color: #2d3e77;
-        font-weight: 500;
-        
-        &::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background-color: #2d3e77;
-        }
-      }
-      
-      &:hover:not(.active) {
-        background-color: #f8f9fa;
-      }
-    }
   }
   
-  // Panel content
+  .tab-button {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    font-size: 0.875rem;
+    color: #6c757d;
+    cursor: pointer;
+    position: relative;
+    min-height: 3rem; /* Taller tabs for easier touch */
+  }
+  
+  .tab-button.active {
+    color: #2d3e77;
+    font-weight: 500;
+  }
+  
+  .tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #2d3e77;
+  }
+  
+  .tab-button:hover:not(.active) {
+    background-color: #f8f9fa;
+  }
+  
+  /* ===== PANEL CONTENT ===== */
   .panel-content {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
-    -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
   
-  // Notes section
+  /* ===== NOTES SECTION ===== */
   .notes-section {
     background-color: #f8f9fa;
     border-radius: 4px;
     padding: 1rem;
     margin-bottom: 1.5rem;
-    
-    h5 {
-      margin: 0 0 0.5rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #495057;
-    }
-    
-    .notes-text {
-      margin: 0 0 0.5rem;
-      font-size: 0.875rem;
-      line-height: 1.5;
-      color: #495057;
-    }
-    
-    .notes-meta {
-      text-align: right;
-    }
   }
   
-  // Details grid
+  .notes-section h5 {
+    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #495057;
+  }
+  
+  .notes-text {
+    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #495057;
+  }
+  
+  .notes-meta {
+    text-align: right;
+  }
+  
+  /* ===== DETAILS GRID ===== */
   .details-grid {
     margin-bottom: 1.5rem;
   }
@@ -489,26 +529,26 @@
   
   .details-item {
     flex: 1;
-    
-    label {
-      display: block;
-      font-size: 0.75rem;
-      color: #6c757d;
-      margin-bottom: 0.25rem;
-    }
-    
-    .value {
-      font-size: 0.875rem;
-      color: #212529;
-      
-      i {
-        margin-left: 0.5rem;
-        color: #2d3e77;
-      }
-    }
   }
   
-  // Locations section
+  .details-item label {
+    display: block;
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+  }
+  
+  .details-item .value {
+    font-size: 0.875rem;
+    color: #212529;
+  }
+  
+  .details-item .value i {
+    margin-left: 0.5rem;
+    color: #2d3e77;
+  }
+  
+  /* ===== LOCATIONS SECTION ===== */
   .locations-section {
     margin-bottom: 1.5rem;
   }
@@ -526,185 +566,180 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    
-    i {
-      font-size: 1.25rem;
-      color: #2d3e77;
-      margin-bottom: 0.5rem;
-    }
-    
-    .date, .time {
-      font-size: 0.75rem;
-      color: #6c757d;
-      text-align: center;
-    }
+    flex-shrink: 0;
+  }
+  
+  .location-time i {
+    font-size: 1.25rem;
+    color: #2d3e77;
+    margin-bottom: 0.5rem;
+  }
+  
+  .location-time .date, 
+  .location-time .time {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-align: center;
   }
   
   .location-details {
     flex: 1;
     margin-left: 1rem;
-    
-    h5 {
-      margin: 0 0 0.25rem;
-      font-size: 0.875rem;
-      color: #495057;
-    }
-    
-    .location-code {
-      font-size: 0.75rem;
-      color: #6c757d;
-      margin-bottom: 0.25rem;
-    }
-    
-    .address {
-      font-size: 0.825rem;
-      color: #495057;
-      
-      p {
-        margin: 0 0 0.25rem;
-      }
-      
-      .actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 0.5rem;
-        
-        button {
-          margin-left: 0.25rem;
-          min-width: 2.5rem; // Wider buttons for easier touch
-          min-height: 2.5rem; // Taller buttons for easier touch
-        }
-      }
-    }
   }
   
-  // Button styles for edit and close buttons
+  .location-details h5 {
+    margin: 0 0 0.25rem;
+    font-size: 0.875rem;
+    color: #495057;
+  }
+  
+  .location-code {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+  }
+  
+  .address {
+    font-size: 0.825rem;
+    color: #495057;
+  }
+  
+  .address p {
+    margin: 0 0 0.25rem;
+  }
+  
+  .address .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+  }
+  
+  .address .actions button {
+    margin-left: 0.25rem;
+    min-width: 2.5rem; /* Wider buttons for easier touch */
+    min-height: 2.5rem; /* Taller buttons for easier touch */
+  }
+  
+  /* ===== BUTTON STYLES ===== */
   .edit-button {
     color: #4caf50;
-    min-width: 2.5rem !important; // Wider button for easier touch
-    min-height: 2.5rem !important; // Taller button for easier touch
+    min-width: 2.5rem !important; /* Wider button for easier touch */
+    min-height: 2.5rem !important; /* Taller button for easier touch */
   }
   
   .close-button {
     color: #6c757d;
-    min-width: 2.5rem !important; // Wider button for easier touch
-    min-height: 2.5rem !important; // Taller button for easier touch
-    
-    &:hover {
-      color: #dc3545;
-      background-color: rgba(220, 53, 69, 0.1);
-    }
+    min-width: 2.5rem !important; /* Wider button for easier touch */
+    min-height: 2.5rem !important; /* Taller button for easier touch */
   }
   
-  // Animation styles
-  .slide-in-animation {
-    animation: slideIn 0.3s ease-out forwards;
+  .close-button:hover {
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
   }
   
-  @keyframes slideIn {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
+  /* ===== PRIMENG SPECIFIC STYLES ===== */
+  ::ng-deep .p-button.p-button-text {
+    color: #6c757d;
+    min-width: 2.5rem; /* Wider button for easier touch */
+    min-height: 2.5rem; /* Taller button for easier touch */
   }
   
-  // Specific styling for PrimeNG components
-  ::ng-deep {
-    .p-button {
-      &.p-button-text {
-        color: #6c757d;
-        min-width: 2.5rem; // Wider button for easier touch
-        min-height: 2.5rem; // Taller button for easier touch
-        
-        &:hover {
-          background-color: rgba(108, 117, 125, 0.1);
-        }
-      }
-      
-      &.p-button-rounded {
-        border-radius: 50%;
-        min-width: 2.5rem; // Wider button for easier touch
-        min-height: 2.5rem; // Taller button for easier touch
-      }
-      
-      &.p-button-sm {
-        font-size: 0.75rem;
-        padding: 0.5rem 1rem; // Larger padding for better touch targets
-      }
-      
-      &.p-button-outlined {
-        color: #2d3e77;
-        border-color: #2d3e77;
-        min-height: 2.5rem; // Taller button for easier touch
-        
-        &:hover {
-          background-color: rgba(45, 62, 119, 0.1);
-        }
-      }
-      
-      &.p-button-primary {
-        background-color: #2d3e77;
-        border-color: #2d3e77;
-        min-height: 2.5rem; // Taller button for easier touch
-        
-        &:hover {
-          background-color: #1a2a5e;
-          border-color: #1a2a5e;
-        }
-      }
-    }
-    
-    .p-inputtext {
-      padding: 0.5rem;
-      font-size: 0.875rem;
-      height: 2.5rem; // Taller input for easier touch
-      
-      &:focus {
-        box-shadow: 0 0 0 0.2rem rgba(45, 62, 119, 0.25);
-        border-color: #2d3e77;
-      }
-    }
+  ::ng-deep .p-button.p-button-text:hover {
+    background-color: rgba(108, 117, 125, 0.1);
   }
   
-  // iPad-specific media queries
-  @media only screen 
-  and (min-device-width: 768px) 
-  and (max-device-width: 1024px) {
+  ::ng-deep .p-button.p-button-rounded {
+    border-radius: 50%;
+    min-width: 2.5rem; /* Wider button for easier touch */
+    min-height: 2.5rem; /* Taller button for easier touch */
+  }
+  
+  ::ng-deep .p-button.p-button-sm {
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem; /* Larger padding for better touch targets */
+  }
+  
+  ::ng-deep .p-button.p-button-outlined {
+    color: #2d3e77;
+    border-color: #2d3e77;
+    min-height: 2.5rem; /* Taller button for easier touch */
+  }
+  
+  ::ng-deep .p-button.p-button-outlined:hover {
+    background-color: rgba(45, 62, 119, 0.1);
+  }
+  
+  ::ng-deep .p-button.p-button-primary {
+    background-color: #2d3e77;
+    border-color: #2d3e77;
+    min-height: 2.5rem; /* Taller button for easier touch */
+  }
+  
+  ::ng-deep .p-button.p-button-primary:hover {
+    background-color: #1a2a5e;
+    border-color: #1a2a5e;
+  }
+  
+  ::ng-deep .p-inputtext {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    height: 2.5rem; /* Taller input for easier touch */
+  }
+  
+  ::ng-deep .p-inputtext:focus {
+    box-shadow: 0 0 0 0.2rem rgba(45, 62, 119, 0.25);
+    border-color: #2d3e77;
+  }
+  
+  /* ===== RESPONSIVE STYLES ===== */
+  
+  /* ==== TABLET STYLES (iPads, 768px - 1024px) ==== */
+  @media only screen and (min-width: 768px) and (max-width: 1024px) {
     .dashboard-container {
-      height: 100%;
-      min-height: 100vh;
+      flex-wrap: wrap;
     }
     
-    // Adjust panel sizes for iPad
+    /* Adjust panel sizes for tablet */
     .calendar-panel {
-      width: 40%;
-      
-      &.expanded {
-        width: 100%;
-      }
+      width: 100%;
+      order: 1;
+      margin-bottom: 0.75rem;
+    }
+    
+    .unit-finder-panel,
+    .reservation-details-panel {
+      width: calc(50% - 1rem);
+      min-height: 50vh;
     }
     
     .unit-finder-panel {
-      width: 25%;
+      order: 2;
+      margin-right: 0.5rem;
     }
     
     .reservation-details-panel {
-      width: 35%;
+      order: 3;
+      margin-left: 0.5rem;
     }
     
-    // Increase touch targets
+    /* Increase touch targets */
     .appointment-item {
-      padding: 0.75rem;
+      padding: 0.875rem;
     }
     
     .unit-card {
       margin-bottom: 1.25rem;
     }
     
+    /* Ensure panels scroll independently */
+    .calendar-content,
+    .units-list,
+    .panel-content {
+      max-height: 50vh;
+    }
+    
+    /* Better padding on headers */
     .panel-header {
       padding: 1rem;
     }
@@ -712,79 +747,30 @@
     .location-bar {
       padding: 0.75rem 1rem;
     }
+    
+    /* Optimize tabs for tablet */
+    .tab-button {
+      padding: 0.75rem 1rem;
+    }
   }
   
-  // iPad in portrait mode
-  @media only screen 
-  and (min-device-width: 768px) 
-  and (max-device-width: 1024px) 
-  and (orientation: portrait) {
-    .dashboard-container {
-      flex-direction: column;
-    }
-    
-    .calendar-panel, .unit-finder-panel, .reservation-details-panel {
-      width: 100%;
-      margin: 0.5rem;
-      max-height: unset;
-    }
-    
-    .calendar-panel {
-      order: 1;
-      height: 50vh;
-    }
-    
-    .unit-finder-panel {
-      order: 2;
-      height: 25vh;
-    }
-    
+  /* ==== TABLET PORTRAIT MODE ==== */
+  @media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    .unit-finder-panel,
     .reservation-details-panel {
-      order: 3;
-      height: 25vh;
+      width: calc(50% - 1rem);
     }
     
-    // Fix for absolute positioned elements
-    .close-button {
-      top: 1rem;
-      right: 1rem;
-    }
-  }
-  
-  // General responsive adjustments
-  @media (max-width: 1200px) {
-    .dashboard-container {
-      flex-wrap: wrap;
+    /* More compact location items */
+    .location-item {
+      padding: 0.75rem;
     }
     
-    .calendar-panel {
-      width: 100%;
-      order: 1;
+    .location-time {
+      min-width: 80px;
     }
     
-    .unit-finder-panel, .reservation-details-panel {
-      width: 50%;
-    }
-    
-    .unit-finder-panel {
-      order: 2;
-    }
-    
-    .reservation-details-panel {
-      order: 3;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .dashboard-container {
-      flex-direction: column;
-    }
-    
-    .calendar-panel, .unit-finder-panel, .reservation-details-panel {
-      width: 100%;
-      margin: 0.5rem 0;
-    }
-    
+    /* Adjust details grid */
     .details-row {
       flex-direction: column;
     }
@@ -792,39 +778,198 @@
     .details-item {
       margin-bottom: 0.75rem;
     }
+  }
+  
+  /* ==== MOBILE STYLES (Phones, < 768px) ==== */
+  @media only screen and (max-width: 767px) {
+    .dashboard-container {
+      flex-direction: column;
+      height: auto;
+      margin: 0;
+      padding: 0.5rem;
+    }
     
+    /* Show mobile backdrop when panels are open */
+    .mobile-backdrop {
+      display: block;
+    }
+    
+    /* Make panels stack and take full width */
+    .calendar-panel,
+    .unit-finder-panel,
+    .reservation-details-panel {
+      width: 100% !important;
+      margin: 0.5rem 0;
+      max-height: none;
+    }
+    
+    /* Fixed positioning for secondary panels to create slide-in effect */
+    .unit-finder-panel,
+    .reservation-details-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      margin: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    
+    /* Show mobile navigation buttons */
+    .mobile-back-button,
+    .mobile-close-button,
+    .mobile-switch-panel-btn,
+    .mobile-panel-footer {
+      display: block;
+    }
+    
+    /* Adjust location bar for mobile */
+    .location-bar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .location-info {
+      margin-bottom: 0.5rem;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    /* Adjust time slots for mobile */
+    .time-slot {
+      flex-direction: column;
+    }
+    
+    .time-label {
+      width: 100%;
+      text-align: left;
+      padding-right: 0;
+      padding-bottom: 0.25rem;
+    }
+    
+    /* Make appointment items more touch-friendly */
+    .appointment-item {
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    /* Stack details in rows */
+    .details-row {
+      flex-direction: column;
+    }
+    
+    .details-item {
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+    
+    /* Adjust location items for better mobile display */
     .location-item {
       flex-direction: column;
     }
     
     .location-time {
-      margin-bottom: 0.75rem;
       flex-direction: row;
       justify-content: flex-start;
       width: 100%;
-      
-      i {
-        margin-right: 0.5rem;
-        margin-bottom: 0;
-      }
-      
-      .date, .time {
-        margin-right: 0.5rem;
-      }
+      min-width: auto;
+      margin-bottom: 0.75rem;
+    }
+    
+    .location-time i {
+      margin-right: 0.5rem;
+      margin-bottom: 0;
+    }
+    
+    .location-time .date,
+    .location-time .time {
+      margin-right: 0.5rem;
     }
     
     .location-details {
       margin-left: 0;
     }
+    
+    /* Optimize panel tabs for mobile */
+    .panel-tabs {
+      overflow-x: auto;
+    }
+    
+    .tab-button {
+      padding: 0.75rem 1rem;
+      min-height: 3.5rem;
+      white-space: nowrap;
+    }
+    
+    /* Larger touch targets for mobile */
+    ::ng-deep .p-button {
+      min-width: 44px;
+      min-height: 44px;
+    }
+    
+    /* Fix for notes section on mobile */
+    .notes-section {
+      padding: 0.75rem;
+    }
+    
+    /* Make buttons more prominent on mobile */
+    .panel-footer .p-button,
+    .mobile-panel-footer .p-button {
+      width: 100%;
+      padding: 0.75rem;
+      height: auto;
+    }
   }
   
-  // Safari on iOS support
+  /* ===== SMALL PHONE ADJUSTMENTS (< 480px) ===== */
+  @media only screen and (max-width: 479px) {
+    /* More compact appointment items */
+    .appointment-item {
+      padding: 0.75rem;
+    }
+    
+    .status-pill {
+      padding: 0.15rem 0.4rem;
+      font-size: 0.7rem;
+    }
+    
+    /* Simplify customer info */
+    .customer-avatar {
+      width: 40px;
+      height: 40px;
+      font-size: 1rem;
+    }
+    
+    /* Smaller padding for headers */
+    .panel-header {
+      padding: 0.75rem;
+    }
+    
+    /* Further optimize touch targets */
+    .tab-button {
+      padding: 0.75rem 0.5rem;
+    }
+  }
+  
+  /* ===== SAFARI ON IOS SUPPORT ===== */
   @supports (-webkit-touch-callout: none) {
     .dashboard-container {
       height: -webkit-fill-available;
     }
     
-    .calendar-content, .units-list, .panel-content {
+    .calendar-content,
+    .units-list,
+    .panel-content {
       -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Fix for position:fixed on iOS */
+    .unit-finder-panel,
+    .reservation-details-panel {
+      -webkit-transform: translateZ(0);
     }
   }

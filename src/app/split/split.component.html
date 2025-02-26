@@ -7,241 +7,290 @@
     </button>
 
 
-<div class="dashboard-container">
-    <!-- Calendar/List View (always visible) -->
-    <div class="calendar-panel" [ngClass]="{'expanded': !showUnitPanel && !showReservationPanel}">
-      <div class="panel-header">
-        <div class="header-left">
-          <span class="header-title">February 3rd</span>
-          <div class="header-nav">
-            <button pButton icon="pi pi-chevron-left" class="p-button-text"></button>
-            <button pButton icon="pi pi-chevron-right" class="p-button-text"></button>
-            <button pButton icon="pi pi-calendar" class="p-button-text"></button>
-          </div>
-        </div>
-        <div class="header-right">
-          <button pButton icon="pi pi-search" class="p-button-text"></button>
-          <button pButton icon="pi pi-chart-bar" class="p-button-text"></button>
-          <button pButton icon="pi pi-filter" class="p-button-text"></button>
-          <button pButton icon="pi pi-list" class="p-button-text p-button-highlighted"></button>
-        </div>
-      </div>
-      
-      <div class="location-bar">
-        <div class="location-info">
-          <i class="pi pi-map-marker"></i>
-          <span>LIS - Pennsylvania - Reading - Penske Reading (0666-10) (57 Reservations)</span>
-        </div>
-        <button pButton label="+ Add" class="p-button-sm p-button-outlined"></button>
-      </div>
-      
-      <div class="calendar-content">
-        <!-- Time slots with appointments -->
-        <div *ngFor="let timeSlot of appointments" class="time-slot">
-          <div class="time-label">{{ timeSlot.time }}</div>
-          <div class="appointment-list">
-            <div *ngFor="let appointment of timeSlot.items" 
-                 class="appointment-item"
-                 [ngClass]="{'selected': selectedReservation?.reservation === appointment.reservation}"
-                 (click)="selectReservation(appointment)">
-              <div class="appointment-status" [ngClass]="'status-' + appointment.status.toLowerCase()"></div>
-              <div class="appointment-details">
-                <div class="customer-name">{{ appointment.customer }}</div>
-                <div class="reservation-number">{{ appointment.reservation }}</div>
-              </div>
-              <div class="appointment-actions">
-                <span class="status-pill" [ngClass]="'status-' + appointment.status.toLowerCase()">
-                  {{ appointment.status }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div class="dashboard-container">
+        <!-- Backdrop for mobile panels -->
+        <div *ngIf="(showUnitPanel || showReservationPanel) && isMobile" 
+             class="mobile-backdrop" 
+             [@fadeIn]
+             (click)="closePanels()"></div>
         
-        <!-- Current selection highlighted -->
-        <div *ngIf="selectedReservation?.reservation === '#87655209'" class="selected-time-marker">
-          <div class="time-label">09:00 AM</div>
-          <div class="selected-appointment">
-            <div class="appointment-card">
-              <div class="appointment-card-header">
-                <span class="status-pill status-booked">Booked</span>
-                <div class="appointment-actions">
-                  <button pButton icon="pi pi-eye" class="p-button-text p-button-sm"></button>
-                  <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm"></button>
-                </div>
-              </div>
-              <div class="appointment-card-content">
-                <div class="customer-name">John Stone #87655209</div>
+        <!-- Calendar/List View (always visible) -->
+        <div class="calendar-panel" [ngClass]="{'expanded': !showUnitPanel && !showReservationPanel}">
+          <div class="panel-header">
+            <div class="header-left">
+              <span class="header-title">February 3rd</span>
+              <div class="header-nav">
+                <button pButton icon="pi pi-chevron-left" class="p-button-text"></button>
+                <button pButton icon="pi pi-chevron-right" class="p-button-text"></button>
+                <button pButton icon="pi pi-calendar" class="p-button-text"></button>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Unit Finder (appears when a reservation is selected) -->
-    <div *ngIf="showUnitPanel" [@slideIn] class="unit-finder-panel">
-      <div class="panel-header">
-        <span class="header-title">Find Units</span>
-        <div class="search-box">
-          <span class="p-input-icon-left">
-            <i class="pi pi-search"></i>
-            <input type="text" pInputText placeholder="Search Fleet..." />
-          </span>
-        </div>
-      </div>
-      
-      <div class="units-list">
-        <div *ngFor="let unit of units" 
-             class="unit-card"
-             [ngClass]="{'selected': selectedUnit?.id === unit.id}"
-             (click)="selectUnit(unit)">
-          <div class="unit-status" [ngClass]="unit.status.toLowerCase()">{{ unit.status }}</div>
-          <div class="unit-details">
-            <div class="unit-distance">{{ unit.distance }}</div>
-            <div class="unit-id">{{ unit.id }}</div>
-            <div class="unit-location">{{ unit.location }}</div>
-            <div class="unit-image">
-              <img src="assets/flatbed-truck.png" alt="Truck">
-            </div>
-            <div class="unit-info-grid">
-              <div class="unit-info-column">
-                <div class="unit-info-label">Rental Status</div>
-                <div class="unit-info-value">{{ unit.rentalStatus }}</div>
-              </div>
-              <div class="unit-info-column">
-                <div class="unit-info-label">PM Date</div>
-                <div class="unit-info-value">{{ unit.pmDate }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Change Truck button in the Find Units panel -->
-      <div class="panel-footer">
-        <button pButton label="Change Truck" class="p-button-primary"></button>
-      </div>
-    </div>
-    
-    <!-- Reservation Details (appears when a reservation is selected) -->
-    <div *ngIf="showReservationPanel" [@slideIn] class="reservation-details-panel">
-      <div class="panel-header">
-        <div class="customer-info">
-          <div class="customer-avatar">JS</div>
-          <div>
-            <h3>{{ selectedReservation?.customer }}</h3>
-            <p class="phone-number">
-              <i class="pi pi-phone"></i>
-            </p>
-            <p class="reservation-number"># {{ selectedReservation?.reservation }}</p>
-          </div>
-        </div>
-        <!-- Close button -->
-        <button pButton icon="pi pi-times" class="p-button-rounded p-button-text close-button" (click)="closePanels()"></button>
-      </div>
-      
-      <div class="panel-tabs">
-        <button class="tab-button active">Reservation</button>
-        <button class="tab-button">Truck Info</button>
-      </div>
-      
-      <div class="panel-content">
-        <div class="notes-section">
-          <h5>Notes</h5>
-          <p class="notes-text">Lorem ipsum dolor sit amet consectetur. Blandit metus convallis ut vestibulum sit. Mi netus massa libero viverra laoreet ornare nibh. Molestie malesuada pretium purus con...</p>
-          <div class="notes-meta">
-            <button pButton label="View All Notes" icon="pi pi-external-link" class="p-button-text p-button-sm"></button>
-          </div>
-        </div>
-        
-        <div class="details-grid">
-          <div class="details-row">
-            <div class="details-item">
-              <label>Type</label>
-              <div class="value">{{ selectedReservation?.type }}</div>
-            </div>
-            
-            <div class="details-item">
-              <label>Length & Height</label>
-              <div class="value">{{ selectedReservation?.lengthHeight }}</div>
+            <div class="header-right">
+              <button pButton icon="pi pi-search" class="p-button-text"></button>
+              <button pButton icon="pi pi-chart-bar" class="p-button-text"></button>
+              <button pButton icon="pi pi-filter" class="p-button-text"></button>
+              <button pButton icon="pi pi-list" class="p-button-text p-button-highlighted"></button>
             </div>
           </div>
           
-          <div class="details-row">
-            <div class="details-item">
-              <label>Towing</label>
-              <div class="value">{{ selectedReservation?.towing }}</div>
-            </div>
-            
-            <div class="details-item">
-              <label>Trip Type</label>
-              <div class="value">{{ selectedReservation?.tripType }}</div>
-            </div>
-          </div>
-          
-          <div class="details-row">
-            <div class="details-item">
-              <label>Insurance</label>
-              <div class="value">{{ selectedReservation?.insurance }} <i class="pi pi-id-card"></i></div>
-            </div>
-            
-            <div class="details-item">
-              <label>Rental</label>
-              <div class="value">{{ selectedReservation?.rental }}</div>
-            </div>
-          </div>
-          
-          <div class="details-row">
-            <div class="details-item">
-              <label>Duration</label>
-              <div class="value">{{ selectedReservation?.duration }}</div>
-            </div>
-            
-            <div class="details-item">
-              <label>Distance</label>
-              <div class="value">{{ selectedReservation?.distance }}</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="locations-section">
-          <div class="location-item">
-            <div class="location-time">
-              <i class="pi pi-truck"></i>
-              <div class="date">{{ selectedReservation?.pickup.date }}</div>
-              <div class="time">{{ selectedReservation?.pickup.time }}</div>
-            </div>
-            <div class="location-details">
-              <h5>Pickup Location</h5>
-              <div class="location-code">{{ selectedReservation?.pickup.location }}</div>
-              <div class="address">
-                <p>{{ selectedReservation?.pickup.address }}</p>
-                <p>{{ selectedReservation?.pickup.phone }}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="location-item">
-            <div class="location-time">
+          <div class="location-bar">
+            <div class="location-info">
               <i class="pi pi-map-marker"></i>
-              <div class="date">{{ selectedReservation?.dropoff.date }}</div>
-              <div class="time">{{ selectedReservation?.dropoff.time }}</div>
+              <span>LIS - Pennsylvania - Reading - Penske Reading (0666-10) (57 Reservations)</span>
             </div>
-            <div class="location-details">
-              <h5>Dropoff Location</h5>
-              <div class="location-code">{{ selectedReservation?.dropoff.location }}</div>
-              <div class="address">
-                <p>{{ selectedReservation?.dropoff.address }}</p>
-                <p>{{ selectedReservation?.dropoff.phone }}</p>
-                <div class="actions">
-                  <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm edit-button"></button>
-                  <button pButton icon="pi pi-times" class="p-button-text p-button-sm"></button>
+            <button pButton label="+ Add" class="p-button-sm p-button-outlined"></button>
+          </div>
+          
+          <div class="calendar-content">
+            <!-- Time slots with appointments -->
+            <div *ngFor="let timeSlot of appointments" class="time-slot">
+              <div class="time-label">{{ timeSlot.time }}</div>
+              <div class="appointment-list">
+                <div *ngFor="let appointment of timeSlot.items" 
+                    class="appointment-item"
+                    [ngClass]="{'selected': selectedReservation?.reservation === appointment.reservation}"
+                    (click)="selectReservation(appointment)">
+                  <div class="appointment-status" [ngClass]="'status-' + appointment.status.toLowerCase()"></div>
+                  <div class="appointment-details">
+                    <div class="customer-name">{{ appointment.customer }}</div>
+                    <div class="reservation-number">{{ appointment.reservation }}</div>
+                  </div>
+                  <div class="appointment-actions">
+                    <span class="status-pill" [ngClass]="'status-' + appointment.status.toLowerCase()">
+                      {{ appointment.status }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Current selection highlighted -->
+            <div *ngIf="selectedReservation?.reservation === '#87655209'" class="selected-time-marker">
+              <div class="time-label">09:00 AM</div>
+              <div class="selected-appointment">
+                <div class="appointment-card">
+                  <div class="appointment-card-header">
+                    <span class="status-pill status-booked">Booked</span>
+                    <div class="appointment-actions">
+                      <button pButton icon="pi pi-eye" class="p-button-text p-button-sm"></button>
+                      <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm"></button>
+                    </div>
+                  </div>
+                  <div class="appointment-card-content">
+                    <div class="customer-name">John Stone #87655209</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        
+        <!-- Unit Finder (appears when a reservation is selected) -->
+        <div *ngIf="showUnitPanel" [@mobileSlideIn]="isMobile ? 'in' : null" [@slideIn]="!isMobile ? 'in' : null" class="unit-finder-panel">
+          <div class="panel-header">
+            <!-- Mobile back button -->
+            <button *ngIf="isMobile" 
+                    pButton 
+                    icon="pi pi-arrow-left" 
+                    class="p-button-text mobile-back-button"
+                    (click)="goBack()"></button>
+                    
+            <span class="header-title">Find Units</span>
+            
+            <!-- Close button for mobile -->
+            <button *ngIf="isMobile" 
+                    pButton 
+                    icon="pi pi-times" 
+                    class="p-button-rounded p-button-text mobile-close-button"
+                    (click)="closePanels()"></button>
+                    
+            <div class="search-box">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input type="text" pInputText placeholder="Search Fleet..." />
+              </span>
+            </div>
+          </div>
+          
+          <div class="units-list">
+            <div *ngFor="let unit of units" 
+                class="unit-card"
+                [ngClass]="{'selected': selectedUnit?.id === unit.id}"
+                (click)="selectUnit(unit)">
+              <div class="unit-status" [ngClass]="unit.status.toLowerCase()">{{ unit.status }}</div>
+              <div class="unit-details">
+                <div class="unit-distance">{{ unit.distance }}</div>
+                <div class="unit-id">{{ unit.id }}</div>
+                <div class="unit-location">{{ unit.location }}</div>
+                <div class="unit-image">
+                  <img src="assets/flatbed-truck.png" alt="Truck">
+                </div>
+                <div class="unit-info-grid">
+                  <div class="unit-info-column">
+                    <div class="unit-info-label">Rental Status</div>
+                    <div class="unit-info-value">{{ unit.rentalStatus }}</div>
+                  </div>
+                  <div class="unit-info-column">
+                    <div class="unit-info-label">PM Date</div>
+                    <div class="unit-info-value">{{ unit.pmDate }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Panel footer with action buttons -->
+          <div class="panel-footer">
+            <button pButton label="Change Truck" class="p-button-primary"></button>
+            
+            <!-- Mobile-only panel switcher -->
+            <button *ngIf="isMobile" 
+                    pButton 
+                    label="View Reservation" 
+                    icon="pi pi-arrow-right"
+                    class="p-button-secondary mobile-switch-panel-btn"
+                    (click)="switchPanels()"></button>
+          </div>
+        </div>
+        
+        <!-- Reservation Details (appears when a reservation is selected) -->
+        <div *ngIf="showReservationPanel" [@mobileSlideIn]="isMobile ? 'in' : null" [@slideIn]="!isMobile ? 'in' : null" class="reservation-details-panel">
+          <div class="panel-header">
+            <!-- Mobile back button -->
+            <button *ngIf="isMobile" 
+                    pButton 
+                    icon="pi pi-arrow-left" 
+                    class="p-button-text mobile-back-button"
+                    (click)="goBack()"></button>
+                    
+            <div class="customer-info">
+              <div class="customer-avatar">JS</div>
+              <div>
+                <h3>{{ selectedReservation?.customer }}</h3>
+                <p class="phone-number">
+                  <i class="pi pi-phone"></i> {{ selectedReservation?.phone }}
+                </p>
+                <p class="reservation-number"># {{ selectedReservation?.reservation }}</p>
+              </div>
+            </div>
+            
+            <!-- Close button -->
+            <button pButton 
+                    icon="pi pi-times" 
+                    class="p-button-rounded p-button-text close-button" 
+                    (click)="closePanels()"></button>
+          </div>
+          
+          <div class="panel-tabs">
+            <button class="tab-button active">Reservation</button>
+            <button class="tab-button">Truck Info</button>
+          </div>
+          
+          <div class="panel-content">
+            <div class="notes-section">
+              <h5>Notes</h5>
+              <p class="notes-text">Lorem ipsum dolor sit amet consectetur. Blandit metus convallis ut vestibulum sit. Mi netus massa libero viverra laoreet ornare nibh. Molestie malesuada pretium purus con...</p>
+              <div class="notes-meta">
+                <button pButton label="View All Notes" icon="pi pi-external-link" class="p-button-text p-button-sm"></button>
+              </div>
+            </div>
+            
+            <div class="details-grid">
+              <div class="details-row">
+                <div class="details-item">
+                  <label>Type</label>
+                  <div class="value">{{ selectedReservation?.type }}</div>
+                </div>
+                
+                <div class="details-item">
+                  <label>Length & Height</label>
+                  <div class="value">{{ selectedReservation?.lengthHeight }}</div>
+                </div>
+              </div>
+              
+              <div class="details-row">
+                <div class="details-item">
+                  <label>Towing</label>
+                  <div class="value">{{ selectedReservation?.towing }}</div>
+                </div>
+                
+                <div class="details-item">
+                  <label>Trip Type</label>
+                  <div class="value">{{ selectedReservation?.tripType }}</div>
+                </div>
+              </div>
+              
+              <div class="details-row">
+                <div class="details-item">
+                  <label>Insurance</label>
+                  <div class="value">{{ selectedReservation?.insurance }} <i class="pi pi-id-card"></i></div>
+                </div>
+                
+                <div class="details-item">
+                  <label>Rental</label>
+                  <div class="value">{{ selectedReservation?.rental }}</div>
+                </div>
+              </div>
+              
+              <div class="details-row">
+                <div class="details-item">
+                  <label>Duration</label>
+                  <div class="value">{{ selectedReservation?.duration }}</div>
+                </div>
+                
+                <div class="details-item">
+                  <label>Distance</label>
+                  <div class="value">{{ selectedReservation?.distance }}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="locations-section">
+              <div class="location-item">
+                <div class="location-time">
+                  <i class="pi pi-truck"></i>
+                  <div class="date">{{ selectedReservation?.pickup.date }}</div>
+                  <div class="time">{{ selectedReservation?.pickup.time }}</div>
+                </div>
+                <div class="location-details">
+                  <h5>Pickup Location</h5>
+                  <div class="location-code">{{ selectedReservation?.pickup.location }}</div>
+                  <div class="address">
+                    <p>{{ selectedReservation?.pickup.address }}</p>
+                    <p>{{ selectedReservation?.pickup.phone }}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="location-item">
+                <div class="location-time">
+                  <i class="pi pi-map-marker"></i>
+                  <div class="date">{{ selectedReservation?.dropoff.date }}</div>
+                  <div class="time">{{ selectedReservation?.dropoff.time }}</div>
+                </div>
+                <div class="location-details">
+                  <h5>Dropoff Location</h5>
+                  <div class="location-code">{{ selectedReservation?.dropoff.location }}</div>
+                  <div class="address">
+                    <p>{{ selectedReservation?.dropoff.address }}</p>
+                    <p>{{ selectedReservation?.dropoff.phone }}</p>
+                    <div class="actions">
+                      <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm edit-button"></button>
+                      <button pButton icon="pi pi-times" class="p-button-text p-button-sm"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Mobile-only panel switcher -->
+            <div *ngIf="isMobile" class="mobile-panel-footer">
+              <button pButton 
+                      label="Find Available Trucks" 
+                      icon="pi pi-truck"
+                      class="p-button-secondary mobile-switch-panel-btn"
+                      (click)="openUnitPanel()"></button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>

@@ -250,6 +250,116 @@ table {
   width: 100%;
 }
 
+/* Add these styles to your component or to a global stylesheet */
+
+/* Ensure proper background color and text contrast on mobile */
+@media screen and (max-width: 768px) {
+  .scheduler, .scheduler-table, .p-dialog {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+  }
+  
+  .time-cell {
+    background-color: #f8f9fa !important;
+    color: #4b5563 !important;
+    border-color: #e5e7eb !important;
+  }
+  
+  .p-inputtext, .p-dropdown, .p-calendar {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+  }
+  
+  /* Force light mode for inputs */
+  .p-inputtext, .p-dropdown-panel, .p-calendar-panel {
+    background: #ffffff !important;
+    color: #333333 !important;
+  }
+  
+  /* Ensure buttons have proper contrast */
+  .p-button {
+    background-color: #3B82F6 !important;
+    color: #ffffff !important;
+  }
+  
+  .p-button.p-button-outlined {
+    background-color: transparent !important;
+    color: #3B82F6 !important;
+    border-color: #3B82F6 !important;
+  }
+  
+  .p-button.p-button-secondary {
+    background-color: #64748B !important;
+    color: #ffffff !important;
+  }
+  
+  /* Adjust grid for better mobile view */
+  .grid-cell {
+    min-height: 70px;
+  }
+  
+  .event {
+    height: auto !important;
+    min-height: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+}
+
+/* Fix for dark PrimeNG components on mobile */
+.p-component {
+  color: inherit;
+}
+
+/* Force the dialog to use light background */
+.p-dialog .p-dialog-content,
+.p-dialog .p-dialog-header,
+.p-dialog .p-dialog-footer {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+/* Ensure dropdown options are visible */
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+/* Fix calendar display */
+.p-datepicker {
+  background-color: #ffffff !important;
+}
+
+.p-datepicker table td > span {
+  color: #333333 !important;
+}
+
+/* General responsive improvements */
+@media screen and (max-width: 576px) {
+  .scheduler-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .scheduler-header .flex {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  
+  .scheduler-table {
+    font-size: 0.8rem;
+  }
+  
+  .time-cell {
+    min-width: 50px;
+    padding: 0.25rem;
+  }
+  
+  /* Stack buttons on small screens */
+  .flex.gap-2 {
+    flex-wrap: wrap;
+  }
+}
+
   `]
 })
 export class SchedulerComponent implements OnInit {
@@ -284,7 +394,16 @@ export class SchedulerComponent implements OnInit {
   }
 
   generateTimeSlots() {
-    for (let i = 8; i <= 18; i++) {
+    // for (let i = 8; i <= 18; i++) {
+    //   this.timeSlots.push(`${i.toString().padStart(2, '0')}:00`);
+    // }
+    const isMobile = window.innerWidth < 768;
+    const startHour = 8;
+    const endHour = 18;
+    const increment = isMobile ? 2 : 1; // Show every 2 hours on mobile
+    
+    this.timeSlots = [];
+    for (let i = startHour; i <= endHour; i += increment) {
       this.timeSlots.push(`${i.toString().padStart(2, '0')}:00`);
     }
   }
