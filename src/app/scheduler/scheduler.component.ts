@@ -36,7 +36,7 @@ interface Event {
       <div class="scheduler-header p-3 border-bottom-1 surface-border">
         <div class="flex justify-content-between align-items-center">
           <h2 class="text-2xl font-bold m-0">Reservations</h2>
-          <div class="flex align-items-center gap-4">
+          <div class="flex align-items-center">
             <!-- <div class="flex gap-2">
               
             <button pButton 
@@ -68,6 +68,12 @@ interface Event {
                       icon="pi pi-list"
                       class="p-button-secondary"
                       [routerLink]="['/split']">
+              </button>
+              <button pButton 
+                      label="Date dropdown" 
+                      icon="pi pi-list"
+                      class="p-button-secondary"
+                      [routerLink]="['/dateselector']">
               </button>
             </div>
           </div>

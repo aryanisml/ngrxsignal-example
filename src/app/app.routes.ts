@@ -18,6 +18,11 @@ export const routes: Routes = [
         .then(m => m.SplitComponent)
     },
     {
+      path: 'dateselector',
+      loadComponent: () => import('./date-selector/date-selector.component')
+        .then(m => m.DateSelectorComponent)
+    },
+    {
         path: 'dhtmlxscheduler',
         loadComponent: () => import('./dhtml-scheduler/dhtml-scheduler.component')
           .then(m => m.DhtmlSchedulerComponent)

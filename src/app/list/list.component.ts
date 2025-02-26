@@ -9,6 +9,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { PanelModule } from 'primeng/panel';
 import { InputTextModule } from 'primeng/inputtext';
 import { RouterLink } from '@angular/router';
+
 interface DataGroup {
   id: string;
   title: string;
@@ -31,7 +32,7 @@ interface DataGroup {
     PanelModule,
     InputTextModule,
     RouterLink
-  ],
+],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })

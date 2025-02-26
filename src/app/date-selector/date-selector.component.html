@@ -1,0 +1,44 @@
+<!-- date-selector.component.html -->
+<div class="date-selector-wrapper">
+  <!-- Custom dropdown trigger -->
+  <div class="dropdown-trigger" (click)="toggleDropdown()">
+    <span>{{ selectedOption.name }}</span>
+    <i class="pi" [ngClass]="{'pi-chevron-down': !isOpen, 'pi-chevron-up': isOpen}"></i>
+  </div>
+  
+  <!-- Dropdown panel -->
+  <div class="dropdown-panel" *ngIf="isOpen">
+    <!-- Tab navigation -->
+    <div class="tab-list">
+      <div 
+        *ngFor="let option of dateOptions" 
+        class="tab-item" 
+        [class.active]="selectedOption.value === option.value"
+        (click)="selectOption(option)">
+        {{option.name}}
+      </div>
+    </div>
+    
+    <!-- Calendar section -->
+    <div class="calendar-section">
+      <!-- Daily or Monthly view -->
+      <p-calendar *ngIf="selectedOption.value !== 'next5days'"
+        [(ngModel)]="selectedDate"
+        [inline]="true"
+        [showOtherMonths]="false"
+        [numberOfMonths]="1"
+        [view]="selectedOption.value === 'monthly' ? 'month' : 'date'"
+        styleClass="embedded-calendar">
+      </p-calendar>
+      
+      <!-- Multiple selection for Next 5 days -->
+      <p-calendar *ngIf="selectedOption.value === 'next5days'"
+        [(ngModel)]="dateRange"
+        [inline]="true"
+        [numberOfMonths]="1"
+        [selectionMode]="'multiple'"
+        styleClass="embedded-calendar">
+      </p-calendar>
+    </div>
+  </div>
+</div>
