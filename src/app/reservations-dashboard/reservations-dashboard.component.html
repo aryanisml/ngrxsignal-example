@@ -1,0 +1,16 @@
+<div class="accordion-container">
+    <div class="accordion-item" *ngFor="let item of items; let i = index">
+      <div 
+        class="accordion-header" 
+        [class.active]="item.isOpen" 
+        (click)="toggleItem(i)">
+        <div class="toggle-icon">
+          <i class="icon" [innerHTML]="item.isOpen ? '&#9660;' : '&#9654;'"></i>
+        </div>
+        <div class="header-text"><span>Reading</span></div>
+      </div>
+      <div class="accordion-content" [@collapseAnimation]="item.isOpen ? 'open' : 'closed'">
+        <div class="content-inner" [innerHTML]="item.content"></div>
+      </div>
+    </div>
+  </div>

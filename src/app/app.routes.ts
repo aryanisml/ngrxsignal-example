@@ -23,6 +23,11 @@ export const routes: Routes = [
         .then(m => m.DateSelectorComponent)
     },
     {
+      path: 'res',
+      loadComponent: () => import('./consumer-accordin/consumer-accordin.component')
+        .then(m => m.ConsumerAccordinComponent)
+    },
+    {
         path: 'dhtmlxscheduler',
         loadComponent: () => import('./dhtml-scheduler/dhtml-scheduler.component')
           .then(m => m.DhtmlSchedulerComponent)
