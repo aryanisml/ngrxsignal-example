@@ -55,7 +55,6 @@ interface Unit {
       <div class="grid-system">
         <!-- Main Accordion - Takes 12 cols by default, 5 when expanded -->
         <div class="accordion-section" [class.grid-5]="expandedTimeSlot !== null">
-          <h2>Reservations Dashboard</h2>
 
           <!-- Custom Accordion -->
           <div class="accordion-container">
@@ -312,17 +311,21 @@ interface Unit {
     `
       .dashboard-container {
         width: 100%;
+        height: calc(100vh - 60px); /* Adjust the 60px based on your header height */
         margin: 0 auto;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         transition: all 0.3s ease;
         background-color: #ffffff;
+        overflow: hidden;
       }
       
       .grid-system {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
+        height: 100%;
         background-color: #ffffff;
+        gap: 15px; /* Added gap between panels */
       }
       
       /* --- Main Accordion Section --- */
@@ -331,10 +334,43 @@ interface Unit {
         padding: 15px;
         transition: all 0.3s ease;
         background-color: #ffffff;
+        height: 100%;
+        overflow: auto; /* Enable scrolling */
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+      }
+      
+      /* Mac-style scrollbar for Windows */
+      .accordion-section::-webkit-scrollbar {
+        width: 8px;
+        background-color: transparent;
+        opacity: 0;
+      }
+      
+      .accordion-section::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+      
+      .accordion-section::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.15);
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+      }
+      
+      .accordion-section:hover::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.25);
+      }
+      
+      /* Only show scrollbar on hover/scroll for Windows */
+      .accordion-section:not(:hover):not(:focus)::-webkit-scrollbar-thumb {
+        opacity: 0;
+        visibility: hidden;
       }
       
       .accordion-section.grid-5 {
-        width: 41.66%; /* 5/12 columns when expanded */
+        width: calc(41.66% - 15px); /* 5/12 columns when expanded, accounting for gap */
         background-color: #ffffff;
       }
       
@@ -565,10 +601,43 @@ interface Unit {
       
       /* --- Find Units Section --- */
       .find-units-section {
-        width: 25%; /* 3/12 columns */
+        width: calc(25% - 15px); /* 3/12 columns, accounting for gap */
         padding: 15px;
         border-left: 1px solid #e9ecef;
         background-color: #ffffff;
+        height: 100%;
+        overflow: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+        -ms-overflow-style: none; /* IE and Edge */
+      }
+      
+      /* Mac-style scrollbar for Windows */
+      .find-units-section::-webkit-scrollbar {
+        width: 8px;
+        background-color: transparent;
+        opacity: 0;
+      }
+      
+      .find-units-section::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+      
+      .find-units-section::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.15);
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+      }
+      
+      .find-units-section:hover::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.25);
+      }
+      
+      /* Only show scrollbar on hover/scroll for Windows */
+      .find-units-section:not(:hover):not(:focus)::-webkit-scrollbar-thumb {
+        opacity: 0;
+        visibility: hidden;
       }
       
       .find-units-section h3 {
@@ -672,9 +741,43 @@ interface Unit {
       
       /* --- Customer Details Section --- */
       .customer-details-section {
-        width: 33.33%; /* 4/12 columns */
+        width: calc(33.33% - 15px); /* 4/12 columns, accounting for gap */
         padding: 15px;
         border-left: 1px solid #e9ecef;
+        position: relative;
+        height: 100%;
+        overflow: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+        -ms-overflow-style: none; /* IE and Edge */
+      }
+      
+      /* Mac-style scrollbar for Windows */
+      .customer-details-section::-webkit-scrollbar {
+        width: 8px;
+        background-color: transparent;
+        opacity: 0;
+      }
+      
+      .customer-details-section::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+      
+      .customer-details-section::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.15);
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+      }
+      
+      .customer-details-section:hover::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.25);
+      }
+      
+      /* Only show scrollbar on hover/scroll for Windows */
+      .customer-details-section:not(:hover):not(:focus)::-webkit-scrollbar-thumb {
+        opacity: 0;
+        visibility: hidden;
       }
       
       .customer-header {
@@ -810,15 +913,26 @@ interface Unit {
         
         .find-units-section,
         .customer-details-section {
-          width: 50%;
+          width: calc(50% - 7.5px);
+        }
+        
+        .grid-system {
+          flex-direction: column;
         }
       }
       
       @media screen and (max-width: 768px) {
+        .dashboard-container {
+          height: auto;
+          min-height: 100vh;
+        }
+        
         .accordion-section.grid-5,
         .find-units-section,
         .customer-details-section {
           width: 100%;
+          height: auto;
+          max-height: 50vh;
         }
         
         .event-row {
@@ -827,30 +941,113 @@ interface Unit {
       }
 
       /* Close button styles */
-.close-expanded-view {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #f8f9fa;
-  border: 1px solid #ddd;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 100;
-}
+      .close-expanded-view {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 100;
+      }
+      
+      .close-expanded-view:hover {
+        background-color: #e9ecef;
+      }
+      
+      /* Positioning for the close button in the customer section */
+      .customer-details-section {
+        position: relative;
+      }
+      .highlight-time-slot {
+      background-color: rgba(63, 81, 181, 0.2);
+      transition: background-color 0.5s ease;
+    }
+    
+    .highlight-time-slot .time-cell {
+      font-weight: bold;
+      color: #3f51b5;
+    }
+    .accordion-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background-color: #e3f2fd;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .accordion-header.active {
+      background-color: #bbdefb;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+    
+    /* Highlight styles for current time slot */
+    .highlight-time-slot {
+      background-color: rgba(63, 81, 181, 0.2);
+      transition: background-color 0.5s ease;
+    }
+    
+    .highlight-time-slot .time-cell {
+      font-weight: bold;
+      color: #3f51b5;
+    }
 
-.close-expanded-view:hover {
-  background-color: #e9ecef;
-}
-
-/* Positioning for the close button in the customer section */
-.customer-details-section {
-  position: relative;
-}
+        /* Make sure the accordion section has proper scroll context */
+        .accordion-section {
+      width: 100%; /* 12 columns by default */
+      padding: 15px;
+      transition: all 0.3s ease;
+      background-color: #ffffff;
+      height: 100%;
+      overflow: auto !important; /* Force overflow auto */
+      scrollbar-width: thin; /* Firefox */
+      scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+      position: relative; /* Create positioning context */
+    }
+    
+    /* Enhanced sticky accordion header styles */
+    .accordion-header {
+      position: sticky !important; /* Force sticky positioning */
+      top: 0 !important; /* Force top position */
+      z-index: 100 !important; /* Higher z-index to ensure it's above other elements */
+      background-color: #e3f2fd !important; /* Ensure background is opaque */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+      margin-bottom: 0 !important; /* Remove any margin that might affect stickiness */
+      width: 100% !important; /* Ensure full width */
+    }
+    
+    /* Make sure there's no margin/padding interfering with the accordion items */
+    .accordion-item {
+      margin-bottom: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      overflow: hidden;
+      display: block; /* Ensure block display */
+    }
+    
+    /* Active header styling */
+    .accordion-header.active {
+      background-color: #bbdefb !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
+    }
+    
+    /* Highlight styles for current time slot */
+    .highlight-time-slot {
+      background-color: rgba(63, 81, 181, 0.2);
+      transition: background-color 0.5s ease;
+    }
+    
+    .highlight-time-slot .time-cell {
+      font-weight: bold;
+      color: #3f51b5;
+    }
     `,
   ],
   animations: [
@@ -889,12 +1086,20 @@ export class ReservationsDashboardComponent implements OnInit {
   ];
 
   // Track which time slot is expanded
-  expandedTimeSlot: string | null = null;
+  expandedTimeSlot: string | null = '01:00';
 
   constructor() {}
 
   ngOnInit(): void {
     this.updateScreenSize(window.innerWidth);
+    if (!this.accordionItems.some(item => item.isOpen)) {
+      this.accordionItems[0].isOpen = true;
+    }
+    setTimeout(() => {
+      this.checkStickyHeaderStatus();
+      this.scrollToCurrentTimeSlot();
+      
+        }, 500);
   }
 
   toggleItem(index: number): void {
@@ -917,10 +1122,10 @@ export class ReservationsDashboardComponent implements OnInit {
     }
   }
 
-  timeSlots: string[] = ['7:00am', '8:00am', '9:00am'];
+  timeSlots: string[] = ['1:00am', '2:00am', '3:00am','4:00am','5:00am',];
   
   events: { [key: string]: Event[] } = {
-    '7:00am': [
+    '1:00am': [
       { id: 1, title: 'Albert Flora', refNumber: '98762319', status: 'voided' },
       { id: 2, title: 'John Smith', refNumber: '24589631', status: 'confirmed' },
       { id: 3, title: 'Maria Garcia', refNumber: '78453621', status: 'pending' },
@@ -931,13 +1136,35 @@ export class ReservationsDashboardComponent implements OnInit {
       { id: 8, title: 'Michael Brown', refNumber: '32145698', status: 'voided' },
       { id: 9, title: 'Emily Wilson', refNumber: '15975364', status: 'confirmed' },
     ],
-    '8:00am': [
+    '2:00am': [
       { id: 10, title: 'James Williams', refNumber: '78965321', status: 'confirmed' },
       { id: 11, title: 'Emma Davis', refNumber: '12398745', status: 'pending' }
     ],
-    '9:00am': [
+    '3:00am': [
       { id: 12, title: 'Christopher Lee', refNumber: '65432198', status: 'voided' }
-    ]
+    ],
+    '4:00am': [
+      { id: 99, title: 'Albert Flora2', refNumber: '98762319', status: 'voided' },
+      { id: 22, title: 'John Smith2', refNumber: '24589631', status: 'confirmed' },
+      { id: 33, title: 'Maria Garcia3', refNumber: '78453621', status: 'pending' },
+      { id: 44, title: 'Robert Johnson2', refNumber: '36521478', status: 'confirmed' },
+      { id: 55, title: 'Sarah Wilson2', refNumber: '12369854', status: 'cancelled' },
+      { id: 66, title: 'David Thompson2', refNumber: '45698732', status: 'pending' },
+      { id: 77, title: 'Jennifer Adams2', refNumber: '78965412', status: 'confirmed' },
+      { id: 88, title: 'Michael Brown2', refNumber: '32145698', status: 'voided' },
+      { id: 99, title: 'Emily Wilson2', refNumber: '15975364', status: 'confirmed' },
+    ],
+    '5:00am': [
+      { id: 144, title: 'Albert Flora44', refNumber: '98762319', status: 'voided' },
+      { id: 244, title: 'John Smith44', refNumber: '24589631', status: 'confirmed' },
+      { id: 344, title: 'Maria Garcia44', refNumber: '78453621', status: 'pending' },
+      { id: 444, title: 'Robert Johnson44', refNumber: '36521478', status: 'confirmed' },
+      { id: 544, title: 'Sarah Wilson44', refNumber: '12369854', status: 'cancelled' },
+      { id: 644, title: 'David Thompson44', refNumber: '45698732', status: 'pending' },
+      { id: 744, title: 'Jennifer Adams44', refNumber: '78965412', status: 'confirmed' },
+      { id: 844, title: 'Michael Brown44', refNumber: '32145698', status: 'voided' },
+      { id: 944, title: 'Emily Wilson44', refNumber: '15975364', status: 'confirmed' },
+    ],
   };
   
   // Sample units data
@@ -1025,4 +1252,148 @@ export class ReservationsDashboardComponent implements OnInit {
   closeExpandedView(): void {
     this.expandedTimeSlot = null;
   }
+  scrollToCurrentTimeSlot(): void {
+    // Get current time
+    const currentDate = new Date();
+    const currentHour = currentDate.getHours();
+    const currentMinute = currentDate.getMinutes();
+    
+    console.log(`Current time: ${currentHour}:${currentMinute}`);
+    
+    // Find the time slot closest to current time
+    let closestTimeSlot: string | null = null;
+    let minTimeDifference = Infinity;
+    
+    this.timeSlots.forEach(timeSlot => {
+      // Parse the time slot (format: "1:00am", "2:00am", etc.)
+      const matches = timeSlot.match(/(\d+):(\d+)(am|pm)/i);
+      
+      if (matches) {
+        let hour = parseInt(matches[1], 10);
+        const minute = parseInt(matches[2], 10);
+        const period = matches[3].toLowerCase();
+        
+        // Convert to 24-hour format
+        if (period === 'pm' && hour < 12) {
+          hour += 12;
+        } else if (period === 'am' && hour === 12) {
+          hour = 0;
+        }
+        
+        // Calculate absolute time difference in minutes
+        const slotTotalMinutes = (hour * 60) + minute;
+        const currentTotalMinutes = (currentHour * 60) + currentMinute;
+        const timeDifferenceMinutes = Math.abs(slotTotalMinutes - currentTotalMinutes);
+        
+        console.log(`Time slot: ${timeSlot}, 24h format: ${hour}:${minute}, diff: ${timeDifferenceMinutes} minutes`);
+        
+        // Find the slot with minimum time difference
+        if (timeDifferenceMinutes < minTimeDifference) {
+          minTimeDifference = timeDifferenceMinutes;
+          closestTimeSlot = timeSlot;
+        }
+      }
+    });
+    
+    console.log(`Closest time slot: ${closestTimeSlot}, difference: ${minTimeDifference} minutes`);
+    
+    // Scroll to the closest time slot
+    if (closestTimeSlot) {
+      this.scrollToTimeSlot(closestTimeSlot);
+    }
+  }
+  
+  /**
+   * Scrolls to a specific time slot
+   */
+  scrollToTimeSlot(timeSlot: string): void {
+    // Find the time slot element
+    setTimeout(() => {
+      const timeSlotElements = document.querySelectorAll('.time-cell');
+      let targetElement: Element | null |any = null;
+      
+      timeSlotElements.forEach(element => {
+        if (element.textContent && element.textContent.trim() === timeSlot) {
+          targetElement = element;
+          console.log(`Found target element for time slot: ${timeSlot}`);
+        }
+      });
+      
+      if (targetElement) {
+        // Try to find the closest accordion content container
+        const accordionContent:any = targetElement instanceof Element ? 
+          targetElement.closest('.accordion-content') : null;
+        // Get parent accordion section for scrolling
+        const accordionSection = document.querySelector('.accordion-section');
+        
+        if (accordionSection) {
+          // Get the accordion header height more dynamically
+          const accordionHeader = document.querySelector('.accordion-header');
+          const headerHeight = accordionHeader ? accordionHeader.clientHeight : 30;
+          
+          // Calculate scroll position, accounting for sticky header height
+          const targetTop = (targetElement as HTMLElement).getBoundingClientRect().top;
+          const sectionTop = accordionSection.getBoundingClientRect().top;
+          const relativePosition = targetTop - sectionTop;
+          
+          console.log(`Header height: ${headerHeight}, Target position: ${relativePosition}`);
+          
+          // Scroll to the element with smooth behavior
+          accordionSection.scrollTo({
+            top: accordionSection.scrollTop + relativePosition - headerHeight - 10,
+            behavior: 'smooth'
+          });
+          
+          // Highlight the time slot temporarily
+          this.highlightTimeSlot(targetElement as HTMLElement);
+        }
+      }
+    }, 500); // Increased delay to ensure DOM is fully ready
+  }
+  
+  
+  /**
+   * Briefly highlights a time slot for visual feedback
+   */
+  highlightTimeSlot(element: HTMLElement): void {
+    // Find the parent row element to highlight the entire row
+    const timeRow = element.closest('.time-row');
+    
+    if (timeRow) {
+      // Add a highlight class
+      timeRow.classList.add('highlight-time-slot');
+      
+      // Remove the highlight after a short delay
+      setTimeout(() => {
+        timeRow.classList.remove('highlight-time-slot');
+      }, 3000);
+    }
+  }
+
+  checkStickyHeaderStatus(): void {
+    console.log('Checking sticky header status...');
+    
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    accordionHeaders.forEach((header, index) => {
+      const styles = window.getComputedStyle(header);
+      console.log(`Header ${index}:`);
+      console.log(`- position: ${styles.position}`);
+      console.log(`- top: ${styles.top}`);
+      console.log(`- z-index: ${styles.zIndex}`);
+      
+      // Check if parent has scroll
+      const parent = header.parentElement;
+      if (parent) {
+        const parentStyles = window.getComputedStyle(parent);
+        console.log(`- parent overflow: ${parentStyles.overflow}`);
+        console.log(`- parent height: ${parentStyles.height}`);
+        console.log(`- parent position: ${parentStyles.position}`);
+      }
+    });
+  }
+
+  
+  
+  
+
 }

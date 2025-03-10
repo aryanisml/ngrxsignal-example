@@ -37,6 +37,11 @@ export const routes: Routes = [
         loadComponent: () => import('./reservation/reservation.component')
           .then(m => m.ReservationTimelineComponent)
       },
+      {
+        path: 'cards',
+        loadComponent: () => import('./reservation-cards-sample/reservation-cards-sample.component')
+          .then(m => m.ReservationCardsSampleComponent)
+      },
       { path: '', redirectTo: '/scheduler', pathMatch: 'full' }
     // Same for other routes
   ];

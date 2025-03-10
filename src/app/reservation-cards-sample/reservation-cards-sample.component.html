@@ -1,0 +1,14 @@
+<div class="main-container">
+    <div class="reservation-container">
+      <h1 class="page-title">Reservations</h1>
+      
+      <div class="card-grid">
+        <app-reservation-card 
+        *ngFor="let item of reservationItems" 
+        [item]="item"
+        [selectedId]="selectedCardId"
+        (selectionChange)="onCardSelected($event)">
+      </app-reservation-card>
+      </div>
+    </div>
+  </div>
