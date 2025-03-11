@@ -82,14 +82,7 @@ interface Unit {
                   {{ item.header }} <span class="font-bold">Reading</span>
                 </div>
               </div>
-              <div *ngIf="item.isOpen" class="warning-message">
-                <div class="warning-content">
-                  <i class="warning-icon">⚠️</i>
-                  <span
-                    >Important: Please review all time slots before making a
-                    reservation</span
-                  >
-                </div>
+            
               </div>
               <div
                 class="accordion-content"
@@ -98,210 +91,219 @@ interface Unit {
                 <!-- schedule.component.html -->
                 <div class="schedule-container">
                   <div class="schedule-grid">
-                    <ng-container *ngFor="let timeSlot of timeSlots">
+                  <ng-container *ngFor="let timeSlot of timeSlots">
+            <!-- Warning appears only above the current time slot -->
+            <div *ngIf="isCurrentTimeSlot(timeSlot)" class="time-slot-inline-warning">
+              <div class="warning-content">
+                <i class="warning-icon">⚠️</i>
+                <span>Please check availability before making a reservation</span>
+              </div>
+            </div>
+            
+            <div
+              class="time-row"
+              [class.expanded]="expandedTimeSlot !== null"
+              [class.current-time-slot]="isCurrentTimeSlot(timeSlot)"
+              [attr.data-time-slot]="timeSlot"
+            >
+            <div class="time-cell">{{ timeSlot }}</div>
+            <div class="events-cell">
+              <div class="events-wrapper">
+                <!-- If any time slot is expanded, show all events in a single vertical column -->
+                <ng-container *ngIf="expandedTimeSlot !== null">
+                  <div class="event-column">
+                    <div
+                      *ngFor="let event of events[timeSlot]"
+                      class="event-container"
+                      (click)="
+                        toggleExpandTimeSlot(timeSlot, event)
+                      "
+                    >
                       <div
-                        class="time-row"
-                        [class.expanded]="expandedTimeSlot !== null"
-                        [attr.data-time-slot]="timeSlot"
+                        class="event-card"
+                        [ngClass]="'event-status-' + event.status"
                       >
-                        <div class="time-cell">{{ timeSlot }}</div>
-                        <div class="events-cell">
-                          <div class="events-wrapper">
-                            <!-- If any time slot is expanded, show all events in a single vertical column -->
-                            <ng-container *ngIf="expandedTimeSlot !== null">
-                              <div class="event-column">
-                                <div
-                                  *ngFor="let event of events[timeSlot]"
-                                  class="event-container"
-                                  (click)="
-                                    toggleExpandTimeSlot(timeSlot, event)
-                                  "
-                                >
-                                  <div
-                                    class="event-card"
-                                    [ngClass]="'event-status-' + event.status"
-                                  >
-                                    <div class="event-icons">
-                                      <span class="event-icon">
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="18"
-                                          height="18"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          stroke-width="2"
-                                        >
-                                          <rect
-                                            x="2"
-                                            y="3"
-                                            width="20"
-                                            height="18"
-                                            rx="2"
-                                            ry="2"
-                                          ></rect>
-                                          <line
-                                            x1="8"
-                                            y1="3"
-                                            x2="8"
-                                            y2="21"
-                                          ></line>
-                                          <line
-                                            x1="16"
-                                            y1="3"
-                                            x2="16"
-                                            y2="21"
-                                          ></line>
-                                          <line
-                                            x1="2"
-                                            y1="9"
-                                            x2="22"
-                                            y2="9"
-                                          ></line>
-                                          <line
-                                            x1="2"
-                                            y1="15"
-                                            x2="22"
-                                            y2="15"
-                                          ></line>
-                                        </svg>
-                                      </span>
-                                      <span class="event-icon">
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="18"
-                                          height="18"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          stroke-width="2"
-                                        >
-                                          <path
-                                            d="M5 12h14M12 5l7 7-7 7"
-                                          ></path>
-                                        </svg>
-                                      </span>
-                                    </div>
-                                    <div class="event-content">
-                                      <div class="event-title">
-                                        {{ event.title }}
-                                      </div>
-                                      <div class="event-reference">
-                                        <span class="ref-symbol">#</span>
-                                        {{ event.refNumber }}
-                                      </div>
-                                    </div>
-                                    <div class="event-status">
-                                      {{ event.status }}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </ng-container>
+                        <div class="event-icons">
+                          <span class="event-icon">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            >
+                              <rect
+                                x="2"
+                                y="3"
+                                width="20"
+                                height="18"
+                                rx="2"
+                                ry="2"
+                              ></rect>
+                              <line
+                                x1="8"
+                                y1="3"
+                                x2="8"
+                                y2="21"
+                              ></line>
+                              <line
+                                x1="16"
+                                y1="3"
+                                x2="16"
+                                y2="21"
+                              ></line>
+                              <line
+                                x1="2"
+                                y1="9"
+                                x2="22"
+                                y2="9"
+                              ></line>
+                              <line
+                                x1="2"
+                                y1="15"
+                                x2="22"
+                                y2="15"
+                              ></line>
+                            </svg>
+                          </span>
+                          <span class="event-icon">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            >
+                              <path
+                                d="M5 12h14M12 5l7 7-7 7"
+                              ></path>
+                            </svg>
+                          </span>
+                        </div>
+                        <div class="event-content">
+                          <div class="event-title">
+                            {{ event.title }}
+                          </div>
+                          <div class="event-reference">
+                            <span class="ref-symbol">#</span>
+                            {{ event.refNumber }}
+                          </div>
+                        </div>
+                        <div class="event-status">
+                          {{ event.status }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
 
-                            <!-- If no time slot is expanded, show events in grid layout -->
-                            <ng-container *ngIf="expandedTimeSlot === null">
-                              <ng-container
-                                *ngFor="let row of getEventRows(timeSlot)"
+                <!-- If no time slot is expanded, show events in grid layout -->
+                <ng-container *ngIf="expandedTimeSlot === null">
+                  <ng-container
+                    *ngFor="let row of getEventRows(timeSlot)"
+                  >
+                    <div class="event-row">
+                      <div
+                        *ngFor="let event of row"
+                        class="event-container"
+                        [style.visibility]="
+                          event.isPlaceholder ? 'hidden' : 'visible'
+                        "
+                        (click)="
+                          toggleExpandTimeSlot(timeSlot, event)
+                        "
+                      >
+                        <div
+                          *ngIf="!event.isPlaceholder"
+                          class="event-card"
+                          [ngClass]="'event-status-' + event.status"
+                        >
+                          <div class="event-icons">
+                            <span class="event-icon">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
                               >
-                                <div class="event-row">
-                                  <div
-                                    *ngFor="let event of row"
-                                    class="event-container"
-                                    [style.visibility]="
-                                      event.isPlaceholder ? 'hidden' : 'visible'
-                                    "
-                                    (click)="
-                                      toggleExpandTimeSlot(timeSlot, event)
-                                    "
-                                  >
-                                    <div
-                                      *ngIf="!event.isPlaceholder"
-                                      class="event-card"
-                                      [ngClass]="'event-status-' + event.status"
-                                    >
-                                      <div class="event-icons">
-                                        <span class="event-icon">
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="18"
-                                            height="18"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                          >
-                                            <rect
-                                              x="2"
-                                              y="3"
-                                              width="20"
-                                              height="18"
-                                              rx="2"
-                                              ry="2"
-                                            ></rect>
-                                            <line
-                                              x1="8"
-                                              y1="3"
-                                              x2="8"
-                                              y2="21"
-                                            ></line>
-                                            <line
-                                              x1="16"
-                                              y1="3"
-                                              x2="16"
-                                              y2="21"
-                                            ></line>
-                                            <line
-                                              x1="2"
-                                              y1="9"
-                                              x2="22"
-                                              y2="9"
-                                            ></line>
-                                            <line
-                                              x1="2"
-                                              y1="15"
-                                              x2="22"
-                                              y2="15"
-                                            ></line>
-                                          </svg>
-                                        </span>
-                                        <span class="event-icon">
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="18"
-                                            height="18"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                          >
-                                            <path
-                                              d="M5 12h14M12 5l7 7-7 7"
-                                            ></path>
-                                          </svg>
-                                        </span>
-                                      </div>
-                                      <div class="event-content">
-                                        <div class="event-title">
-                                          {{ event.title }}
-                                        </div>
-                                        <div class="event-reference">
-                                          <span class="ref-symbol">#</span>
-                                          {{ event.refNumber }}
-                                        </div>
-                                      </div>
-                                      <div class="event-status">
-                                        {{ event.status }}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </ng-container>
-                            </ng-container>
+                                <rect
+                                  x="2"
+                                  y="3"
+                                  width="20"
+                                  height="18"
+                                  rx="2"
+                                  ry="2"
+                                ></rect>
+                                <line
+                                  x1="8"
+                                  y1="3"
+                                  x2="8"
+                                  y2="21"
+                                ></line>
+                                <line
+                                  x1="16"
+                                  y1="3"
+                                  x2="16"
+                                  y2="21"
+                                ></line>
+                                <line
+                                  x1="2"
+                                  y1="9"
+                                  x2="22"
+                                  y2="9"
+                                ></line>
+                                <line
+                                  x1="2"
+                                  y1="15"
+                                  x2="22"
+                                  y2="15"
+                                ></line>
+                              </svg>
+                            </span>
+                            <span class="event-icon">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                              >
+                                <path
+                                  d="M5 12h14M12 5l7 7-7 7"
+                                ></path>
+                              </svg>
+                            </span>
+                          </div>
+                          <div class="event-content">
+                            <div class="event-title">
+                              {{ event.title }}
+                            </div>
+                            <div class="event-reference">
+                              <span class="ref-symbol">#</span>
+                              {{ event.refNumber }}
+                            </div>
+                          </div>
+                          <div class="event-status">
+                            {{ event.status }}
                           </div>
                         </div>
                       </div>
-                    </ng-container>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+            </div>
+          </ng-container>
                   </div>
                 </div>
               </div>
@@ -1213,29 +1215,120 @@ interface Unit {
 
       /* Add these styles to your component's styles array */
 
-/* Sticky warning message styles */
-.warning-message {
-  position: sticky;
-  top: 30px; /* Should match the height of the accordion header */
-  z-index: 90; /* Below the header but above other content */
+      /* Sticky warning message styles */
+      .warning-message {
+        position: sticky;
+        top: 30px; /* Should match the height of the accordion header */
+        z-index: 90; /* Below the header but above other content */
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        border-left: 4px solid #ffc107;
+        color: #856404;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+
+      .warning-content {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      .warning-icon {
+        margin-right: 10px;
+        font-size: 16px;
+      }
+
+      /* Add animation to make the warning more noticeable after scrolling */
+      @keyframes pulse {
+        0% {
+          opacity: 0.8;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.8;
+        }
+      }
+
+      /* Apply animation when the time slot is highlighted */
+      .highlight-time-slot + .warning-message,
+      .highlight-time-slot ~ .warning-message {
+        animation: pulse 2s infinite;
+        background-color: #fff3cd;
+        border-color: #ffc107;
+      }
+
+      /* Add responsiveness for the warning */
+      @media screen and (max-width: 768px) {
+        .warning-message {
+          padding: 8px 10px;
+          font-size: 12px;
+        }
+      }
+
+      /* Update the sticky header styles to work with the warning */
+      .accordion-header {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
+        background-color: #e3f2fd !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        margin-bottom: 0 !important;
+        width: 100% !important;
+      }
+
+      .time-slot-inline-warning {
   background-color: #fff3cd;
   border: 1px solid #ffeeba;
   border-left: 4px solid #ffc107;
   color: #856404;
   padding: 10px 15px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   font-size: 14px;
-  display: flex;
-  align-items: center;
-  transition: all 0.3s ease;
+  font-weight: 500;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Highlight styling for the current time slot */
+.current-time-slot {
+  background-color: rgba(63, 81, 181, 0.08);
+  border-left: 3px solid #3f51b5;
+}
+
+/* Styles for the inline time slot warning - make sure these are included in your component styles */
+.time-slot-inline-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-left: 4px solid #ffc107;
+  color: #856404;
+  padding: 10px 15px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .warning-content {
   display: flex;
   align-items: center;
-  width: 100%;
 }
 
 .warning-icon {
@@ -1243,38 +1336,26 @@ interface Unit {
   font-size: 16px;
 }
 
-/* Add animation to make the warning more noticeable after scrolling */
-@keyframes pulse {
-  0% { opacity: 0.8; }
-  50% { opacity: 1; }
-  100% { opacity: 0.8; }
+/* Highlight the current time slot with a more visible style */
+.current-time-slot {
+  background-color: rgba(63, 81, 181, 0.08);
+  border-left: 3px solid #3f51b5;
 }
 
-/* Apply animation when the time slot is highlighted */
-.highlight-time-slot + .warning-message, 
-.highlight-time-slot ~ .warning-message {
-  animation: pulse 2s infinite;
-  background-color: #fff3cd;
-  border-color: #ffc107;
+.current-time-slot .time-cell {
+  font-weight: bold;
+  color: #3f51b5;
 }
 
-/* Add responsiveness for the warning */
-@media screen and (max-width: 768px) {
-  .warning-message {
-    padding: 8px 10px;
-    font-size: 12px;
-  }
+/* Make sure the warning is not hidden behind the header */
+.schedule-container {
+  position: relative;
+  z-index: 1;
 }
 
-/* Update the sticky header styles to work with the warning */
-.accordion-header {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 100 !important;
-  background-color: #e3f2fd !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-  margin-bottom: 0 !important;
-  width: 100% !important;
+/* Enforce proper spacing between warning and time slot */
+.time-slot-inline-warning + .time-row {
+  margin-top: 2px;
 }
     `,
   ],
@@ -1300,6 +1381,12 @@ interface Unit {
 })
 export class ReservationsDashboardComponent implements OnInit {
   // Sample accordion items
+  // Add this property to your component class
+currentTimeSlotForWarning: string | null = null;
+// Add this method to your ReservationsDashboardComponent class
+isCurrentTimeSlot(timeSlot: string): boolean {
+  return this.currentTimeSlotForWarning === timeSlot;
+}
   accordionItems: AccordionItem[] = [
     {
       header: 'Header I',
@@ -1640,146 +1727,139 @@ export class ReservationsDashboardComponent implements OnInit {
 
   // 2. Now update your scrollToCurrentTimeSlot method
 
-  scrollToCurrentTimeSlot(): void {
-    // Increase timeout to ensure DOM is fully rendered
-    setTimeout(() => {
-      try {
-        // Get current time
-        const currentDate = new Date();
-        const currentHour = currentDate.getHours();
-        const currentMinute = currentDate.getMinutes();
-
-        console.log(`Current time: ${currentHour}:${currentMinute}`);
-
-        // Find the time slot closest to current time
-        let closestTimeSlot: string | null | any = null;
-        let minTimeDifference = Infinity;
-
-        this.timeSlots.forEach((timeSlot) => {
-          // Parse the time slot (format: "7:00am", "8:00am", etc.)
-          const matches = timeSlot.match(/(\d+):(\d+)(am|pm)/i);
-
-          if (matches) {
-            let hour = parseInt(matches[1], 10);
-            const minute = parseInt(matches[2], 10);
-            const period = matches[3].toLowerCase();
-
-            // Convert to 24-hour format for accurate comparison
-            if (period === 'pm' && hour < 12) {
-              hour += 12;
-            } else if (period === 'am' && hour === 12) {
-              hour = 0;
-            }
-
-            // Calculate absolute time difference in minutes
-            const slotTotalMinutes = hour * 60 + minute;
-            const currentTotalMinutes = currentHour * 60 + currentMinute;
-            const timeDifferenceMinutes = Math.abs(
-              slotTotalMinutes - currentTotalMinutes
-            );
-
-            console.log(
-              `Time slot: ${timeSlot}, 24h format: ${hour}:${minute}, diff: ${timeDifferenceMinutes} minutes`
-            );
-
-            // Find the slot with minimum time difference
-            if (timeDifferenceMinutes < minTimeDifference) {
-              minTimeDifference = timeDifferenceMinutes;
-              closestTimeSlot = timeSlot;
-            }
-          }
-        });
-
-        console.log(
-          `Closest time slot: ${closestTimeSlot}, difference: ${minTimeDifference} minutes`
-        );
-
-        // Force a manual refresh before scrolling
-        this.forceRefresh();
-
-        // Scroll to the closest time slot with a slight delay
-        if (closestTimeSlot) {
-          setTimeout(() => this.scrollToTimeSlot(closestTimeSlot), 100);
-        }
-      } catch (error) {
-        console.error('Error in scrollToCurrentTimeSlot:', error);
-      }
-    }, 0); // Increased timeout
-  }
-
+ 
   // Add this helper method
   private forceRefresh(): void {
     // Trigger a small state change to force Angular change detection
     this.expandedTimeSlot = this.expandedTimeSlot;
   }
   // 3. Completely revised scrollToTimeSlot method with multiple fallback approaches
-  scrollToTimeSlot(timeSlot: string): void {
-    try {
-      console.log(`Attempting to scroll to time slot: "${timeSlot}"`);
+ // Enhanced scrollToTimeSlot method with better handling of the inline warning
 
-      // Try all time rows and manually check text content
+// Replace your scrollToTimeSlot method with this improved version
+scrollToTimeSlot(timeSlot: string): void {
+  try {
+    console.log(`Attempting to scroll to time slot: "${timeSlot}"`);
+    
+    // Update the current time slot for warning
+    this.currentTimeSlotForWarning = timeSlot;
+    
+    // Force a change detection cycle
+    setTimeout(() => {
+      // Find the relevant elements
       const accordionSection = document.querySelector('.accordion-section');
       const timeRows = document.querySelectorAll('.time-row');
-
-      if (!timeRows.length) {
-        console.error('No time rows found in the DOM');
-        return;
-      }
-
-      console.log(`Found ${timeRows.length} time rows to check`);
-
-      // Try to find the matching row
       let targetRow: Element | null = null;
-
+      
+      // Find the matching time row
       for (let i = 0; i < timeRows.length; i++) {
         const timeCell = timeRows[i].querySelector('.time-cell');
-        if (timeCell && timeCell.textContent) {
-          const text = timeCell.textContent.trim();
-          console.log(`Row ${i} has time cell with text: "${text}"`);
-
-          if (text === timeSlot) {
-            targetRow = timeRows[i];
-            console.log(`Found matching time slot at row ${i}`);
-            break;
-          }
+        if (timeCell && timeCell.textContent && timeCell.textContent.trim() === timeSlot) {
+          targetRow = timeRows[i];
+          break;
         }
       }
-
-      // If no exact match, try the first row as fallback
-      if (!targetRow && timeRows.length > 0) {
-        targetRow = timeRows[0];
-        console.log('Using first row as fallback');
-      }
-
-      // Scroll to the target row
+      
       if (targetRow && accordionSection) {
-        // Highlight for visual feedback
-        targetRow.classList.add('highlight-time-slot');
-        setTimeout(
-          () => targetRow?.classList.remove('highlight-time-slot'),
-          3000
-        );
-
-        // Calculate position considering accordion header
-        const headerHeight =
-          document.querySelector('.accordion-header')?.clientHeight || 30;
-
-        // Try direct scrollTo first
-        const targetTop =
-          (targetRow as HTMLElement).offsetTop - headerHeight - 10;
+        // Find the warning that should be above this time slot
+        const warningElement = targetRow.previousElementSibling;
+        
+        // Calculate scroll positions
+        const headerHeight = document.querySelector('.accordion-header')?.clientHeight || 30;
+        let targetPosition = 0;
+        
+        // If there's a warning, scroll to show it instead of the row
+        if (warningElement && warningElement.classList.contains('time-slot-inline-warning')) {
+          targetPosition = (warningElement as HTMLElement).offsetTop - headerHeight - 10;
+        } else {
+          // Otherwise just scroll to the time slot row
+          targetPosition = (targetRow as HTMLElement).offsetTop - headerHeight - 10;
+        }
+        
+        // Perform the scroll
         accordionSection.scrollTo({
-          top: targetTop,
-          behavior: 'smooth',
+          top: targetPosition,
+          behavior: 'smooth'
         });
-
-        console.log(`Scrolled to position ${targetTop}px`);
+        
+        console.log(`Scrolled to position ${targetPosition}px`);
+        
+        // Add visual feedback
+        targetRow.classList.add('current-time-slot');
+        setTimeout(() => {
+          // Remove the highlight from other rows
+          document.querySelectorAll('.time-row').forEach(row => {
+            if (row !== targetRow) {
+              row.classList.remove('current-time-slot');
+            }
+          });
+        }, 100);
       } else {
-        console.error('Could not find suitable elements for scrolling');
+        console.error('Could not find time slot elements for scrolling');
+      }
+    }, 50); // Short delay to ensure elements are rendered
+  } catch (error) {
+    console.error('Error in scrollToTimeSlot:', error);
+  }
+}
+
+// Make sure your scrollToCurrentTimeSlot method sets the current time slot for warning
+scrollToCurrentTimeSlot(): void {
+  setTimeout(() => {
+    try {
+      // Get current time
+      const currentDate = new Date();
+      const currentHour = currentDate.getHours();
+      const currentMinute = currentDate.getMinutes();
+      
+      // Find the time slot closest to current time
+      let closestTimeSlot: string | null|any = null;
+      let minTimeDifference = Infinity;
+      
+      this.timeSlots.forEach(timeSlot => {
+        // Parse the time slot (format: "7:00am", "8:00am", etc.)
+        const matches = timeSlot.match(/(\d+):(\d+)(am|pm)/i);
+        
+        if (matches) {
+          let hour = parseInt(matches[1], 10);
+          const minute = parseInt(matches[2], 10);
+          const period = matches[3].toLowerCase();
+          
+          // Convert to 24-hour format for accurate comparison
+          if (period === 'pm' && hour < 12) {
+            hour += 12;
+          } else if (period === 'am' && hour === 12) {
+            hour = 0;
+          }
+          
+          // Calculate absolute time difference in minutes
+          const slotTotalMinutes = (hour * 60) + minute;
+          const currentTotalMinutes = (currentHour * 60) + currentMinute;
+          const timeDifferenceMinutes = Math.abs(slotTotalMinutes - currentTotalMinutes);
+          
+          // Find the slot with minimum time difference
+          if (timeDifferenceMinutes < minTimeDifference) {
+            minTimeDifference = timeDifferenceMinutes;
+            closestTimeSlot = timeSlot;
+          }
+        }
+      });
+      
+      // Set the current time slot for warning
+      this.currentTimeSlotForWarning = closestTimeSlot;
+      
+      // Force a refresh before scrolling
+      this.forceRefresh();
+      
+      // Scroll to the closest time slot
+      if (closestTimeSlot) {
+        setTimeout(() => this.scrollToTimeSlot(closestTimeSlot), 100);
       }
     } catch (error) {
-      console.error('Error in scrollToTimeSlot:', error);
+      console.error('Error in scrollToCurrentTimeSlot:', error);
     }
-  }
+  }, 50); // Short delay to ensure rendering
+}
 
   // 4. A helper method for scrolling with multiple approaches
   private scrollToElement(element: HTMLElement): void {
