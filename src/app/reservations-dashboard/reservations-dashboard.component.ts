@@ -1385,7 +1385,7 @@ export class ReservationsDashboardComponent implements OnInit {
   expandedTimeSlot: string | null = '01:00';
 
   // Available time slots
-  timeSlots: string[] = ['4:00am', '5:00am', '6:00am', '7:00am', '8:00am'];
+  timeSlots: string[] = ['6:00am', '8:30am', '10:00am', "11:30am", "1:00pm","4:30pm", "5:00pm", "5:30pm","6:00pm"];
 
   // Event display configuration
   maxEventsPerRow: number = 3;
@@ -1393,90 +1393,246 @@ export class ReservationsDashboardComponent implements OnInit {
 
   // Events data organized by time slot
   events: { [key: string]: Event[] } = {
-    '4:00am': [
-      { id: 1, title: 'Albert Flora', refNumber: '98762319', status: 'voided' },
+    "6:00am": [
       {
-        id: 2,
-        title: 'John Smith',
-        refNumber: '24589631',
-        status: 'confirmed',
+        "id": 1,
+        "title": "Person 1",
+        "refNumber": "48176399",
+        "status": "cancelled"
       },
       {
-        id: 3,
-        title: 'Maria Garcia',
-        refNumber: '78453621',
-        status: 'pending',
+        "id": 2,
+        "title": "Person 2",
+        "refNumber": "75154133",
+        "status": "cancelled"
       },
       {
-        id: 4,
-        title: 'Robert Johnson',
-        refNumber: '36521478',
-        status: 'confirmed',
+        "id": 3,
+        "title": "Person 3",
+        "refNumber": "88400987",
+        "status": "confirmed"
       },
       {
-        id: 5,
-        title: 'Sarah Wilson',
-        refNumber: '12369854',
-        status: 'cancelled',
-      },
+        "id": 4,
+        "title": "Person 4",
+        "refNumber": "83424146",
+        "status": "pending"
+      }
     ],
-    '5:00am': [
+    "8:30am": [
       {
-        id: 10,
-        title: 'James Williams',
-        refNumber: '78965321',
-        status: 'confirmed',
+        "id": 5,
+        "title": "Person 5",
+        "refNumber": "58587939",
+        "status": "cancelled"
       },
-      { id: 11, title: 'Emma Davis', refNumber: '12398745', status: 'pending' },
+      {
+        "id": 6,
+        "title": "Person 6",
+        "refNumber": "77582252",
+        "status": "cancelled"
+      },
+      {
+        "id": 7,
+        "title": "Person 7",
+        "refNumber": "20416926",
+        "status": "voided"
+      },
+      {
+        "id": 8,
+        "title": "Person 8",
+        "refNumber": "30947146",
+        "status": "voided"
+      },
+      {
+        "id": 9,
+        "title": "Person 9",
+        "refNumber": "77094037",
+        "status": "confirmed"
+      },
+      {
+        "id": 10,
+        "title": "Person 10",
+        "refNumber": "48457564",
+        "status": "confirmed"
+      }
     ],
-    '6:00am': [
+    "10:00am": [
       {
-        id: 12,
-        title: 'Christopher Lee',
-        refNumber: '65432198',
-        status: 'voided',
+        "id": 11,
+        "title": "Person 11",
+        "refNumber": "52293922",
+        "status": "pending"
       },
+      {
+        "id": 12,
+        "title": "Person 12",
+        "refNumber": "25189289",
+        "status": "pending"
+      },
+      {
+        "id": 13,
+        "title": "Person 13",
+        "refNumber": "84338452",
+        "status": "cancelled"
+      },
+      {
+        "id": 14,
+        "title": "Person 14",
+        "refNumber": "52512063",
+        "status": "voided"
+      }
     ],
-    '7:00am': [
+    "11:30am": [
       {
-        id: 13,
-        title: 'Albert Flora2',
-        refNumber: '98762319',
-        status: 'voided',
+        "id": 15,
+        "title": "Person 15",
+        "refNumber": "31617881",
+        "status": "voided"
       },
       {
-        id: 14,
-        title: 'John Smith2',
-        refNumber: '24589631',
-        status: 'confirmed',
+        "id": 16,
+        "title": "Person 16",
+        "refNumber": "14466970",
+        "status": "pending"
       },
       {
-        id: 15,
-        title: 'Maria Garcia3',
-        refNumber: '78453621',
-        status: 'pending',
+        "id": 17,
+        "title": "Person 17",
+        "refNumber": "41419909",
+        "status": "cancelled"
       },
+      {
+        "id": 18,
+        "title": "Person 18",
+        "refNumber": "51356077",
+        "status": "confirmed"
+      },
+      {
+        "id": 19,
+        "title": "Person 19",
+        "refNumber": "84688913",
+        "status": "confirmed"
+      }
     ],
-    '8:00am': [
+    "1:00pm": [
       {
-        id: 16,
-        title: 'Albert Flora44',
-        refNumber: '98762319',
-        status: 'voided',
+        "id": 20,
+        "title": "Person 20",
+        "refNumber": "60125507",
+        "status": "confirmed"
       },
       {
-        id: 17,
-        title: 'John Smith44',
-        refNumber: '24589631',
-        status: 'confirmed',
-      },
-      {
-        id: 18,
-        title: 'Maria Garcia44',
-        refNumber: '78453621',
-        status: 'pending',
-      },
+        "id": 21,
+        "title": "Person 21",
+        "refNumber": "53339434",
+        "status": "confirmed"
+      }
     ],
+    "4:30pm": [
+      {
+        "id": 22,
+        "title": "Person 22",
+        "refNumber": "27185946",
+        "status": "cancelled"
+      },
+      {
+        "id": 23,
+        "title": "Person 23",
+        "refNumber": "83499768",
+        "status": "pending"
+      }
+    ],
+    "5:00pm": [
+      {
+        "id": 24,
+        "title": "Person 24",
+        "refNumber": "22219046",
+        "status": "voided"
+      },
+      {
+        "id": 25,
+        "title": "Person 25",
+        "refNumber": "24028857",
+        "status": "pending"
+      },
+      {
+        "id": 26,
+        "title": "Person 26",
+        "refNumber": "76218843",
+        "status": "cancelled"
+      },
+      {
+        "id": 27,
+        "title": "Person 27",
+        "refNumber": "59021810",
+        "status": "confirmed"
+      },
+      {
+        "id": 28,
+        "title": "Person 28",
+        "refNumber": "71446562",
+        "status": "confirmed"
+      },
+      {
+        "id": 29,
+        "title": "Person 29",
+        "refNumber": "22661995",
+        "status": "cancelled"
+      }
+    ],
+    "5:30pm": [
+      {
+        "id": 30,
+        "title": "Person 30",
+        "refNumber": "71484136",
+        "status": "cancelled"
+      },
+      {
+        "id": 31,
+        "title": "Person 31",
+        "refNumber": "85519780",
+        "status": "cancelled"
+      },
+      {
+        "id": 32,
+        "title": "Person 32",
+        "refNumber": "11886653",
+        "status": "confirmed"
+      },
+      {
+        "id": 33,
+        "title": "Person 33",
+        "refNumber": "86551233",
+        "status": "confirmed"
+      },
+      {
+        "id": 34,
+        "title": "Person 34",
+        "refNumber": "22817176",
+        "status": "confirmed"
+      },
+      {
+        "id": 35,
+        "title": "Person 35",
+        "refNumber": "63421649",
+        "status": "cancelled"
+      }
+    ],
+    "6:00pm": [
+      {
+        "id": 36,
+        "title": "Person 36",
+        "refNumber": "41300256",
+        "status": "cancelled"
+      },
+      {
+        "id": 37,
+        "title": "Person 37",
+        "refNumber": "26266581",
+        "status": "pending"
+      }
+    ]
   };
 
   // Sample units data
