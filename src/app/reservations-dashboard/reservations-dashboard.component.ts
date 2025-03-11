@@ -51,6 +51,7 @@ interface Unit {
     InputTextModule,
   ],
   template: `
+    <!-- Template for reservations-dashboard.component.ts -->
     <div
       class="dashboard-container"
       [class.expanded-view]="expandedTimeSlot !== null"
@@ -67,6 +68,7 @@ interface Unit {
               class="accordion-item"
               *ngFor="let item of accordionItems; let i = index"
             >
+              <!-- Accordion Header -->
               <div
                 class="accordion-header"
                 [class.active]="item.isOpen"
@@ -82,228 +84,262 @@ interface Unit {
                   {{ item.header }} <span class="font-bold">Reading</span>
                 </div>
               </div>
-            
+              <div *ngIf="stickyWarningTimeSlot" class="global-warning-message" >
+                <div class="warning-content">
+                  <i class="warning-icon">⚠️</i>
+                  <span
+                    >Please check availability before making a reservation</span
+                  >
+                  <span class="time-slot-ref">{{ stickyWarningTimeSlot }}</span>
+                  <span
+                    class="close-warning"
+                    (click)="clearStickyWarning($event)"
+                    >✕</span
+                  >
+                </div>
               </div>
+
+              <!-- Accordion Content -->
               <div
                 class="accordion-content"
                 [@collapseAnimation]="item.isOpen ? 'open' : 'closed'"
               >
-                <!-- schedule.component.html -->
+                <!-- Schedule Container -->
                 <div class="schedule-container">
                   <div class="schedule-grid">
-                  <ng-container *ngFor="let timeSlot of timeSlots">
-            <!-- Warning appears only above the current time slot -->
-            <div *ngIf="isCurrentTimeSlot(timeSlot)" class="time-slot-inline-warning">
-              <div class="warning-content">
-                <i class="warning-icon">⚠️</i>
-                <span>Please check availability before making a reservation</span>
-              </div>
-            </div>
-            
-            <div
-              class="time-row"
-              [class.expanded]="expandedTimeSlot !== null"
-              [class.current-time-slot]="isCurrentTimeSlot(timeSlot)"
-              [attr.data-time-slot]="timeSlot"
-            >
-            <div class="time-cell">{{ timeSlot }}</div>
-            <div class="events-cell">
-              <div class="events-wrapper">
-                <!-- If any time slot is expanded, show all events in a single vertical column -->
-                <ng-container *ngIf="expandedTimeSlot !== null">
-                  <div class="event-column">
-                    <div
-                      *ngFor="let event of events[timeSlot]"
-                      class="event-container"
-                      (click)="
-                        toggleExpandTimeSlot(timeSlot, event)
-                      "
-                    >
+                    <ng-container *ngFor="let timeSlot of timeSlots">
+                      <!-- Warning appears only above the current time slot -->
                       <div
-                        class="event-card"
-                        [ngClass]="'event-status-' + event.status"
+                        *ngIf="
+                          isCurrentTimeSlot(timeSlot) &&
+                          !isWarningStickyFor(timeSlot)
+                        "
+                        class="time-slot-inline-warning"
+                        (click)="toggleStickyWarning(timeSlot, $event)"
                       >
-                        <div class="event-icons">
-                          <span class="event-icon">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="18"
-                              height="18"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                            >
-                              <rect
-                                x="2"
-                                y="3"
-                                width="20"
-                                height="18"
-                                rx="2"
-                                ry="2"
-                              ></rect>
-                              <line
-                                x1="8"
-                                y1="3"
-                                x2="8"
-                                y2="21"
-                              ></line>
-                              <line
-                                x1="16"
-                                y1="3"
-                                x2="16"
-                                y2="21"
-                              ></line>
-                              <line
-                                x1="2"
-                                y1="9"
-                                x2="22"
-                                y2="9"
-                              ></line>
-                              <line
-                                x1="2"
-                                y1="15"
-                                x2="22"
-                                y2="15"
-                              ></line>
-                            </svg>
+                        <div class="warning-content">
+                          <i class="warning-icon">⚠️</i>
+                          <span>
+                            <strong>{{ getUnconfirmedCount(timeSlot) }}</strong>
+                            unconfirmed
+                            {{
+                              getUnconfirmedCount(timeSlot) === 1
+                                ? 'reservation'
+                                : 'reservations'
+                            }}
+                            for this time slot
                           </span>
-                          <span class="event-icon">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="18"
-                              height="18"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                            >
-                              <path
-                                d="M5 12h14M12 5l7 7-7 7"
-                              ></path>
-                            </svg>
-                          </span>
-                        </div>
-                        <div class="event-content">
-                          <div class="event-title">
-                            {{ event.title }}
-                          </div>
-                          <div class="event-reference">
-                            <span class="ref-symbol">#</span>
-                            {{ event.refNumber }}
-                          </div>
-                        </div>
-                        <div class="event-status">
-                          {{ event.status }}
+                          <span class="count-badge">{{
+                            getUnconfirmedCount(timeSlot)
+                          }}</span>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </ng-container>
 
-                <!-- If no time slot is expanded, show events in grid layout -->
-                <ng-container *ngIf="expandedTimeSlot === null">
-                  <ng-container
-                    *ngFor="let row of getEventRows(timeSlot)"
-                  >
-                    <div class="event-row">
+                      <!-- Time Row -->
                       <div
-                        *ngFor="let event of row"
-                        class="event-container"
-                        [style.visibility]="
-                          event.isPlaceholder ? 'hidden' : 'visible'
-                        "
-                        (click)="
-                          toggleExpandTimeSlot(timeSlot, event)
-                        "
+                        class="time-row"
+                        [class.expanded]="expandedTimeSlot !== null"
+                        [class.current-time-slot]="isCurrentTimeSlot(timeSlot)"
+                        [attr.data-time-slot]="timeSlot"
                       >
-                        <div
-                          *ngIf="!event.isPlaceholder"
-                          class="event-card"
-                          [ngClass]="'event-status-' + event.status"
-                        >
-                          <div class="event-icons">
-                            <span class="event-icon">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
+                        <div class="time-cell">{{ timeSlot }}</div>
+                        <div class="events-cell">
+                          <div class="events-wrapper">
+                            <!-- Expanded View: Vertical Column Layout -->
+                            <ng-container *ngIf="expandedTimeSlot !== null">
+                              <div class="event-column">
+                                <div
+                                  *ngFor="let event of events[timeSlot]"
+                                  class="event-container"
+                                  (click)="
+                                    toggleExpandTimeSlot(timeSlot, event)
+                                  "
+                                >
+                                  <div
+                                    class="event-card"
+                                    [ngClass]="'event-status-' + event.status"
+                                  >
+                                    <div class="event-icons">
+                                      <span class="event-icon">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="18"
+                                          height="18"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          stroke-width="2"
+                                        >
+                                          <rect
+                                            x="2"
+                                            y="3"
+                                            width="20"
+                                            height="18"
+                                            rx="2"
+                                            ry="2"
+                                          ></rect>
+                                          <line
+                                            x1="8"
+                                            y1="3"
+                                            x2="8"
+                                            y2="21"
+                                          ></line>
+                                          <line
+                                            x1="16"
+                                            y1="3"
+                                            x2="16"
+                                            y2="21"
+                                          ></line>
+                                          <line
+                                            x1="2"
+                                            y1="9"
+                                            x2="22"
+                                            y2="9"
+                                          ></line>
+                                          <line
+                                            x1="2"
+                                            y1="15"
+                                            x2="22"
+                                            y2="15"
+                                          ></line>
+                                        </svg>
+                                      </span>
+                                      <span class="event-icon">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="18"
+                                          height="18"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          stroke-width="2"
+                                        >
+                                          <path
+                                            d="M5 12h14M12 5l7 7-7 7"
+                                          ></path>
+                                        </svg>
+                                      </span>
+                                    </div>
+                                    <div class="event-content">
+                                      <div class="event-title">
+                                        {{ event.title }}
+                                      </div>
+                                      <div class="event-reference">
+                                        <span class="ref-symbol">#</span>
+                                        {{ event.refNumber }}
+                                      </div>
+                                    </div>
+                                    <div class="event-status">
+                                      {{ event.status }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-container>
+
+                            <!-- Collapsed View: Grid Layout -->
+                            <ng-container *ngIf="expandedTimeSlot === null">
+                              <ng-container
+                                *ngFor="let row of getEventRows(timeSlot)"
                               >
-                                <rect
-                                  x="2"
-                                  y="3"
-                                  width="20"
-                                  height="18"
-                                  rx="2"
-                                  ry="2"
-                                ></rect>
-                                <line
-                                  x1="8"
-                                  y1="3"
-                                  x2="8"
-                                  y2="21"
-                                ></line>
-                                <line
-                                  x1="16"
-                                  y1="3"
-                                  x2="16"
-                                  y2="21"
-                                ></line>
-                                <line
-                                  x1="2"
-                                  y1="9"
-                                  x2="22"
-                                  y2="9"
-                                ></line>
-                                <line
-                                  x1="2"
-                                  y1="15"
-                                  x2="22"
-                                  y2="15"
-                                ></line>
-                              </svg>
-                            </span>
-                            <span class="event-icon">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                              >
-                                <path
-                                  d="M5 12h14M12 5l7 7-7 7"
-                                ></path>
-                              </svg>
-                            </span>
-                          </div>
-                          <div class="event-content">
-                            <div class="event-title">
-                              {{ event.title }}
-                            </div>
-                            <div class="event-reference">
-                              <span class="ref-symbol">#</span>
-                              {{ event.refNumber }}
-                            </div>
-                          </div>
-                          <div class="event-status">
-                            {{ event.status }}
+                                <div class="event-row">
+                                  <div
+                                    *ngFor="let event of row"
+                                    class="event-container"
+                                    [style.visibility]="
+                                      event.isPlaceholder ? 'hidden' : 'visible'
+                                    "
+                                    (click)="
+                                      toggleExpandTimeSlot(timeSlot, event)
+                                    "
+                                  >
+                                    <div
+                                      *ngIf="!event.isPlaceholder"
+                                      class="event-card"
+                                      [ngClass]="'event-status-' + event.status"
+                                    >
+                                      <div class="event-icons">
+                                        <span class="event-icon">
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                          >
+                                            <rect
+                                              x="2"
+                                              y="3"
+                                              width="20"
+                                              height="18"
+                                              rx="2"
+                                              ry="2"
+                                            ></rect>
+                                            <line
+                                              x1="8"
+                                              y1="3"
+                                              x2="8"
+                                              y2="21"
+                                            ></line>
+                                            <line
+                                              x1="16"
+                                              y1="3"
+                                              x2="16"
+                                              y2="21"
+                                            ></line>
+                                            <line
+                                              x1="2"
+                                              y1="9"
+                                              x2="22"
+                                              y2="9"
+                                            ></line>
+                                            <line
+                                              x1="2"
+                                              y1="15"
+                                              x2="22"
+                                              y2="15"
+                                            ></line>
+                                          </svg>
+                                        </span>
+                                        <span class="event-icon">
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                          >
+                                            <path
+                                              d="M5 12h14M12 5l7 7-7 7"
+                                            ></path>
+                                          </svg>
+                                        </span>
+                                      </div>
+                                      <div class="event-content">
+                                        <div class="event-title">
+                                          {{ event.title }}
+                                        </div>
+                                        <div class="event-reference">
+                                          <span class="ref-symbol">#</span>
+                                          {{ event.refNumber }}
+                                        </div>
+                                      </div>
+                                      <div class="event-status">
+                                        {{ event.status }}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+                            </ng-container>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </ng-container>
-                </ng-container>
-              </div>
-            </div>
-            </div>
-          </ng-container>
+                    </ng-container>
                   </div>
                 </div>
               </div>
@@ -311,32 +347,27 @@ interface Unit {
           </div>
         </div>
 
-        <!-- Find Units Section - Only visible when expanded, takes 3 cols -->
+        <!-- Find Units Section - Only visible when expanded -->
         <div class="find-units-section" *ngIf="expandedTimeSlot !== null">
           <div class="section-content">
             <h3>Find Units</h3>
-
             <div class="search-box">
               <input type="text" pInputText placeholder="Search Fleet..." />
             </div>
-
             <div class="units-list">
               <div class="unit-card" *ngFor="let unit of units">
                 <div class="available-tag">Available</div>
                 <div class="unit-distance">{{ unit.distance }}</div>
                 <div class="unit-title">{{ unit.type }} - {{ unit.year }}</div>
                 <div class="unit-description">{{ unit.description }}</div>
-
                 <div class="unit-image">
                   <img [src]="unit.imageUrl" alt="{{ unit.type }}" />
                 </div>
-
                 <div class="unit-details">
                   <div class="detail-group">
                     <div class="detail-label">Rental Status</div>
                     <div class="detail-value">{{ unit.rentalStatus }}</div>
                   </div>
-
                   <div class="detail-group">
                     <div class="detail-label">PM Date</div>
                     <div class="detail-value">{{ unit.pmDate }}</div>
@@ -347,7 +378,7 @@ interface Unit {
           </div>
         </div>
 
-        <!-- Customer Details Section - Only visible when expanded, takes 4 cols -->
+        <!-- Customer Details Section - Only visible when expanded -->
         <div class="customer-details-section" *ngIf="expandedTimeSlot !== null">
           <div class="close-expanded-view" (click)="closeExpandedView()">
             <i class="pi pi-times"></i>
@@ -363,12 +394,10 @@ interface Unit {
                 <div class="customer-id"># #78432G</div>
               </div>
             </div>
-
             <div class="tab-navigation">
               <div class="tab active">Reservation</div>
               <div class="tab">Truck Info</div>
             </div>
-
             <div class="customer-details">
               <div class="detail-section">
                 <h4>Notes</h4>
@@ -378,28 +407,23 @@ interface Unit {
                   laoreet ornare nibh. Molestie malesuada pretium purus con...
                 </p>
               </div>
-
               <div class="info-grid">
                 <div class="info-row">
                   <div class="info-label">Type</div>
                   <div class="info-value"></div>
                 </div>
-
                 <div class="info-row">
                   <div class="info-label">Length & Height</div>
                   <div class="info-value"></div>
                 </div>
-
                 <div class="info-row">
                   <div class="info-label">Towing</div>
                   <div class="info-value"></div>
                 </div>
-
                 <div class="info-row">
                   <div class="info-label">Trip Type</div>
                   <div class="info-value"></div>
                 </div>
-
                 <div class="info-row">
                   <div class="info-label">Insurance</div>
                   <div class="info-value">
@@ -425,23 +449,19 @@ interface Unit {
                     </svg>
                   </div>
                 </div>
-
                 <div class="info-row">
                   <div class="info-label">Rental</div>
                   <div class="info-value"></div>
                 </div>
-
                 <div class="info-row">
                   <div class="info-label">Duration</div>
                   <div class="info-value"></div>
                 </div>
-
                 <div class="info-row">
                   <div class="info-label">Distance</div>
                   <div class="info-value"></div>
                 </div>
               </div>
-
               <div class="location-section">
                 <div class="location-header">
                   <svg
@@ -467,11 +487,12 @@ interface Unit {
   `,
   styles: [
     `
+      /* CSS for reservations-dashboard.component.ts */
+
+      /* === Main Layout === */
       .dashboard-container {
         width: 100%;
-        height: calc(
-          100vh - 60px
-        ); /* Adjust the 60px based on your header height */
+        height: calc(100vh - 60px);
         margin: 0 auto;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         transition: all 0.3s ease;
@@ -485,30 +506,24 @@ interface Unit {
         width: 100%;
         height: 100%;
         background-color: #ffffff;
-        gap: 15px; /* Added gap between panels */
+        gap: 15px;
       }
 
-      /* --- Main Accordion Section --- */
+      /* === Accordion Section === */
       .accordion-section {
-        width: 100%; /* 12 columns by default */
+        width: 100%;
         padding: 15px;
         transition: all 0.3s ease;
         background-color: #ffffff;
         height: 100%;
-        overflow: auto; /* Enable scrolling */
-        scrollbar-width: thin; /* Firefox */
-        scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Firefox */
-        -ms-overflow-style: none; /* IE and Edge */
+        overflow: auto !important;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+        position: relative;
       }
 
-      /* Mac-style scrollbar for Windows */
       .accordion-section::-webkit-scrollbar {
         width: 8px;
-        background-color: transparent;
-        opacity: 0;
-      }
-
-      .accordion-section::-webkit-scrollbar-track {
         background-color: transparent;
       }
 
@@ -523,23 +538,8 @@ interface Unit {
         background-color: rgba(0, 0, 0, 0.25);
       }
 
-      /* Only show scrollbar on hover/scroll for Windows */
-      .accordion-section:not(:hover):not(:focus)::-webkit-scrollbar-thumb {
-        opacity: 0;
-        visibility: hidden;
-      }
-
       .accordion-section.grid-5 {
-        width: calc(
-          41.66% - 15px
-        ); /* 5/12 columns when expanded, accounting for gap */
-        background-color: #ffffff;
-      }
-
-      h2 {
-        margin-bottom: 20px;
-        color: #333;
-        font-size: 22px;
+        width: calc(41.66% - 15px);
       }
 
       .accordion-container {
@@ -551,6 +551,7 @@ interface Unit {
         border: 1px solid #ccc;
         border-radius: 4px;
         overflow: hidden;
+        display: block;
       }
 
       .accordion-header {
@@ -561,10 +562,16 @@ interface Unit {
         padding: 0 10px;
         cursor: pointer;
         user-select: none;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        width: 100% !important;
       }
 
       .accordion-header.active {
-        background-color: #bbdefb;
+        background-color: #bbdefb !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
       }
 
       .toggle-icon {
@@ -585,12 +592,14 @@ interface Unit {
         overflow: hidden;
       }
 
-      /* --- Schedule Styles --- */
+      /* === Schedule Grid === */
       .schedule-container {
         width: 100%;
         margin: 0 auto;
         overflow-x: hidden;
         background-color: #ffffff;
+        position: relative;
+        z-index: 1;
       }
 
       .schedule-grid {
@@ -599,6 +608,7 @@ interface Unit {
         flex-direction: column;
       }
 
+      /* === Time Slots === */
       .time-row {
         display: flex;
         width: 100%;
@@ -633,7 +643,216 @@ interface Unit {
         gap: 8px;
       }
 
-      /* --- Event Grid Layout --- */
+      /* === Warning Message === */
+      /* Styles for the warning message */
+      /* Style for the global warning that appears at the top */
+      /* Enhanced styles for the warnings with count badge */
+
+      /* Count badge styles */
+      .count-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 24px;
+        height: 24px;
+        background-color: #dc3545;
+        color: white;
+        font-weight: bold;
+        font-size: 12px;
+        border-radius: 12px;
+        padding: 0 6px;
+        margin-left: 10px;
+        line-height: 1;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Time slot inline warning with enhanced content */
+      .time-slot-inline-warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        border-left: 4px solid #ffc107;
+        color: #856404;
+        padding: 10px 15px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-size: 14px;
+        font-weight: 500;
+        width: 100%;
+        animation: fadeIn 0.5s ease-in-out;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+      }
+
+      .time-slot-inline-warning:hover {
+        background-color: #ffecb5;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .time-slot-inline-warning .warning-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .time-slot-inline-warning .warning-icon {
+        margin-right: 10px;
+        font-size: 16px;
+      }
+
+      /* Global warning message with enhanced content */
+      .global-warning-message {
+        position: sticky;
+        top: 30px; /* Just below the accordion header */
+        z-index: 90;
+        background-color: #fff8e1;
+        border: 1px solid #ffeeba;
+        border-left: 4px solid #ff9800;
+        color: #856404;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        font-size: 14px;
+        font-weight: 500;
+        width: calc(100% - 2px);
+        animation: slideDown 0.3s ease-out;
+      }
+
+      .global-warning-message .warning-content {
+        display: flex;
+        align-items: center;
+      }
+
+      .global-warning-message .warning-icon {
+        margin-right: 10px;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .global-warning-message .time-slot-ref {
+        font-weight: bold;
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        margin: 0 4px;
+      }
+
+      .global-warning-message .close-warning {
+        margin-left: auto;
+        cursor: pointer;
+        font-size: 16px;
+        color: #856404;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+        flex-shrink: 0;
+        padding-left: 10px;
+      }
+
+      .global-warning-message .close-warning:hover {
+        opacity: 1;
+      }
+
+      /* Animation for the warning appearing */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Animation for the global warning appearing */
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive adjustments */
+      @media screen and (max-width: 768px) {
+        .time-slot-inline-warning,
+        .global-warning-message {
+          padding: 8px 10px;
+          font-size: 13px;
+        }
+
+        .count-badge {
+          min-width: 20px;
+          height: 20px;
+          font-size: 11px;
+        }
+      }
+      /* Sticky warning styles - positioned at the top */
+      .sticky-warning {
+        position: sticky !important;
+        top: 30px !important; /* Just below the accordion header */
+        z-index: 90 !important; /* Below header but above other content */
+        margin-bottom: 15px;
+        background-color: #fff8e1; /* Slightly different color when sticky */
+        border-left: 4px solid #ff9800;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        animation: pulsateOnce 0.5s ease-in-out;
+      }
+
+      /* Animation for when the warning becomes sticky */
+      @keyframes pulsateOnce {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.03);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Add a visual indicator showing it's pinned */
+      .sticky-warning:after {
+        content: '📌';
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .warning-content {
+        display: flex;
+        align-items: center;
+      }
+
+      .warning-icon {
+        margin-right: 10px;
+        font-size: 16px;
+      }
+
+      .time-slot-inline-warning + .time-row {
+        margin-top: 2px;
+      }
+
+      /* Highlight styles for current time slot */
+      .current-time-slot {
+        background-color: rgba(63, 81, 181, 0.08);
+        border-left: 3px solid #3f51b5;
+      }
+
+      .current-time-slot .time-cell {
+        font-weight: bold;
+        color: #3f51b5;
+      }
+
+      /* === Event Layout === */
       .event-row {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -642,7 +861,6 @@ interface Unit {
         width: 100%;
       }
 
-      /* --- Event Vertical Column Layout --- */
       .event-column {
         display: flex;
         flex-direction: column;
@@ -664,7 +882,7 @@ interface Unit {
         transform: translateY(-2px);
       }
 
-      /* --- Event Card Styling --- */
+      /* === Event Cards === */
       .event-card {
         display: flex;
         align-items: center;
@@ -728,7 +946,7 @@ interface Unit {
         white-space: nowrap;
       }
 
-      /* --- Status-specific styles --- */
+      /* Event status colors */
       .event-status-confirmed {
         border-left: 3px solid #28a745;
       }
@@ -745,25 +963,19 @@ interface Unit {
         color: #ffc107;
       }
 
-      .event-status-cancelled {
-        border-left: 3px solid #dc3545;
-      }
-
-      .event-status-cancelled .event-status {
-        color: #dc3545;
-      }
-
+      .event-status-cancelled,
       .event-status-voided {
         border-left: 3px solid #dc3545;
       }
 
+      .event-status-cancelled .event-status,
       .event-status-voided .event-status {
         color: #dc3545;
       }
 
-      /* --- Find Units Section --- */
+      /* === Find Units Section === */
       .find-units-section {
-        width: calc(25% - 15px); /* 3/12 columns, accounting for gap */
+        width: calc(25% - 15px);
         padding: 15px;
         border-left: 1px solid #e9ecef;
         background-color: #ffffff;
@@ -771,17 +983,10 @@ interface Unit {
         overflow: auto;
         scrollbar-width: thin;
         scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-        -ms-overflow-style: none; /* IE and Edge */
       }
 
-      /* Mac-style scrollbar for Windows */
       .find-units-section::-webkit-scrollbar {
         width: 8px;
-        background-color: transparent;
-        opacity: 0;
-      }
-
-      .find-units-section::-webkit-scrollbar-track {
         background-color: transparent;
       }
 
@@ -790,22 +995,6 @@ interface Unit {
         border-radius: 10px;
         border: 2px solid transparent;
         background-clip: content-box;
-      }
-
-      .find-units-section:hover::-webkit-scrollbar-thumb {
-        background-color: rgba(0, 0, 0, 0.25);
-      }
-
-      /* Only show scrollbar on hover/scroll for Windows */
-      .find-units-section:not(:hover):not(:focus)::-webkit-scrollbar-thumb {
-        opacity: 0;
-        visibility: hidden;
-      }
-
-      .find-units-section h3 {
-        font-size: 18px;
-        margin-bottom: 15px;
-        color: #333;
       }
 
       .search-box {
@@ -901,9 +1090,9 @@ interface Unit {
         color: #333;
       }
 
-      /* --- Customer Details Section --- */
+      /* === Customer Details Section === */
       .customer-details-section {
-        width: calc(33.33% - 15px); /* 4/12 columns, accounting for gap */
+        width: calc(33.33% - 15px);
         padding: 15px;
         border-left: 1px solid #e9ecef;
         position: relative;
@@ -911,17 +1100,10 @@ interface Unit {
         overflow: auto;
         scrollbar-width: thin;
         scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-        -ms-overflow-style: none; /* IE and Edge */
       }
 
-      /* Mac-style scrollbar for Windows */
       .customer-details-section::-webkit-scrollbar {
         width: 8px;
-        background-color: transparent;
-        opacity: 0;
-      }
-
-      .customer-details-section::-webkit-scrollbar-track {
         background-color: transparent;
       }
 
@@ -932,16 +1114,24 @@ interface Unit {
         background-clip: content-box;
       }
 
-      .customer-details-section:hover::-webkit-scrollbar-thumb {
-        background-color: rgba(0, 0, 0, 0.25);
+      .close-expanded-view {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 100;
       }
 
-      /* Only show scrollbar on hover/scroll for Windows */
-      .customer-details-section:not(:hover):not(
-          :focus
-        )::-webkit-scrollbar-thumb {
-        opacity: 0;
-        visibility: hidden;
+      .close-expanded-view:hover {
+        background-color: #e9ecef;
       }
 
       .customer-header {
@@ -976,9 +1166,6 @@ interface Unit {
         height: 24px;
         background-color: #fff;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         border: 1px solid #ddd;
       }
 
@@ -1069,7 +1256,7 @@ interface Unit {
         margin: 0;
       }
 
-      /* --- Responsive Styles --- */
+      /* === Responsive Styles === */
       @media screen and (max-width: 992px) {
         .accordion-section.grid-5 {
           width: 100%;
@@ -1103,260 +1290,6 @@ interface Unit {
           grid-template-columns: 1fr;
         }
       }
-
-      /* Close button styles */
-      .close-expanded-view {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 100;
-      }
-
-      .close-expanded-view:hover {
-        background-color: #e9ecef;
-      }
-
-      /* Positioning for the close button in the customer section */
-      .customer-details-section {
-        position: relative;
-      }
-      .highlight-time-slot {
-        background-color: rgba(63, 81, 181, 0.2);
-        transition: background-color 0.5s ease;
-      }
-
-      .highlight-time-slot .time-cell {
-        font-weight: bold;
-        color: #3f51b5;
-      }
-      .accordion-header {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background-color: #e3f2fd;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-
-      .accordion-header.active {
-        background-color: #bbdefb;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-      }
-
-      /* Highlight styles for current time slot */
-      .highlight-time-slot {
-        background-color: rgba(63, 81, 181, 0.2);
-        transition: background-color 0.5s ease;
-      }
-
-      .highlight-time-slot .time-cell {
-        font-weight: bold;
-        color: #3f51b5;
-      }
-
-      /* Make sure the accordion section has proper scroll context */
-      .accordion-section {
-        width: 100%; /* 12 columns by default */
-        padding: 15px;
-        transition: all 0.3s ease;
-        background-color: #ffffff;
-        height: 100%;
-        overflow: auto !important; /* Force overflow auto */
-        scrollbar-width: thin; /* Firefox */
-        scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Firefox */
-        -ms-overflow-style: none; /* IE and Edge */
-        position: relative; /* Create positioning context */
-      }
-
-      /* Enhanced sticky accordion header styles */
-      .accordion-header {
-        position: sticky !important; /* Force sticky positioning */
-        top: 0 !important; /* Force top position */
-        z-index: 100 !important; /* Higher z-index to ensure it's above other elements */
-        background-color: #e3f2fd !important; /* Ensure background is opaque */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-        margin-bottom: 0 !important; /* Remove any margin that might affect stickiness */
-        width: 100% !important; /* Ensure full width */
-      }
-
-      /* Make sure there's no margin/padding interfering with the accordion items */
-      .accordion-item {
-        margin-bottom: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        overflow: hidden;
-        display: block; /* Ensure block display */
-      }
-
-      /* Active header styling */
-      .accordion-header.active {
-        background-color: #bbdefb !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
-      }
-
-      /* Highlight styles for current time slot */
-      .highlight-time-slot {
-        background-color: rgba(63, 81, 181, 0.2);
-        transition: background-color 0.5s ease;
-      }
-
-      .highlight-time-slot .time-cell {
-        font-weight: bold;
-        color: #3f51b5;
-      }
-
-      /* Add these styles to your component's styles array */
-
-      /* Sticky warning message styles */
-      .warning-message {
-        position: sticky;
-        top: 30px; /* Should match the height of the accordion header */
-        z-index: 90; /* Below the header but above other content */
-        background-color: #fff3cd;
-        border: 1px solid #ffeeba;
-        border-left: 4px solid #ffc107;
-        color: #856404;
-        padding: 10px 15px;
-        margin-bottom: 10px;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        transition: all 0.3s ease;
-      }
-
-      .warning-content {
-        display: flex;
-        align-items: center;
-        width: 100%;
-      }
-
-      .warning-icon {
-        margin-right: 10px;
-        font-size: 16px;
-      }
-
-      /* Add animation to make the warning more noticeable after scrolling */
-      @keyframes pulse {
-        0% {
-          opacity: 0.8;
-        }
-        50% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0.8;
-        }
-      }
-
-      /* Apply animation when the time slot is highlighted */
-      .highlight-time-slot + .warning-message,
-      .highlight-time-slot ~ .warning-message {
-        animation: pulse 2s infinite;
-        background-color: #fff3cd;
-        border-color: #ffc107;
-      }
-
-      /* Add responsiveness for the warning */
-      @media screen and (max-width: 768px) {
-        .warning-message {
-          padding: 8px 10px;
-          font-size: 12px;
-        }
-      }
-
-      /* Update the sticky header styles to work with the warning */
-      .accordion-header {
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 100 !important;
-        background-color: #e3f2fd !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-        margin-bottom: 0 !important;
-        width: 100% !important;
-      }
-
-      .time-slot-inline-warning {
-  background-color: #fff3cd;
-  border: 1px solid #ffeeba;
-  border-left: 4px solid #ffc107;
-  color: #856404;
-  padding: 10px 15px;
-  margin-bottom: 5px;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  font-size: 14px;
-  font-weight: 500;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-/* Highlight styling for the current time slot */
-.current-time-slot {
-  background-color: rgba(63, 81, 181, 0.08);
-  border-left: 3px solid #3f51b5;
-}
-
-/* Styles for the inline time slot warning - make sure these are included in your component styles */
-.time-slot-inline-warning {
-  background-color: #fff3cd;
-  border: 1px solid #ffeeba;
-  border-left: 4px solid #ffc107;
-  color: #856404;
-  padding: 10px 15px;
-  margin-bottom: 5px;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  font-size: 14px;
-  font-weight: 500;
-  width: 100%;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.warning-content {
-  display: flex;
-  align-items: center;
-}
-
-.warning-icon {
-  margin-right: 10px;
-  font-size: 16px;
-}
-
-/* Highlight the current time slot with a more visible style */
-.current-time-slot {
-  background-color: rgba(63, 81, 181, 0.08);
-  border-left: 3px solid #3f51b5;
-}
-
-.current-time-slot .time-cell {
-  font-weight: bold;
-  color: #3f51b5;
-}
-
-/* Make sure the warning is not hidden behind the header */
-.schedule-container {
-  position: relative;
-  z-index: 1;
-}
-
-/* Enforce proper spacing between warning and time slot */
-.time-slot-inline-warning + .time-row {
-  margin-top: 2px;
-}
     `,
   ],
   animations: [
@@ -1380,13 +1313,58 @@ interface Unit {
   ],
 })
 export class ReservationsDashboardComponent implements OnInit {
-  // Sample accordion items
-  // Add this property to your component class
-currentTimeSlotForWarning: string | null = null;
-// Add this method to your ReservationsDashboardComponent class
-isCurrentTimeSlot(timeSlot: string): boolean {
-  return this.currentTimeSlotForWarning === timeSlot;
-}
+  stickyWarningTimeSlot: string | null = null;
+
+  // Add this method to check if warning should be sticky for a specific time slot
+  isWarningStickyFor(timeSlot: string): boolean {
+    return this.stickyWarningTimeSlot === timeSlot;
+  }
+
+  /**
+   * Toggles the sticky state of a warning message and scrolls it to the top
+   */
+  toggleStickyWarning(timeSlot: string, event?: MouseEvent): void {
+    // Prevent event propagation to avoid triggering other click handlers
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    try {
+      // Set the sticky warning time slot
+      this.stickyWarningTimeSlot = timeSlot;
+
+      // Force a refresh to update the DOM
+      this.forceRefresh();
+
+      // Scroll to the top of the accordion section after a short delay
+      setTimeout(() => {
+        const accordionSection = document.querySelector('.accordion-section');
+
+        if (accordionSection) {
+          // Scroll to the top
+          accordionSection.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
+        }
+      }, 50);
+    } catch (error) {
+      console.error('Error making warning sticky:', error);
+    }
+  }
+  clearStickyWarning(event?: MouseEvent): void {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    this.stickyWarningTimeSlot = null;
+  }
+  // Property to track which time slot should show warning
+  currentTimeSlotForWarning: string | null = null;
+
+  // Accordion items data
   accordionItems: AccordionItem[] = [
     {
       header: 'Header I',
@@ -1400,49 +1378,17 @@ isCurrentTimeSlot(timeSlot: string): boolean {
     },
   ];
 
-  // Track which time slot is expanded
+  // Expanded time slot tracking
   expandedTimeSlot: string | null = '01:00';
 
-  constructor() {}
-
-  ngOnInit(): void {
-    this.updateScreenSize(window.innerWidth);
-
-    // Ensure at least one accordion is open
-    if (!this.accordionItems.some((item) => item.isOpen)) {
-      this.accordionItems[0].isOpen = true;
-    }
-
-    // Use a longer timeout to ensure rendering is complete
-    setTimeout(() => {
-      this.checkStickyHeaderStatus();
-      this.debugTimeSlotElements();
-      this.scrollToCurrentTimeSlot();
-    }, 0); // Increased timeout
-  }
-
-  toggleItem(index: number): void {
-    this.accordionItems[index].isOpen = !this.accordionItems[index].isOpen;
-  }
-
-  /**
-   * Toggle the expanded state of a time slot
-   */
-  toggleExpandTimeSlot(timeSlot: string, event: Event): void {
-    if (event.isPlaceholder) return;
-
-    if (this.expandedTimeSlot !== null) {
-      // If already expanded, collapse everything
-      this.expandedTimeSlot = null;
-    } else {
-      // If not expanded, set the clicked time slot as expanded
-      // This will now trigger all time slots to show in vertical mode
-      this.expandedTimeSlot = timeSlot;
-    }
-  }
-
+  // Available time slots
   timeSlots: string[] = ['4:00am', '5:00am', '6:00am', '7:00am', '8:00am'];
 
+  // Event display configuration
+  maxEventsPerRow: number = 3;
+  screenSize: string = 'desktop';
+
+  // Events data organized by time slot
   events: { [key: string]: Event[] } = {
     '4:00am': [
       { id: 1, title: 'Albert Flora', refNumber: '98762319', status: 'voided' },
@@ -1470,30 +1416,6 @@ isCurrentTimeSlot(timeSlot: string): boolean {
         refNumber: '12369854',
         status: 'cancelled',
       },
-      {
-        id: 6,
-        title: 'David Thompson',
-        refNumber: '45698732',
-        status: 'pending',
-      },
-      {
-        id: 7,
-        title: 'Jennifer Adams',
-        refNumber: '78965412',
-        status: 'confirmed',
-      },
-      {
-        id: 8,
-        title: 'Michael Brown',
-        refNumber: '32145698',
-        status: 'voided',
-      },
-      {
-        id: 9,
-        title: 'Emily Wilson',
-        refNumber: '15975364',
-        status: 'confirmed',
-      },
     ],
     '5:00am': [
       {
@@ -1514,114 +1436,42 @@ isCurrentTimeSlot(timeSlot: string): boolean {
     ],
     '7:00am': [
       {
-        id: 99,
+        id: 13,
         title: 'Albert Flora2',
         refNumber: '98762319',
         status: 'voided',
       },
       {
-        id: 22,
+        id: 14,
         title: 'John Smith2',
         refNumber: '24589631',
         status: 'confirmed',
       },
       {
-        id: 33,
+        id: 15,
         title: 'Maria Garcia3',
         refNumber: '78453621',
         status: 'pending',
       },
-      {
-        id: 44,
-        title: 'Robert Johnson2',
-        refNumber: '36521478',
-        status: 'confirmed',
-      },
-      {
-        id: 55,
-        title: 'Sarah Wilson2',
-        refNumber: '12369854',
-        status: 'cancelled',
-      },
-      {
-        id: 66,
-        title: 'David Thompson2',
-        refNumber: '45698732',
-        status: 'pending',
-      },
-      {
-        id: 77,
-        title: 'Jennifer Adams2',
-        refNumber: '78965412',
-        status: 'confirmed',
-      },
-      {
-        id: 88,
-        title: 'Michael Brown2',
-        refNumber: '32145698',
-        status: 'voided',
-      },
-      {
-        id: 99,
-        title: 'Emily Wilson2',
-        refNumber: '15975364',
-        status: 'confirmed',
-      },
     ],
     '8:00am': [
       {
-        id: 144,
+        id: 16,
         title: 'Albert Flora44',
         refNumber: '98762319',
         status: 'voided',
       },
       {
-        id: 244,
+        id: 17,
         title: 'John Smith44',
         refNumber: '24589631',
         status: 'confirmed',
       },
       {
-        id: 344,
+        id: 18,
         title: 'Maria Garcia44',
         refNumber: '78453621',
         status: 'pending',
-      },
-      {
-        id: 444,
-        title: 'Robert Johnson44',
-        refNumber: '36521478',
-        status: 'confirmed',
-      },
-      {
-        id: 544,
-        title: 'Sarah Wilson44',
-        refNumber: '12369854',
-        status: 'cancelled',
-      },
-      {
-        id: 644,
-        title: 'David Thompson44',
-        refNumber: '45698732',
-        status: 'pending',
-      },
-      {
-        id: 744,
-        title: 'Jennifer Adams44',
-        refNumber: '78965412',
-        status: 'confirmed',
-      },
-      {
-        id: 844,
-        title: 'Michael Brown44',
-        refNumber: '32145698',
-        status: 'voided',
-      },
-      {
-        id: 944,
-        title: 'Emily Wilson44',
-        refNumber: '15975364',
-        status: 'confirmed',
       },
     ],
   };
@@ -1650,20 +1500,60 @@ isCurrentTimeSlot(timeSlot: string): boolean {
     },
   ];
 
-  // Configuration for event display
-  maxEventsPerRow: number = 3;
+  constructor() {}
 
-  // Responsive configuration for different screen sizes
-  screenSize: string = 'desktop';
+  ngOnInit(): void {
+    // Set initial screen size
+    this.updateScreenSize(window.innerWidth);
 
+    // Ensure at least one accordion is open
+    if (!this.accordionItems.some((item) => item.isOpen)) {
+      this.accordionItems[0].isOpen = true;
+    }
+
+    // Initialize with auto-scroll to current time
+    setTimeout(() => {
+      this.scrollToCurrentTimeSlot();
+    }, 100);
+  }
+
+  /**
+   * Toggles accordion items open/closed
+   */
+  toggleItem(index: number): void {
+    // Toggle the current accordion item
+    this.accordionItems[index].isOpen = !this.accordionItems[index].isOpen;
+    
+    // Check if this action would close all accordions
+    if (!this.isAnyAccordionOpen()) {
+      // Clear any sticky warnings if all accordions are closed
+      this.stickyWarningTimeSlot = null;
+    }
+  }
+
+  /**
+   * Toggles expansion of a time slot
+   */
+  toggleExpandTimeSlot(timeSlot: string, event: Event): void {
+    if (event.isPlaceholder) return;
+
+    if (this.expandedTimeSlot !== null) {
+      // If already expanded, collapse it
+      this.expandedTimeSlot = null;
+    } else {
+      // Otherwise, expand the clicked time slot
+      this.expandedTimeSlot = timeSlot;
+    }
+  }
+
+  /**
+   * Updates responsive layout based on window size
+   */
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.updateScreenSize(window.innerWidth);
   }
 
-  /**
-   * Update screen size category based on width
-   */
   updateScreenSize(width: number): void {
     if (width <= 576) {
       this.screenSize = 'mobile';
@@ -1681,15 +1571,13 @@ isCurrentTimeSlot(timeSlot: string): boolean {
   }
 
   /**
-   * Get events organized in rows with consistent column structure
+   * Organizes events into rows for grid display
    */
   getEventRows(timeSlot: string): any[][] {
     const timeEvents = this.events[timeSlot];
     if (!timeEvents) return [];
 
-    // Always use the configured column count
     const columns = this.maxEventsPerRow;
-
     const rows: any[][] = [];
 
     // Split events into chunks
@@ -1714,270 +1602,207 @@ isCurrentTimeSlot(timeSlot: string): boolean {
     return rows;
   }
 
+  /**
+   * Closes the expanded view
+   */
   closeExpandedView(): void {
     this.expandedTimeSlot = null;
+    this.stickyWarningTimeSlot = null;
   }
 
-  // 1. First, let's add a data attribute to the time row for more reliable targeting
-  // Update your template to include a data attribute:
-  // Change this line in your template:
-  // <div class="time-row" [class.expanded]="expandedTimeSlot !== null">
-  // To this:
-  // <div class="time-row" [class.expanded]="expandedTimeSlot !== null" [attr.data-time-slot]="timeSlot">
-
-  // 2. Now update your scrollToCurrentTimeSlot method
-
- 
-  // Add this helper method
+  /**
+   * Forces a UI refresh by triggering change detection
+   */
   private forceRefresh(): void {
-    // Trigger a small state change to force Angular change detection
     this.expandedTimeSlot = this.expandedTimeSlot;
   }
-  // 3. Completely revised scrollToTimeSlot method with multiple fallback approaches
- // Enhanced scrollToTimeSlot method with better handling of the inline warning
 
-// Replace your scrollToTimeSlot method with this improved version
-scrollToTimeSlot(timeSlot: string): void {
-  try {
-    console.log(`Attempting to scroll to time slot: "${timeSlot}"`);
-    
-    // Update the current time slot for warning
-    this.currentTimeSlotForWarning = timeSlot;
-    
-    // Force a change detection cycle
+  /**
+   * Scrolls to the time slot closest to current time
+   */
+  scrollToCurrentTimeSlot(): void {
     setTimeout(() => {
-      // Find the relevant elements
-      const accordionSection = document.querySelector('.accordion-section');
-      const timeRows = document.querySelectorAll('.time-row');
-      let targetRow: Element | null = null;
-      
-      // Find the matching time row
-      for (let i = 0; i < timeRows.length; i++) {
-        const timeCell = timeRows[i].querySelector('.time-cell');
-        if (timeCell && timeCell.textContent && timeCell.textContent.trim() === timeSlot) {
-          targetRow = timeRows[i];
-          break;
-        }
-      }
-      
-      if (targetRow && accordionSection) {
-        // Find the warning that should be above this time slot
-        const warningElement = targetRow.previousElementSibling;
-        
-        // Calculate scroll positions
-        const headerHeight = document.querySelector('.accordion-header')?.clientHeight || 30;
-        let targetPosition = 0;
-        
-        // If there's a warning, scroll to show it instead of the row
-        if (warningElement && warningElement.classList.contains('time-slot-inline-warning')) {
-          targetPosition = (warningElement as HTMLElement).offsetTop - headerHeight - 10;
-        } else {
-          // Otherwise just scroll to the time slot row
-          targetPosition = (targetRow as HTMLElement).offsetTop - headerHeight - 10;
-        }
-        
-        // Perform the scroll
-        accordionSection.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
+      try {
+        // Get current time
+        const currentDate = new Date();
+        const currentHour = currentDate.getHours();
+        const currentMinute = currentDate.getMinutes();
+
+        // Find the time slot closest to current time
+        let closestTimeSlot: string | null | any = null;
+        let minTimeDifference = Infinity;
+
+        this.timeSlots.forEach((timeSlot) => {
+          // Parse the time slot (format: "7:00am", "8:00am", etc.)
+          const matches = timeSlot.match(/(\d+):(\d+)(am|pm)/i);
+
+          if (matches) {
+            let hour = parseInt(matches[1], 10);
+            const minute = parseInt(matches[2], 10);
+            const period = matches[3].toLowerCase();
+
+            // Convert to 24-hour format for accurate comparison
+            if (period === 'pm' && hour < 12) {
+              hour += 12;
+            } else if (period === 'am' && hour === 12) {
+              hour = 0;
+            }
+
+            // Calculate absolute time difference in minutes
+            const slotTotalMinutes = hour * 60 + minute;
+            const currentTotalMinutes = currentHour * 60 + currentMinute;
+            const timeDifferenceMinutes = Math.abs(
+              slotTotalMinutes - currentTotalMinutes
+            );
+
+            // Find the slot with minimum time difference
+            if (timeDifferenceMinutes < minTimeDifference) {
+              minTimeDifference = timeDifferenceMinutes;
+              closestTimeSlot = timeSlot;
+            }
+          }
         });
-        
-        console.log(`Scrolled to position ${targetPosition}px`);
-        
-        // Add visual feedback
-        targetRow.classList.add('current-time-slot');
-        setTimeout(() => {
-          // Remove the highlight from other rows
-          document.querySelectorAll('.time-row').forEach(row => {
+
+        // Set the current time slot for warning and scroll to it
+        if (closestTimeSlot) {
+          this.currentTimeSlotForWarning = closestTimeSlot;
+          this.forceRefresh();
+          setTimeout(() => this.scrollToTimeSlot(closestTimeSlot), 100);
+        }
+      } catch (error) {
+        console.error('Error in scrollToCurrentTimeSlot:', error);
+      }
+    }, 50);
+  }
+
+  /**
+   * Scrolls to a specific time slot
+   */
+  scrollToTimeSlot(timeSlot: string): void {
+    try {
+      console.log(`Scrolling to time slot: "${timeSlot}"`);
+
+      // Update the current time slot for warning
+      this.currentTimeSlotForWarning = timeSlot;
+
+      // Use setTimeout to ensure DOM is updated before calculating positions
+      setTimeout(() => {
+        // Find relevant elements
+        const accordionSection = document.querySelector('.accordion-section');
+        const timeRows = document.querySelectorAll('.time-row');
+        let targetRow: Element | null = null;
+
+        // Find the matching time row
+        for (let i = 0; i < timeRows.length; i++) {
+          const timeCell = timeRows[i].querySelector('.time-cell');
+          if (
+            timeCell &&
+            timeCell.textContent &&
+            timeCell.textContent.trim() === timeSlot
+          ) {
+            targetRow = timeRows[i];
+            break;
+          }
+        }
+
+        if (targetRow && accordionSection) {
+          // Find the warning that should be above this time slot
+          const warningElement = targetRow.previousElementSibling;
+
+          // Calculate scroll position
+          const headerHeight =
+            document.querySelector('.accordion-header')?.clientHeight || 30;
+          let targetPosition = 0;
+
+          // If there's a warning, and it's sticky, adjust scroll position
+          if (
+            warningElement &&
+            warningElement.classList.contains('time-slot-inline-warning')
+          ) {
+            // If we're making this warning sticky
+            if (this.stickyWarningTimeSlot === timeSlot) {
+              targetPosition =
+                (warningElement as HTMLElement).offsetTop - headerHeight - 10;
+            } else {
+              // Normal scroll behavior when not sticky
+              targetPosition =
+                (targetRow as HTMLElement).offsetTop - headerHeight - 10;
+            }
+          } else {
+            // Otherwise just scroll to the time slot row
+            targetPosition =
+              (targetRow as HTMLElement).offsetTop - headerHeight - 10;
+          }
+
+          // Perform the scroll
+          accordionSection.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth',
+          });
+
+          // Add visual feedback
+          targetRow.classList.add('current-time-slot');
+
+          // Remove highlight from other rows
+          timeRows.forEach((row) => {
             if (row !== targetRow) {
               row.classList.remove('current-time-slot');
             }
           });
-        }, 100);
-      } else {
-        console.error('Could not find time slot elements for scrolling');
-      }
-    }, 50); // Short delay to ensure elements are rendered
-  } catch (error) {
-    console.error('Error in scrollToTimeSlot:', error);
-  }
-}
-
-// Make sure your scrollToCurrentTimeSlot method sets the current time slot for warning
-scrollToCurrentTimeSlot(): void {
-  setTimeout(() => {
-    try {
-      // Get current time
-      const currentDate = new Date();
-      const currentHour = currentDate.getHours();
-      const currentMinute = currentDate.getMinutes();
-      
-      // Find the time slot closest to current time
-      let closestTimeSlot: string | null|any = null;
-      let minTimeDifference = Infinity;
-      
-      this.timeSlots.forEach(timeSlot => {
-        // Parse the time slot (format: "7:00am", "8:00am", etc.)
-        const matches = timeSlot.match(/(\d+):(\d+)(am|pm)/i);
-        
-        if (matches) {
-          let hour = parseInt(matches[1], 10);
-          const minute = parseInt(matches[2], 10);
-          const period = matches[3].toLowerCase();
-          
-          // Convert to 24-hour format for accurate comparison
-          if (period === 'pm' && hour < 12) {
-            hour += 12;
-          } else if (period === 'am' && hour === 12) {
-            hour = 0;
-          }
-          
-          // Calculate absolute time difference in minutes
-          const slotTotalMinutes = (hour * 60) + minute;
-          const currentTotalMinutes = (currentHour * 60) + currentMinute;
-          const timeDifferenceMinutes = Math.abs(slotTotalMinutes - currentTotalMinutes);
-          
-          // Find the slot with minimum time difference
-          if (timeDifferenceMinutes < minTimeDifference) {
-            minTimeDifference = timeDifferenceMinutes;
-            closestTimeSlot = timeSlot;
-          }
         }
-      });
-      
-      // Set the current time slot for warning
-      this.currentTimeSlotForWarning = closestTimeSlot;
-      
-      // Force a refresh before scrolling
-      this.forceRefresh();
-      
-      // Scroll to the closest time slot
-      if (closestTimeSlot) {
-        setTimeout(() => this.scrollToTimeSlot(closestTimeSlot), 100);
-      }
+      }, 50); // Short delay to ensure DOM updates
     } catch (error) {
-      console.error('Error in scrollToCurrentTimeSlot:', error);
-    }
-  }, 50); // Short delay to ensure rendering
-}
-
-  // 4. A helper method for scrolling with multiple approaches
-  private scrollToElement(element: HTMLElement): void {
-    try {
-      // Highlight the element for visual feedback
-      element.classList.add('highlight-time-slot');
-      setTimeout(() => element.classList.remove('highlight-time-slot'), 3000);
-
-      // APPROACH 1: Try standard scrollTo with position calculation
-      const accordionSection = document.querySelector('.accordion-section');
-      if (accordionSection) {
-        const accordionHeaderHeight =
-          document.querySelector('.accordion-header')?.clientHeight || 30;
-        const targetRect = element.getBoundingClientRect();
-        const sectionRect = (
-          accordionSection as HTMLElement
-        ).getBoundingClientRect();
-
-        const scrollTop =
-          accordionSection.scrollTop +
-          (targetRect.top - sectionRect.top) -
-          accordionHeaderHeight -
-          10;
-
-        console.log(`Scrolling to position: ${scrollTop}px`);
-        accordionSection.scrollTo({
-          top: scrollTop,
-          behavior: 'smooth',
-        });
-
-        // APPROACH 2: Also try scrollIntoView as a backup (may be more reliable)
-        setTimeout(() => {
-          element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          });
-        }, 100);
-      } else {
-        // APPROACH 3: Direct scrollIntoView if we can't find the accordion section
-        console.log('Using scrollIntoView fallback');
-        element.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }
-    } catch (error) {
-      console.error('Error in scrollToElement:', error);
+      console.error('Error in scrollToTimeSlot:', error);
     }
   }
+  /**
+   * Checks if a warning is currently sticky for a specific time slot
+   */
 
-  // 5. Additional method for debugging DOM structure
-  debugTimeSlotElements(): void {
-    console.log('=== DEBUG TIME SLOT ELEMENTS ===');
+  /**
+   * Counts unconfirmed reservations for a given time slot
+   * @param timeSlot The time slot to count unconfirmed reservations for
+   * @returns The number of unconfirmed reservations
+   */
+  getUnconfirmedCount(timeSlot: string): number {
+    // If there are no events for this time slot, return 0
+    if (!this.events[timeSlot]) {
+      return 0;
+    }
 
-    // Check accordion items
-    const accordionItems = document.querySelectorAll('.accordion-item');
-    console.log(`Found ${accordionItems.length} accordion items`);
-
-    // Check if content is visible
-    const openAccordionContent = document.querySelectorAll(
-      '.accordion-content[style*="height: auto"], .accordion-content:not([style*="height: 0"])'
-    );
-    console.log(
-      `Found ${openAccordionContent.length} open accordion content sections`
-    );
-
-    // Check time rows
-    const timeRows = document.querySelectorAll('.time-row');
-    console.log(`Found ${timeRows.length} time rows`);
-
-    // Display all time cells with content
-    const timeCells = document.querySelectorAll('.time-cell');
-    console.log(
-      `Found ${timeCells.length} time cells with the following content:`
-    );
-
-    timeCells.forEach((cell, i) => {
-      console.log(`  Cell ${i}: "${cell.textContent?.trim()}"`);
-    });
+    // Count events with status other than 'confirmed'
+    // (pending, cancelled, and voided are considered unconfirmed)
+    return this.events[timeSlot].filter((event) => event.status !== 'confirmed')
+      .length;
   }
 
   /**
-   * Briefly highlights a time slot for visual feedback
+   * Determines if a warning should be shown for a time slot
+   * This can be used to modify when warnings appear based on unconfirmed count
    */
-  highlightTimeSlot(element: HTMLElement): void {
-    // Find the parent row element to highlight the entire row
-    const timeRow = element.closest('.time-row');
+  shouldShowWarningFor(timeSlot: string): boolean {
+    // Get the count of unconfirmed reservations
+    const unconfirmedCount = this.getUnconfirmedCount(timeSlot);
 
-    if (timeRow) {
-      // Add a highlight class
-      timeRow.classList.add('highlight-time-slot');
-
-      // Remove the highlight after a short delay
-      setTimeout(() => {
-        timeRow.classList.remove('highlight-time-slot');
-      }, 3000);
-    }
+    // Only show warning if there's at least one unconfirmed reservation
+    return unconfirmedCount > 0;
   }
 
-  checkStickyHeaderStatus(): void {
-    console.log('Checking sticky header status...');
-
-    const accordionHeaders = document.querySelectorAll('.accordion-header');
-    accordionHeaders.forEach((header, index) => {
-      const styles = window.getComputedStyle(header);
-      console.log(`Header ${index}:`);
-      console.log(`- position: ${styles.position}`);
-      console.log(`- top: ${styles.top}`);
-      console.log(`- z-index: ${styles.zIndex}`);
-
-      // Check if parent has scroll
-      const parent = header.parentElement;
-      if (parent) {
-        const parentStyles = window.getComputedStyle(parent);
-        console.log(`- parent overflow: ${parentStyles.overflow}`);
-        console.log(`- parent height: ${parentStyles.height}`);
-        console.log(`- parent position: ${parentStyles.position}`);
-      }
-    });
+  /**
+   * Checks if a time slot is the current one showing warning
+   * Update this to consider unconfirmed count
+   */
+  isCurrentTimeSlot(timeSlot: string): boolean {
+    return (
+      this.currentTimeSlotForWarning === timeSlot &&
+      this.shouldShowWarningFor(timeSlot)
+    );
   }
+
+/**
+ * Checks if any accordion is currently open
+ */
+isAnyAccordionOpen(): boolean {
+  return this.accordionItems.some(item => item.isOpen);
+}
 }
