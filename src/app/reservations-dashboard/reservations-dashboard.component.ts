@@ -75,10 +75,13 @@ interface Unit {
                 (click)="toggleItem(i)"
               >
                 <div class="toggle-icon">
-                  <i
-                    class="icon"
-                    [innerHTML]="item.isOpen ? '&#9660;' : '&#9654;'"
-                  ></i>
+                <svg *ngIf="!item.isOpen" class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+    <!-- Down-pointing arrow (when open) -->
+    <svg *ngIf="item.isOpen" class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
                 </div>
                 <div class="header-text">
                   {{ item.header }} <span class="font-bold">Reading</span>
@@ -1505,11 +1508,13 @@ export class ReservationsDashboardComponent implements OnInit {
   ngOnInit(): void {
     // Set initial screen size
     this.updateScreenSize(window.innerWidth);
-
-    // Ensure at least one accordion is open
-    if (!this.accordionItems.some((item) => item.isOpen)) {
+    this.accordionItems.forEach(item => item.isOpen = false);
+  
+    // Then open only the first one
+    if (this.accordionItems.length > 0) {
       this.accordionItems[0].isOpen = true;
     }
+  
 
     // Initialize with auto-scroll to current time
     setTimeout(() => {
@@ -1522,13 +1527,24 @@ export class ReservationsDashboardComponent implements OnInit {
    */
   toggleItem(index: number): void {
     // Toggle the current accordion item
-    this.accordionItems[index].isOpen = !this.accordionItems[index].isOpen;
-    
-    // Check if this action would close all accordions
+     // Check if this accordion is already open
+  const isCurrentlyOpen = this.accordionItems[index].isOpen;
+  
+  // First close all accordions
+  this.accordionItems.forEach((item, i) => {
+    item.isOpen = false;
+  });
+  
+  // If the clicked accordion wasn't already open, open it
+  // If it was open, it will remain closed (toggle behavior)
+  if (!isCurrentlyOpen) {
+    this.accordionItems[index].isOpen = true;
+  } else {
+    // If we're closing the last open accordion, clear any sticky warnings
     if (!this.isAnyAccordionOpen()) {
-      // Clear any sticky warnings if all accordions are closed
       this.stickyWarningTimeSlot = null;
     }
+  }
   }
 
   /**
