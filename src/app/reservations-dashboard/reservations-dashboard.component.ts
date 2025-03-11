@@ -48,14 +48,19 @@ interface Unit {
     CardModule,
     ButtonModule,
     DialogModule,
-    InputTextModule
+    InputTextModule,
   ],
   template: `
-    <div class="dashboard-container" [class.expanded-view]="expandedTimeSlot !== null">
+    <div
+      class="dashboard-container"
+      [class.expanded-view]="expandedTimeSlot !== null"
+    >
       <div class="grid-system">
         <!-- Main Accordion - Takes 12 cols by default, 5 when expanded -->
-        <div class="accordion-section" [class.grid-5]="expandedTimeSlot !== null">
-
+        <div
+          class="accordion-section"
+          [class.grid-5]="expandedTimeSlot !== null"
+        >
           <!-- Custom Accordion -->
           <div class="accordion-container">
             <div
@@ -77,6 +82,15 @@ interface Unit {
                   {{ item.header }} <span class="font-bold">Reading</span>
                 </div>
               </div>
+              <div *ngIf="item.isOpen" class="warning-message">
+                <div class="warning-content">
+                  <i class="warning-icon">⚠️</i>
+                  <span
+                    >Important: Please review all time slots before making a
+                    reservation</span
+                  >
+                </div>
+              </div>
               <div
                 class="accordion-content"
                 [@collapseAnimation]="item.isOpen ? 'open' : 'closed'"
@@ -85,7 +99,11 @@ interface Unit {
                 <div class="schedule-container">
                   <div class="schedule-grid">
                     <ng-container *ngFor="let timeSlot of timeSlots">
-                      <div class="time-row" [class.expanded]="expandedTimeSlot !== null">
+                      <div
+                        class="time-row"
+                        [class.expanded]="expandedTimeSlot !== null"
+                        [attr.data-time-slot]="timeSlot"
+                      >
                         <div class="time-cell">{{ timeSlot }}</div>
                         <div class="events-cell">
                           <div class="events-wrapper">
@@ -95,32 +113,87 @@ interface Unit {
                                 <div
                                   *ngFor="let event of events[timeSlot]"
                                   class="event-container"
-                                  (click)="toggleExpandTimeSlot(timeSlot, event)"
+                                  (click)="
+                                    toggleExpandTimeSlot(timeSlot, event)
+                                  "
                                 >
-                                  <div class="event-card" [ngClass]="'event-status-' + event.status">
+                                  <div
+                                    class="event-card"
+                                    [ngClass]="'event-status-' + event.status"
+                                  >
                                     <div class="event-icons">
                                       <span class="event-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                          <rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect>
-                                          <line x1="8" y1="3" x2="8" y2="21"></line>
-                                          <line x1="16" y1="3" x2="16" y2="21"></line>
-                                          <line x1="2" y1="9" x2="22" y2="9"></line>
-                                          <line x1="2" y1="15" x2="22" y2="15"></line>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="18"
+                                          height="18"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          stroke-width="2"
+                                        >
+                                          <rect
+                                            x="2"
+                                            y="3"
+                                            width="20"
+                                            height="18"
+                                            rx="2"
+                                            ry="2"
+                                          ></rect>
+                                          <line
+                                            x1="8"
+                                            y1="3"
+                                            x2="8"
+                                            y2="21"
+                                          ></line>
+                                          <line
+                                            x1="16"
+                                            y1="3"
+                                            x2="16"
+                                            y2="21"
+                                          ></line>
+                                          <line
+                                            x1="2"
+                                            y1="9"
+                                            x2="22"
+                                            y2="9"
+                                          ></line>
+                                          <line
+                                            x1="2"
+                                            y1="15"
+                                            x2="22"
+                                            y2="15"
+                                          ></line>
                                         </svg>
                                       </span>
                                       <span class="event-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                          <path d="M5 12h14M12 5l7 7-7 7"></path>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="18"
+                                          height="18"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          stroke-width="2"
+                                        >
+                                          <path
+                                            d="M5 12h14M12 5l7 7-7 7"
+                                          ></path>
                                         </svg>
                                       </span>
                                     </div>
                                     <div class="event-content">
-                                      <div class="event-title">{{ event.title }}</div>
+                                      <div class="event-title">
+                                        {{ event.title }}
+                                      </div>
                                       <div class="event-reference">
-                                        <span class="ref-symbol">#</span> {{ event.refNumber }}
+                                        <span class="ref-symbol">#</span>
+                                        {{ event.refNumber }}
                                       </div>
                                     </div>
-                                    <div class="event-status">{{ event.status }}</div>
+                                    <div class="event-status">
+                                      {{ event.status }}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -135,33 +208,91 @@ interface Unit {
                                   <div
                                     *ngFor="let event of row"
                                     class="event-container"
-                                    [style.visibility]="event.isPlaceholder ? 'hidden' : 'visible'"
-                                    (click)="toggleExpandTimeSlot(timeSlot, event)"
+                                    [style.visibility]="
+                                      event.isPlaceholder ? 'hidden' : 'visible'
+                                    "
+                                    (click)="
+                                      toggleExpandTimeSlot(timeSlot, event)
+                                    "
                                   >
-                                    <div *ngIf="!event.isPlaceholder" class="event-card" [ngClass]="'event-status-' + event.status">
+                                    <div
+                                      *ngIf="!event.isPlaceholder"
+                                      class="event-card"
+                                      [ngClass]="'event-status-' + event.status"
+                                    >
                                       <div class="event-icons">
                                         <span class="event-icon">
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect>
-                                            <line x1="8" y1="3" x2="8" y2="21"></line>
-                                            <line x1="16" y1="3" x2="16" y2="21"></line>
-                                            <line x1="2" y1="9" x2="22" y2="9"></line>
-                                            <line x1="2" y1="15" x2="22" y2="15"></line>
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                          >
+                                            <rect
+                                              x="2"
+                                              y="3"
+                                              width="20"
+                                              height="18"
+                                              rx="2"
+                                              ry="2"
+                                            ></rect>
+                                            <line
+                                              x1="8"
+                                              y1="3"
+                                              x2="8"
+                                              y2="21"
+                                            ></line>
+                                            <line
+                                              x1="16"
+                                              y1="3"
+                                              x2="16"
+                                              y2="21"
+                                            ></line>
+                                            <line
+                                              x1="2"
+                                              y1="9"
+                                              x2="22"
+                                              y2="9"
+                                            ></line>
+                                            <line
+                                              x1="2"
+                                              y1="15"
+                                              x2="22"
+                                              y2="15"
+                                            ></line>
                                           </svg>
                                         </span>
                                         <span class="event-icon">
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M5 12h14M12 5l7 7-7 7"></path>
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                          >
+                                            <path
+                                              d="M5 12h14M12 5l7 7-7 7"
+                                            ></path>
                                           </svg>
                                         </span>
                                       </div>
                                       <div class="event-content">
-                                        <div class="event-title">{{ event.title }}</div>
+                                        <div class="event-title">
+                                          {{ event.title }}
+                                        </div>
                                         <div class="event-reference">
-                                          <span class="ref-symbol">#</span> {{ event.refNumber }}
+                                          <span class="ref-symbol">#</span>
+                                          {{ event.refNumber }}
                                         </div>
                                       </div>
-                                      <div class="event-status">{{ event.status }}</div>
+                                      <div class="event-status">
+                                        {{ event.status }}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -177,33 +308,33 @@ interface Unit {
             </div>
           </div>
         </div>
-        
+
         <!-- Find Units Section - Only visible when expanded, takes 3 cols -->
         <div class="find-units-section" *ngIf="expandedTimeSlot !== null">
           <div class="section-content">
             <h3>Find Units</h3>
-            
+
             <div class="search-box">
               <input type="text" pInputText placeholder="Search Fleet..." />
             </div>
-            
+
             <div class="units-list">
               <div class="unit-card" *ngFor="let unit of units">
                 <div class="available-tag">Available</div>
                 <div class="unit-distance">{{ unit.distance }}</div>
                 <div class="unit-title">{{ unit.type }} - {{ unit.year }}</div>
                 <div class="unit-description">{{ unit.description }}</div>
-                
+
                 <div class="unit-image">
                   <img [src]="unit.imageUrl" alt="{{ unit.type }}" />
                 </div>
-                
+
                 <div class="unit-details">
                   <div class="detail-group">
                     <div class="detail-label">Rental Status</div>
                     <div class="detail-value">{{ unit.rentalStatus }}</div>
                   </div>
-                  
+
                   <div class="detail-group">
                     <div class="detail-label">PM Date</div>
                     <div class="detail-value">{{ unit.pmDate }}</div>
@@ -213,12 +344,12 @@ interface Unit {
             </div>
           </div>
         </div>
-        
+
         <!-- Customer Details Section - Only visible when expanded, takes 4 cols -->
         <div class="customer-details-section" *ngIf="expandedTimeSlot !== null">
-        <div class="close-expanded-view" (click)="closeExpandedView()">
-        <i class="pi pi-times"></i>
-        </div>
+          <div class="close-expanded-view" (click)="closeExpandedView()">
+            <i class="pi pi-times"></i>
+          </div>
           <div class="section-content">
             <div class="customer-header">
               <div class="customer-avatar">
@@ -230,71 +361,96 @@ interface Unit {
                 <div class="customer-id"># #78432G</div>
               </div>
             </div>
-            
+
             <div class="tab-navigation">
               <div class="tab active">Reservation</div>
               <div class="tab">Truck Info</div>
             </div>
-            
+
             <div class="customer-details">
               <div class="detail-section">
                 <h4>Notes</h4>
                 <p class="note-content">
-                  Lorem ipsum dolor sit amet consectetur. Blandit metus convallis ut vestibulum sit. Mi netus massa libero viverra laoreet ornare nibh. Molestie malesuada pretium purus con...
+                  Lorem ipsum dolor sit amet consectetur. Blandit metus
+                  convallis ut vestibulum sit. Mi netus massa libero viverra
+                  laoreet ornare nibh. Molestie malesuada pretium purus con...
                 </p>
               </div>
-              
+
               <div class="info-grid">
                 <div class="info-row">
                   <div class="info-label">Type</div>
                   <div class="info-value"></div>
                 </div>
-                
+
                 <div class="info-row">
                   <div class="info-label">Length & Height</div>
                   <div class="info-value"></div>
                 </div>
-                
+
                 <div class="info-row">
                   <div class="info-label">Towing</div>
                   <div class="info-value"></div>
                 </div>
-                
+
                 <div class="info-row">
                   <div class="info-label">Trip Type</div>
                   <div class="info-value"></div>
                 </div>
-                
+
                 <div class="info-row">
                   <div class="info-label">Insurance</div>
                   <div class="info-value">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <rect
+                        x="3"
+                        y="3"
+                        width="18"
+                        height="18"
+                        rx="2"
+                        ry="2"
+                      ></rect>
                       <circle cx="8.5" cy="8.5" r="1.5"></circle>
                       <polygon points="21 15 16 10 5 21"></polygon>
                     </svg>
                   </div>
                 </div>
-                
+
                 <div class="info-row">
                   <div class="info-label">Rental</div>
                   <div class="info-value"></div>
                 </div>
-                
+
                 <div class="info-row">
                   <div class="info-label">Duration</div>
                   <div class="info-value"></div>
                 </div>
-                
+
                 <div class="info-row">
                   <div class="info-label">Distance</div>
                   <div class="info-value"></div>
                 </div>
               </div>
-              
+
               <div class="location-section">
                 <div class="location-header">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <path d="M1 3h15v13H1z"></path>
                     <path d="M16 8h4v11H5v-4"></path>
                   </svg>
@@ -311,14 +467,16 @@ interface Unit {
     `
       .dashboard-container {
         width: 100%;
-        height: calc(100vh - 60px); /* Adjust the 60px based on your header height */
+        height: calc(
+          100vh - 60px
+        ); /* Adjust the 60px based on your header height */
         margin: 0 auto;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         transition: all 0.3s ease;
         background-color: #ffffff;
         overflow: hidden;
       }
-      
+
       .grid-system {
         display: flex;
         flex-wrap: wrap;
@@ -327,7 +485,7 @@ interface Unit {
         background-color: #ffffff;
         gap: 15px; /* Added gap between panels */
       }
-      
+
       /* --- Main Accordion Section --- */
       .accordion-section {
         width: 100%; /* 12 columns by default */
@@ -340,57 +498,59 @@ interface Unit {
         scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Firefox */
         -ms-overflow-style: none; /* IE and Edge */
       }
-      
+
       /* Mac-style scrollbar for Windows */
       .accordion-section::-webkit-scrollbar {
         width: 8px;
         background-color: transparent;
         opacity: 0;
       }
-      
+
       .accordion-section::-webkit-scrollbar-track {
         background-color: transparent;
       }
-      
+
       .accordion-section::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.15);
         border-radius: 10px;
         border: 2px solid transparent;
         background-clip: content-box;
       }
-      
+
       .accordion-section:hover::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.25);
       }
-      
+
       /* Only show scrollbar on hover/scroll for Windows */
       .accordion-section:not(:hover):not(:focus)::-webkit-scrollbar-thumb {
         opacity: 0;
         visibility: hidden;
       }
-      
+
       .accordion-section.grid-5 {
-        width: calc(41.66% - 15px); /* 5/12 columns when expanded, accounting for gap */
+        width: calc(
+          41.66% - 15px
+        ); /* 5/12 columns when expanded, accounting for gap */
         background-color: #ffffff;
       }
-      
+
       h2 {
         margin-bottom: 20px;
         color: #333;
         font-size: 22px;
       }
-      
+
       .accordion-container {
         width: 100%;
       }
-      
+
       .accordion-item {
         margin-bottom: 5px;
         border: 1px solid #ccc;
         border-radius: 4px;
         overflow: hidden;
       }
-      
+
       .accordion-header {
         display: flex;
         align-items: center;
@@ -400,29 +560,29 @@ interface Unit {
         cursor: pointer;
         user-select: none;
       }
-      
+
       .accordion-header.active {
         background-color: #bbdefb;
       }
-      
+
       .toggle-icon {
         display: flex;
         align-items: center;
         margin-right: 10px;
       }
-      
+
       .icon {
         font-size: 12px;
       }
-      
+
       .header-text {
         font-weight: 500;
       }
-      
+
       .accordion-content {
         overflow: hidden;
       }
-      
+
       /* --- Schedule Styles --- */
       .schedule-container {
         width: 100%;
@@ -430,13 +590,13 @@ interface Unit {
         overflow-x: hidden;
         background-color: #ffffff;
       }
-      
+
       .schedule-grid {
         width: 100%;
         display: flex;
         flex-direction: column;
       }
-      
+
       .time-row {
         display: flex;
         width: 100%;
@@ -444,11 +604,11 @@ interface Unit {
         min-height: 60px;
         transition: all 0.3s ease;
       }
-      
+
       .time-row.expanded {
         background-color: #f8f9fa;
       }
-      
+
       .time-cell {
         width: 80px;
         min-width: 80px;
@@ -458,19 +618,19 @@ interface Unit {
         align-items: flex-start;
         border-right: 1px solid #e9ecef;
       }
-      
+
       .events-cell {
         flex: 1;
         padding: 0.5rem;
         overflow: hidden;
       }
-      
+
       .events-wrapper {
         display: flex;
         flex-direction: column;
         gap: 8px;
       }
-      
+
       /* --- Event Grid Layout --- */
       .event-row {
         display: grid;
@@ -479,7 +639,7 @@ interface Unit {
         margin-bottom: 10px;
         width: 100%;
       }
-      
+
       /* --- Event Vertical Column Layout --- */
       .event-column {
         display: flex;
@@ -487,21 +647,21 @@ interface Unit {
         width: 100%;
         gap: 10px;
       }
-      
+
       .event-container {
         min-width: 0;
         cursor: pointer;
         transition: transform 0.2s ease;
       }
-      
+
       .event-column .event-container {
         width: 100%;
       }
-      
+
       .event-container:hover {
         transform: translateY(-2px);
       }
-      
+
       /* --- Event Card Styling --- */
       .event-card {
         display: flex;
@@ -511,19 +671,19 @@ interface Unit {
         border: 1px solid #dce3eb;
         border-radius: 6px;
         height: 100%;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         transition: box-shadow 0.2s ease;
       }
-      
+
       .event-card:hover {
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
-      
+
       .event-icons {
         display: flex;
         margin-right: 10px;
       }
-      
+
       .event-icon {
         display: flex;
         align-items: center;
@@ -531,12 +691,12 @@ interface Unit {
         margin-right: 4px;
         color: #666;
       }
-      
+
       .event-content {
         flex: 1;
         min-width: 0;
       }
-      
+
       .event-title {
         font-weight: 500;
         color: #0a2472;
@@ -545,7 +705,7 @@ interface Unit {
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      
+
       .event-reference {
         font-size: 12px;
         color: #666666;
@@ -553,11 +713,11 @@ interface Unit {
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      
+
       .ref-symbol {
         color: #888;
       }
-      
+
       .event-status {
         font-size: 11px;
         font-weight: 500;
@@ -565,40 +725,40 @@ interface Unit {
         margin-left: 8px;
         white-space: nowrap;
       }
-      
+
       /* --- Status-specific styles --- */
       .event-status-confirmed {
         border-left: 3px solid #28a745;
       }
-      
+
       .event-status-confirmed .event-status {
         color: #28a745;
       }
-      
+
       .event-status-pending {
         border-left: 3px solid #ffc107;
       }
-      
+
       .event-status-pending .event-status {
         color: #ffc107;
       }
-      
+
       .event-status-cancelled {
         border-left: 3px solid #dc3545;
       }
-      
+
       .event-status-cancelled .event-status {
         color: #dc3545;
       }
-      
+
       .event-status-voided {
         border-left: 3px solid #dc3545;
       }
-      
+
       .event-status-voided .event-status {
         color: #dc3545;
       }
-      
+
       /* --- Find Units Section --- */
       .find-units-section {
         width: calc(25% - 15px); /* 3/12 columns, accounting for gap */
@@ -611,58 +771,58 @@ interface Unit {
         scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
         -ms-overflow-style: none; /* IE and Edge */
       }
-      
+
       /* Mac-style scrollbar for Windows */
       .find-units-section::-webkit-scrollbar {
         width: 8px;
         background-color: transparent;
         opacity: 0;
       }
-      
+
       .find-units-section::-webkit-scrollbar-track {
         background-color: transparent;
       }
-      
+
       .find-units-section::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.15);
         border-radius: 10px;
         border: 2px solid transparent;
         background-clip: content-box;
       }
-      
+
       .find-units-section:hover::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.25);
       }
-      
+
       /* Only show scrollbar on hover/scroll for Windows */
       .find-units-section:not(:hover):not(:focus)::-webkit-scrollbar-thumb {
         opacity: 0;
         visibility: hidden;
       }
-      
+
       .find-units-section h3 {
         font-size: 18px;
         margin-bottom: 15px;
         color: #333;
       }
-      
+
       .search-box {
         margin-bottom: 20px;
       }
-      
+
       .search-box input {
         width: 100%;
         padding: 8px 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
       }
-      
+
       .units-list {
         display: flex;
         flex-direction: column;
         gap: 15px;
       }
-      
+
       .unit-card {
         border: 1px solid #ddd;
         border-radius: 6px;
@@ -670,7 +830,7 @@ interface Unit {
         background-color: #fff;
         position: relative;
       }
-      
+
       .available-tag {
         position: absolute;
         top: 0;
@@ -684,26 +844,26 @@ interface Unit {
         border-top-left-radius: 6px;
         border-top-right-radius: 6px;
       }
-      
+
       .unit-distance {
         margin-top: 25px;
         font-size: 14px;
         color: #666;
       }
-      
+
       .unit-title {
         font-size: 16px;
         font-weight: 500;
         color: #0a2472;
         margin: 5px 0;
       }
-      
+
       .unit-description {
         font-size: 14px;
         color: #666;
         margin-bottom: 10px;
       }
-      
+
       .unit-image {
         width: 100%;
         height: 120px;
@@ -711,34 +871,34 @@ interface Unit {
         justify-content: center;
         margin: 10px 0;
       }
-      
+
       .unit-image img {
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
       }
-      
+
       .unit-details {
         display: flex;
         justify-content: space-between;
         margin-top: 10px;
       }
-      
+
       .detail-group {
         flex: 1;
       }
-      
+
       .detail-label {
         font-size: 12px;
         color: #666;
       }
-      
+
       .detail-value {
         font-size: 14px;
         font-weight: 500;
         color: #333;
       }
-      
+
       /* --- Customer Details Section --- */
       .customer-details-section {
         width: calc(33.33% - 15px); /* 4/12 columns, accounting for gap */
@@ -751,46 +911,48 @@ interface Unit {
         scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
         -ms-overflow-style: none; /* IE and Edge */
       }
-      
+
       /* Mac-style scrollbar for Windows */
       .customer-details-section::-webkit-scrollbar {
         width: 8px;
         background-color: transparent;
         opacity: 0;
       }
-      
+
       .customer-details-section::-webkit-scrollbar-track {
         background-color: transparent;
       }
-      
+
       .customer-details-section::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.15);
         border-radius: 10px;
         border: 2px solid transparent;
         background-clip: content-box;
       }
-      
+
       .customer-details-section:hover::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.25);
       }
-      
+
       /* Only show scrollbar on hover/scroll for Windows */
-      .customer-details-section:not(:hover):not(:focus)::-webkit-scrollbar-thumb {
+      .customer-details-section:not(:hover):not(
+          :focus
+        )::-webkit-scrollbar-thumb {
         opacity: 0;
         visibility: hidden;
       }
-      
+
       .customer-header {
         display: flex;
         align-items: center;
         margin-bottom: 20px;
       }
-      
+
       .customer-avatar {
         position: relative;
         margin-right: 15px;
       }
-      
+
       .avatar-circle {
         width: 60px;
         height: 60px;
@@ -803,7 +965,7 @@ interface Unit {
         font-size: 20px;
         font-weight: 500;
       }
-      
+
       .phone-icon {
         position: absolute;
         bottom: 0;
@@ -817,116 +979,116 @@ interface Unit {
         justify-content: center;
         border: 1px solid #ddd;
       }
-      
+
       .customer-info h3 {
         font-size: 18px;
         margin: 0 0 5px 0;
       }
-      
+
       .customer-id {
         font-size: 14px;
         color: #666;
       }
-      
+
       .tab-navigation {
         display: flex;
         border-bottom: 1px solid #ddd;
         margin-bottom: 20px;
       }
-      
+
       .tab {
         padding: 10px 15px;
         font-size: 14px;
         cursor: pointer;
       }
-      
+
       .tab.active {
         font-weight: 500;
         border-bottom: 2px solid #3f51b5;
         color: #3f51b5;
       }
-      
+
       .detail-section {
         margin-bottom: 20px;
       }
-      
+
       .detail-section h4 {
         font-size: 16px;
         margin-bottom: 10px;
         color: #333;
       }
-      
+
       .note-content {
         font-size: 14px;
         color: #666;
         line-height: 1.5;
       }
-      
+
       .info-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
         margin-bottom: 20px;
       }
-      
+
       .info-row {
         display: flex;
         flex-direction: column;
       }
-      
+
       .info-label {
         font-size: 14px;
         color: #666;
         margin-bottom: 5px;
       }
-      
+
       .info-value {
         font-size: 16px;
         color: #333;
         min-height: 20px;
       }
-      
+
       .location-section {
         margin-top: 20px;
       }
-      
+
       .location-header {
         display: flex;
         align-items: center;
       }
-      
+
       .location-header svg {
         margin-right: 10px;
         color: #444;
       }
-      
+
       .location-header h4 {
         font-size: 16px;
         margin: 0;
       }
-      
+
       /* --- Responsive Styles --- */
       @media screen and (max-width: 992px) {
         .accordion-section.grid-5 {
           width: 100%;
         }
-        
+
         .find-units-section,
         .customer-details-section {
           width: calc(50% - 7.5px);
         }
-        
+
         .grid-system {
           flex-direction: column;
         }
       }
-      
+
       @media screen and (max-width: 768px) {
         .dashboard-container {
           height: auto;
           min-height: 100vh;
         }
-        
+
         .accordion-section.grid-5,
         .find-units-section,
         .customer-details-section {
@@ -934,7 +1096,7 @@ interface Unit {
           height: auto;
           max-height: 50vh;
         }
-        
+
         .event-row {
           grid-template-columns: 1fr;
         }
@@ -956,98 +1118,164 @@ interface Unit {
         cursor: pointer;
         z-index: 100;
       }
-      
+
       .close-expanded-view:hover {
         background-color: #e9ecef;
       }
-      
+
       /* Positioning for the close button in the customer section */
       .customer-details-section {
         position: relative;
       }
       .highlight-time-slot {
-      background-color: rgba(63, 81, 181, 0.2);
-      transition: background-color 0.5s ease;
-    }
-    
-    .highlight-time-slot .time-cell {
-      font-weight: bold;
-      color: #3f51b5;
-    }
-    .accordion-header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background-color: #e3f2fd;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .accordion-header.active {
-      background-color: #bbdefb;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    }
-    
-    /* Highlight styles for current time slot */
-    .highlight-time-slot {
-      background-color: rgba(63, 81, 181, 0.2);
-      transition: background-color 0.5s ease;
-    }
-    
-    .highlight-time-slot .time-cell {
-      font-weight: bold;
-      color: #3f51b5;
-    }
+        background-color: rgba(63, 81, 181, 0.2);
+        transition: background-color 0.5s ease;
+      }
 
-        /* Make sure the accordion section has proper scroll context */
-        .accordion-section {
-      width: 100%; /* 12 columns by default */
-      padding: 15px;
-      transition: all 0.3s ease;
-      background-color: #ffffff;
-      height: 100%;
-      overflow: auto !important; /* Force overflow auto */
-      scrollbar-width: thin; /* Firefox */
-      scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Firefox */
-      -ms-overflow-style: none; /* IE and Edge */
-      position: relative; /* Create positioning context */
-    }
-    
-    /* Enhanced sticky accordion header styles */
-    .accordion-header {
-      position: sticky !important; /* Force sticky positioning */
-      top: 0 !important; /* Force top position */
-      z-index: 100 !important; /* Higher z-index to ensure it's above other elements */
-      background-color: #e3f2fd !important; /* Ensure background is opaque */
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-      margin-bottom: 0 !important; /* Remove any margin that might affect stickiness */
-      width: 100% !important; /* Ensure full width */
-    }
-    
-    /* Make sure there's no margin/padding interfering with the accordion items */
-    .accordion-item {
-      margin-bottom: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      overflow: hidden;
-      display: block; /* Ensure block display */
-    }
-    
-    /* Active header styling */
-    .accordion-header.active {
-      background-color: #bbdefb !important;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
-    }
-    
-    /* Highlight styles for current time slot */
-    .highlight-time-slot {
-      background-color: rgba(63, 81, 181, 0.2);
-      transition: background-color 0.5s ease;
-    }
-    
-    .highlight-time-slot .time-cell {
-      font-weight: bold;
-      color: #3f51b5;
-    }
+      .highlight-time-slot .time-cell {
+        font-weight: bold;
+        color: #3f51b5;
+      }
+      .accordion-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #e3f2fd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .accordion-header.active {
+        background-color: #bbdefb;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Highlight styles for current time slot */
+      .highlight-time-slot {
+        background-color: rgba(63, 81, 181, 0.2);
+        transition: background-color 0.5s ease;
+      }
+
+      .highlight-time-slot .time-cell {
+        font-weight: bold;
+        color: #3f51b5;
+      }
+
+      /* Make sure the accordion section has proper scroll context */
+      .accordion-section {
+        width: 100%; /* 12 columns by default */
+        padding: 15px;
+        transition: all 0.3s ease;
+        background-color: #ffffff;
+        height: 100%;
+        overflow: auto !important; /* Force overflow auto */
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+        position: relative; /* Create positioning context */
+      }
+
+      /* Enhanced sticky accordion header styles */
+      .accordion-header {
+        position: sticky !important; /* Force sticky positioning */
+        top: 0 !important; /* Force top position */
+        z-index: 100 !important; /* Higher z-index to ensure it's above other elements */
+        background-color: #e3f2fd !important; /* Ensure background is opaque */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        margin-bottom: 0 !important; /* Remove any margin that might affect stickiness */
+        width: 100% !important; /* Ensure full width */
+      }
+
+      /* Make sure there's no margin/padding interfering with the accordion items */
+      .accordion-item {
+        margin-bottom: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        overflow: hidden;
+        display: block; /* Ensure block display */
+      }
+
+      /* Active header styling */
+      .accordion-header.active {
+        background-color: #bbdefb !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+      }
+
+      /* Highlight styles for current time slot */
+      .highlight-time-slot {
+        background-color: rgba(63, 81, 181, 0.2);
+        transition: background-color 0.5s ease;
+      }
+
+      .highlight-time-slot .time-cell {
+        font-weight: bold;
+        color: #3f51b5;
+      }
+
+      /* Add these styles to your component's styles array */
+
+/* Sticky warning message styles */
+.warning-message {
+  position: sticky;
+  top: 30px; /* Should match the height of the accordion header */
+  z-index: 90; /* Below the header but above other content */
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-left: 4px solid #ffc107;
+  color: #856404;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.warning-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.warning-icon {
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+/* Add animation to make the warning more noticeable after scrolling */
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+/* Apply animation when the time slot is highlighted */
+.highlight-time-slot + .warning-message, 
+.highlight-time-slot ~ .warning-message {
+  animation: pulse 2s infinite;
+  background-color: #fff3cd;
+  border-color: #ffc107;
+}
+
+/* Add responsiveness for the warning */
+@media screen and (max-width: 768px) {
+  .warning-message {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+/* Update the sticky header styles to work with the warning */
+.accordion-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  background-color: #e3f2fd !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  margin-bottom: 0 !important;
+  width: 100% !important;
+}
     `,
   ],
   animations: [
@@ -1092,14 +1320,18 @@ export class ReservationsDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateScreenSize(window.innerWidth);
-    if (!this.accordionItems.some(item => item.isOpen)) {
+
+    // Ensure at least one accordion is open
+    if (!this.accordionItems.some((item) => item.isOpen)) {
       this.accordionItems[0].isOpen = true;
     }
+
+    // Use a longer timeout to ensure rendering is complete
     setTimeout(() => {
       this.checkStickyHeaderStatus();
+      this.debugTimeSlotElements();
       this.scrollToCurrentTimeSlot();
-      
-        }, 500);
+    }, 0); // Increased timeout
   }
 
   toggleItem(index: number): void {
@@ -1111,7 +1343,7 @@ export class ReservationsDashboardComponent implements OnInit {
    */
   toggleExpandTimeSlot(timeSlot: string, event: Event): void {
     if (event.isPlaceholder) return;
-    
+
     if (this.expandedTimeSlot !== null) {
       // If already expanded, collapse everything
       this.expandedTimeSlot = null;
@@ -1122,86 +1354,226 @@ export class ReservationsDashboardComponent implements OnInit {
     }
   }
 
-  timeSlots: string[] = ['1:00am', '2:00am', '3:00am','4:00am','5:00am',];
-  
+  timeSlots: string[] = ['4:00am', '5:00am', '6:00am', '7:00am', '8:00am'];
+
   events: { [key: string]: Event[] } = {
-    '1:00am': [
-      { id: 1, title: 'Albert Flora', refNumber: '98762319', status: 'voided' },
-      { id: 2, title: 'John Smith', refNumber: '24589631', status: 'confirmed' },
-      { id: 3, title: 'Maria Garcia', refNumber: '78453621', status: 'pending' },
-      { id: 4, title: 'Robert Johnson', refNumber: '36521478', status: 'confirmed' },
-      { id: 5, title: 'Sarah Wilson', refNumber: '12369854', status: 'cancelled' },
-      { id: 6, title: 'David Thompson', refNumber: '45698732', status: 'pending' },
-      { id: 7, title: 'Jennifer Adams', refNumber: '78965412', status: 'confirmed' },
-      { id: 8, title: 'Michael Brown', refNumber: '32145698', status: 'voided' },
-      { id: 9, title: 'Emily Wilson', refNumber: '15975364', status: 'confirmed' },
-    ],
-    '2:00am': [
-      { id: 10, title: 'James Williams', refNumber: '78965321', status: 'confirmed' },
-      { id: 11, title: 'Emma Davis', refNumber: '12398745', status: 'pending' }
-    ],
-    '3:00am': [
-      { id: 12, title: 'Christopher Lee', refNumber: '65432198', status: 'voided' }
-    ],
     '4:00am': [
-      { id: 99, title: 'Albert Flora2', refNumber: '98762319', status: 'voided' },
-      { id: 22, title: 'John Smith2', refNumber: '24589631', status: 'confirmed' },
-      { id: 33, title: 'Maria Garcia3', refNumber: '78453621', status: 'pending' },
-      { id: 44, title: 'Robert Johnson2', refNumber: '36521478', status: 'confirmed' },
-      { id: 55, title: 'Sarah Wilson2', refNumber: '12369854', status: 'cancelled' },
-      { id: 66, title: 'David Thompson2', refNumber: '45698732', status: 'pending' },
-      { id: 77, title: 'Jennifer Adams2', refNumber: '78965412', status: 'confirmed' },
-      { id: 88, title: 'Michael Brown2', refNumber: '32145698', status: 'voided' },
-      { id: 99, title: 'Emily Wilson2', refNumber: '15975364', status: 'confirmed' },
+      { id: 1, title: 'Albert Flora', refNumber: '98762319', status: 'voided' },
+      {
+        id: 2,
+        title: 'John Smith',
+        refNumber: '24589631',
+        status: 'confirmed',
+      },
+      {
+        id: 3,
+        title: 'Maria Garcia',
+        refNumber: '78453621',
+        status: 'pending',
+      },
+      {
+        id: 4,
+        title: 'Robert Johnson',
+        refNumber: '36521478',
+        status: 'confirmed',
+      },
+      {
+        id: 5,
+        title: 'Sarah Wilson',
+        refNumber: '12369854',
+        status: 'cancelled',
+      },
+      {
+        id: 6,
+        title: 'David Thompson',
+        refNumber: '45698732',
+        status: 'pending',
+      },
+      {
+        id: 7,
+        title: 'Jennifer Adams',
+        refNumber: '78965412',
+        status: 'confirmed',
+      },
+      {
+        id: 8,
+        title: 'Michael Brown',
+        refNumber: '32145698',
+        status: 'voided',
+      },
+      {
+        id: 9,
+        title: 'Emily Wilson',
+        refNumber: '15975364',
+        status: 'confirmed',
+      },
     ],
     '5:00am': [
-      { id: 144, title: 'Albert Flora44', refNumber: '98762319', status: 'voided' },
-      { id: 244, title: 'John Smith44', refNumber: '24589631', status: 'confirmed' },
-      { id: 344, title: 'Maria Garcia44', refNumber: '78453621', status: 'pending' },
-      { id: 444, title: 'Robert Johnson44', refNumber: '36521478', status: 'confirmed' },
-      { id: 544, title: 'Sarah Wilson44', refNumber: '12369854', status: 'cancelled' },
-      { id: 644, title: 'David Thompson44', refNumber: '45698732', status: 'pending' },
-      { id: 744, title: 'Jennifer Adams44', refNumber: '78965412', status: 'confirmed' },
-      { id: 844, title: 'Michael Brown44', refNumber: '32145698', status: 'voided' },
-      { id: 944, title: 'Emily Wilson44', refNumber: '15975364', status: 'confirmed' },
+      {
+        id: 10,
+        title: 'James Williams',
+        refNumber: '78965321',
+        status: 'confirmed',
+      },
+      { id: 11, title: 'Emma Davis', refNumber: '12398745', status: 'pending' },
+    ],
+    '6:00am': [
+      {
+        id: 12,
+        title: 'Christopher Lee',
+        refNumber: '65432198',
+        status: 'voided',
+      },
+    ],
+    '7:00am': [
+      {
+        id: 99,
+        title: 'Albert Flora2',
+        refNumber: '98762319',
+        status: 'voided',
+      },
+      {
+        id: 22,
+        title: 'John Smith2',
+        refNumber: '24589631',
+        status: 'confirmed',
+      },
+      {
+        id: 33,
+        title: 'Maria Garcia3',
+        refNumber: '78453621',
+        status: 'pending',
+      },
+      {
+        id: 44,
+        title: 'Robert Johnson2',
+        refNumber: '36521478',
+        status: 'confirmed',
+      },
+      {
+        id: 55,
+        title: 'Sarah Wilson2',
+        refNumber: '12369854',
+        status: 'cancelled',
+      },
+      {
+        id: 66,
+        title: 'David Thompson2',
+        refNumber: '45698732',
+        status: 'pending',
+      },
+      {
+        id: 77,
+        title: 'Jennifer Adams2',
+        refNumber: '78965412',
+        status: 'confirmed',
+      },
+      {
+        id: 88,
+        title: 'Michael Brown2',
+        refNumber: '32145698',
+        status: 'voided',
+      },
+      {
+        id: 99,
+        title: 'Emily Wilson2',
+        refNumber: '15975364',
+        status: 'confirmed',
+      },
+    ],
+    '8:00am': [
+      {
+        id: 144,
+        title: 'Albert Flora44',
+        refNumber: '98762319',
+        status: 'voided',
+      },
+      {
+        id: 244,
+        title: 'John Smith44',
+        refNumber: '24589631',
+        status: 'confirmed',
+      },
+      {
+        id: 344,
+        title: 'Maria Garcia44',
+        refNumber: '78453621',
+        status: 'pending',
+      },
+      {
+        id: 444,
+        title: 'Robert Johnson44',
+        refNumber: '36521478',
+        status: 'confirmed',
+      },
+      {
+        id: 544,
+        title: 'Sarah Wilson44',
+        refNumber: '12369854',
+        status: 'cancelled',
+      },
+      {
+        id: 644,
+        title: 'David Thompson44',
+        refNumber: '45698732',
+        status: 'pending',
+      },
+      {
+        id: 744,
+        title: 'Jennifer Adams44',
+        refNumber: '78965412',
+        status: 'confirmed',
+      },
+      {
+        id: 844,
+        title: 'Michael Brown44',
+        refNumber: '32145698',
+        status: 'voided',
+      },
+      {
+        id: 944,
+        title: 'Emily Wilson44',
+        refNumber: '15975364',
+        status: 'confirmed',
+      },
     ],
   };
-  
+
   // Sample units data
   units: Unit[] = [
     {
       id: 1,
       type: "18' Flatbed Truck",
-      year: "2023",
-      distance: "2.4 miles away",
-      description: "lorem TestData,sample 19898",
-      rentalStatus: "Ready Line",
-      pmDate: "02/27/25",
-      imageUrl: "assets/flatbed-truck.png"
+      year: '2023',
+      distance: '2.4 miles away',
+      description: 'lorem TestData,sample 19898',
+      rentalStatus: 'Ready Line',
+      pmDate: '02/27/25',
+      imageUrl: 'assets/flatbed-truck.png',
     },
     {
       id: 2,
       type: "26' Flatbed Truck",
-      year: "2023",
-      distance: "2.4 miles away",
-      description: "lorem TestData,sample 19898",
-      rentalStatus: "Ready Line",
-      pmDate: "02/27/25",
-      imageUrl: "assets/flatbed-truck.png"
-    }
+      year: '2023',
+      distance: '2.4 miles away',
+      description: 'lorem TestData,sample 19898',
+      rentalStatus: 'Ready Line',
+      pmDate: '02/27/25',
+      imageUrl: 'assets/flatbed-truck.png',
+    },
   ];
-  
+
   // Configuration for event display
   maxEventsPerRow: number = 3;
-  
+
   // Responsive configuration for different screen sizes
   screenSize: string = 'desktop';
-  
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.updateScreenSize(window.innerWidth);
   }
-  
+
   /**
    * Update screen size category based on width
    */
@@ -1230,139 +1602,276 @@ export class ReservationsDashboardComponent implements OnInit {
 
     // Always use the configured column count
     const columns = this.maxEventsPerRow;
-    
+
     const rows: any[][] = [];
-    
+
     // Split events into chunks
     for (let i = 0; i < timeEvents.length; i += columns) {
       // Get events for this row
       const rowEvents = timeEvents.slice(i, i + columns);
-      
+
       // If we don't have enough events to fill the row, add empty placeholder objects
       while (rowEvents.length < columns) {
-        rowEvents.push({ id: -1, title: '', refNumber: '', status: 'confirmed', isPlaceholder: true });
+        rowEvents.push({
+          id: -1,
+          title: '',
+          refNumber: '',
+          status: 'confirmed',
+          isPlaceholder: true,
+        });
       }
-      
+
       rows.push(rowEvents);
     }
-    
+
     return rows;
   }
 
   closeExpandedView(): void {
     this.expandedTimeSlot = null;
   }
+
+  // 1. First, let's add a data attribute to the time row for more reliable targeting
+  // Update your template to include a data attribute:
+  // Change this line in your template:
+  // <div class="time-row" [class.expanded]="expandedTimeSlot !== null">
+  // To this:
+  // <div class="time-row" [class.expanded]="expandedTimeSlot !== null" [attr.data-time-slot]="timeSlot">
+
+  // 2. Now update your scrollToCurrentTimeSlot method
+
   scrollToCurrentTimeSlot(): void {
-    // Get current time
-    const currentDate = new Date();
-    const currentHour = currentDate.getHours();
-    const currentMinute = currentDate.getMinutes();
-    
-    console.log(`Current time: ${currentHour}:${currentMinute}`);
-    
-    // Find the time slot closest to current time
-    let closestTimeSlot: string | null = null;
-    let minTimeDifference = Infinity;
-    
-    this.timeSlots.forEach(timeSlot => {
-      // Parse the time slot (format: "1:00am", "2:00am", etc.)
-      const matches = timeSlot.match(/(\d+):(\d+)(am|pm)/i);
-      
-      if (matches) {
-        let hour = parseInt(matches[1], 10);
-        const minute = parseInt(matches[2], 10);
-        const period = matches[3].toLowerCase();
-        
-        // Convert to 24-hour format
-        if (period === 'pm' && hour < 12) {
-          hour += 12;
-        } else if (period === 'am' && hour === 12) {
-          hour = 0;
+    // Increase timeout to ensure DOM is fully rendered
+    setTimeout(() => {
+      try {
+        // Get current time
+        const currentDate = new Date();
+        const currentHour = currentDate.getHours();
+        const currentMinute = currentDate.getMinutes();
+
+        console.log(`Current time: ${currentHour}:${currentMinute}`);
+
+        // Find the time slot closest to current time
+        let closestTimeSlot: string | null | any = null;
+        let minTimeDifference = Infinity;
+
+        this.timeSlots.forEach((timeSlot) => {
+          // Parse the time slot (format: "7:00am", "8:00am", etc.)
+          const matches = timeSlot.match(/(\d+):(\d+)(am|pm)/i);
+
+          if (matches) {
+            let hour = parseInt(matches[1], 10);
+            const minute = parseInt(matches[2], 10);
+            const period = matches[3].toLowerCase();
+
+            // Convert to 24-hour format for accurate comparison
+            if (period === 'pm' && hour < 12) {
+              hour += 12;
+            } else if (period === 'am' && hour === 12) {
+              hour = 0;
+            }
+
+            // Calculate absolute time difference in minutes
+            const slotTotalMinutes = hour * 60 + minute;
+            const currentTotalMinutes = currentHour * 60 + currentMinute;
+            const timeDifferenceMinutes = Math.abs(
+              slotTotalMinutes - currentTotalMinutes
+            );
+
+            console.log(
+              `Time slot: ${timeSlot}, 24h format: ${hour}:${minute}, diff: ${timeDifferenceMinutes} minutes`
+            );
+
+            // Find the slot with minimum time difference
+            if (timeDifferenceMinutes < minTimeDifference) {
+              minTimeDifference = timeDifferenceMinutes;
+              closestTimeSlot = timeSlot;
+            }
+          }
+        });
+
+        console.log(
+          `Closest time slot: ${closestTimeSlot}, difference: ${minTimeDifference} minutes`
+        );
+
+        // Force a manual refresh before scrolling
+        this.forceRefresh();
+
+        // Scroll to the closest time slot with a slight delay
+        if (closestTimeSlot) {
+          setTimeout(() => this.scrollToTimeSlot(closestTimeSlot), 100);
         }
-        
-        // Calculate absolute time difference in minutes
-        const slotTotalMinutes = (hour * 60) + minute;
-        const currentTotalMinutes = (currentHour * 60) + currentMinute;
-        const timeDifferenceMinutes = Math.abs(slotTotalMinutes - currentTotalMinutes);
-        
-        console.log(`Time slot: ${timeSlot}, 24h format: ${hour}:${minute}, diff: ${timeDifferenceMinutes} minutes`);
-        
-        // Find the slot with minimum time difference
-        if (timeDifferenceMinutes < minTimeDifference) {
-          minTimeDifference = timeDifferenceMinutes;
-          closestTimeSlot = timeSlot;
+      } catch (error) {
+        console.error('Error in scrollToCurrentTimeSlot:', error);
+      }
+    }, 0); // Increased timeout
+  }
+
+  // Add this helper method
+  private forceRefresh(): void {
+    // Trigger a small state change to force Angular change detection
+    this.expandedTimeSlot = this.expandedTimeSlot;
+  }
+  // 3. Completely revised scrollToTimeSlot method with multiple fallback approaches
+  scrollToTimeSlot(timeSlot: string): void {
+    try {
+      console.log(`Attempting to scroll to time slot: "${timeSlot}"`);
+
+      // Try all time rows and manually check text content
+      const accordionSection = document.querySelector('.accordion-section');
+      const timeRows = document.querySelectorAll('.time-row');
+
+      if (!timeRows.length) {
+        console.error('No time rows found in the DOM');
+        return;
+      }
+
+      console.log(`Found ${timeRows.length} time rows to check`);
+
+      // Try to find the matching row
+      let targetRow: Element | null = null;
+
+      for (let i = 0; i < timeRows.length; i++) {
+        const timeCell = timeRows[i].querySelector('.time-cell');
+        if (timeCell && timeCell.textContent) {
+          const text = timeCell.textContent.trim();
+          console.log(`Row ${i} has time cell with text: "${text}"`);
+
+          if (text === timeSlot) {
+            targetRow = timeRows[i];
+            console.log(`Found matching time slot at row ${i}`);
+            break;
+          }
         }
       }
-    });
-    
-    console.log(`Closest time slot: ${closestTimeSlot}, difference: ${minTimeDifference} minutes`);
-    
-    // Scroll to the closest time slot
-    if (closestTimeSlot) {
-      this.scrollToTimeSlot(closestTimeSlot);
+
+      // If no exact match, try the first row as fallback
+      if (!targetRow && timeRows.length > 0) {
+        targetRow = timeRows[0];
+        console.log('Using first row as fallback');
+      }
+
+      // Scroll to the target row
+      if (targetRow && accordionSection) {
+        // Highlight for visual feedback
+        targetRow.classList.add('highlight-time-slot');
+        setTimeout(
+          () => targetRow?.classList.remove('highlight-time-slot'),
+          3000
+        );
+
+        // Calculate position considering accordion header
+        const headerHeight =
+          document.querySelector('.accordion-header')?.clientHeight || 30;
+
+        // Try direct scrollTo first
+        const targetTop =
+          (targetRow as HTMLElement).offsetTop - headerHeight - 10;
+        accordionSection.scrollTo({
+          top: targetTop,
+          behavior: 'smooth',
+        });
+
+        console.log(`Scrolled to position ${targetTop}px`);
+      } else {
+        console.error('Could not find suitable elements for scrolling');
+      }
+    } catch (error) {
+      console.error('Error in scrollToTimeSlot:', error);
     }
   }
-  
-  /**
-   * Scrolls to a specific time slot
-   */
-  scrollToTimeSlot(timeSlot: string): void {
-    // Find the time slot element
-    setTimeout(() => {
-      const timeSlotElements = document.querySelectorAll('.time-cell');
-      let targetElement: Element | null |any = null;
-      
-      timeSlotElements.forEach(element => {
-        if (element.textContent && element.textContent.trim() === timeSlot) {
-          targetElement = element;
-          console.log(`Found target element for time slot: ${timeSlot}`);
-        }
-      });
-      
-      if (targetElement) {
-        // Try to find the closest accordion content container
-        const accordionContent:any = targetElement instanceof Element ? 
-          targetElement.closest('.accordion-content') : null;
-        // Get parent accordion section for scrolling
-        const accordionSection = document.querySelector('.accordion-section');
-        
-        if (accordionSection) {
-          // Get the accordion header height more dynamically
-          const accordionHeader = document.querySelector('.accordion-header');
-          const headerHeight = accordionHeader ? accordionHeader.clientHeight : 30;
-          
-          // Calculate scroll position, accounting for sticky header height
-          const targetTop = (targetElement as HTMLElement).getBoundingClientRect().top;
-          const sectionTop = accordionSection.getBoundingClientRect().top;
-          const relativePosition = targetTop - sectionTop;
-          
-          console.log(`Header height: ${headerHeight}, Target position: ${relativePosition}`);
-          
-          // Scroll to the element with smooth behavior
-          accordionSection.scrollTo({
-            top: accordionSection.scrollTop + relativePosition - headerHeight - 10,
-            behavior: 'smooth'
+
+  // 4. A helper method for scrolling with multiple approaches
+  private scrollToElement(element: HTMLElement): void {
+    try {
+      // Highlight the element for visual feedback
+      element.classList.add('highlight-time-slot');
+      setTimeout(() => element.classList.remove('highlight-time-slot'), 3000);
+
+      // APPROACH 1: Try standard scrollTo with position calculation
+      const accordionSection = document.querySelector('.accordion-section');
+      if (accordionSection) {
+        const accordionHeaderHeight =
+          document.querySelector('.accordion-header')?.clientHeight || 30;
+        const targetRect = element.getBoundingClientRect();
+        const sectionRect = (
+          accordionSection as HTMLElement
+        ).getBoundingClientRect();
+
+        const scrollTop =
+          accordionSection.scrollTop +
+          (targetRect.top - sectionRect.top) -
+          accordionHeaderHeight -
+          10;
+
+        console.log(`Scrolling to position: ${scrollTop}px`);
+        accordionSection.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth',
+        });
+
+        // APPROACH 2: Also try scrollIntoView as a backup (may be more reliable)
+        setTimeout(() => {
+          element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
           });
-          
-          // Highlight the time slot temporarily
-          this.highlightTimeSlot(targetElement as HTMLElement);
-        }
+        }, 100);
+      } else {
+        // APPROACH 3: Direct scrollIntoView if we can't find the accordion section
+        console.log('Using scrollIntoView fallback');
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
       }
-    }, 500); // Increased delay to ensure DOM is fully ready
+    } catch (error) {
+      console.error('Error in scrollToElement:', error);
+    }
   }
-  
-  
+
+  // 5. Additional method for debugging DOM structure
+  debugTimeSlotElements(): void {
+    console.log('=== DEBUG TIME SLOT ELEMENTS ===');
+
+    // Check accordion items
+    const accordionItems = document.querySelectorAll('.accordion-item');
+    console.log(`Found ${accordionItems.length} accordion items`);
+
+    // Check if content is visible
+    const openAccordionContent = document.querySelectorAll(
+      '.accordion-content[style*="height: auto"], .accordion-content:not([style*="height: 0"])'
+    );
+    console.log(
+      `Found ${openAccordionContent.length} open accordion content sections`
+    );
+
+    // Check time rows
+    const timeRows = document.querySelectorAll('.time-row');
+    console.log(`Found ${timeRows.length} time rows`);
+
+    // Display all time cells with content
+    const timeCells = document.querySelectorAll('.time-cell');
+    console.log(
+      `Found ${timeCells.length} time cells with the following content:`
+    );
+
+    timeCells.forEach((cell, i) => {
+      console.log(`  Cell ${i}: "${cell.textContent?.trim()}"`);
+    });
+  }
+
   /**
    * Briefly highlights a time slot for visual feedback
    */
   highlightTimeSlot(element: HTMLElement): void {
     // Find the parent row element to highlight the entire row
     const timeRow = element.closest('.time-row');
-    
+
     if (timeRow) {
       // Add a highlight class
       timeRow.classList.add('highlight-time-slot');
-      
+
       // Remove the highlight after a short delay
       setTimeout(() => {
         timeRow.classList.remove('highlight-time-slot');
@@ -1372,7 +1881,7 @@ export class ReservationsDashboardComponent implements OnInit {
 
   checkStickyHeaderStatus(): void {
     console.log('Checking sticky header status...');
-    
+
     const accordionHeaders = document.querySelectorAll('.accordion-header');
     accordionHeaders.forEach((header, index) => {
       const styles = window.getComputedStyle(header);
@@ -1380,7 +1889,7 @@ export class ReservationsDashboardComponent implements OnInit {
       console.log(`- position: ${styles.position}`);
       console.log(`- top: ${styles.top}`);
       console.log(`- z-index: ${styles.zIndex}`);
-      
+
       // Check if parent has scroll
       const parent = header.parentElement;
       if (parent) {
@@ -1391,9 +1900,4 @@ export class ReservationsDashboardComponent implements OnInit {
       }
     });
   }
-
-  
-  
-  
-
 }
